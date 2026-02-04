@@ -1,0 +1,9 @@
+Project: dilocash-oss
+Architecture: Clean Architecture (Domain, Usecase, Infra).
+Rules:
+
+1. NEVER use float64 for money. Use 'shopspring/decimal' as per ADR-006.
+2. API changes MUST start in .proto files (Contract-First).
+3. Database changes MUST be reflected in schema.sql and queries.sql for sqlc.
+4. Use Go 1.22+ features (like 'slog' for logging).
+5. Follow the 'Adapter Pattern' for Telegram/WhatsApp entry points.
