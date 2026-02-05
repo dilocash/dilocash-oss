@@ -221,6 +221,12 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 - **ADR 030:** [Communication Protocol Selection](docs/adr/0030-communication-protocol-selection.md)
 - **ADR 031:** [Repository and Organization Governance](docs/adr/0031-repository-and-organization-governance.md)
 - **ADR 032:** [Bootstrapped Infrastructure Cost Management](docs/adr/0032-bootstrapped-infrastructure-cost-management.md)
+- **ADR 033:** [Idempotency Strategy for the Financial Ledger](docs/adr/0033-idempotency-strategy-for-the-financial-ledger.md)
+- **ADR 034:** [Global i18n & l10n Strategy (Full-Stack)](docs/adr/0034-global-i18n-l10n-strategy-full-stack.md)
+- **ADR 035:** [Rate Limiting and Resilience](docs/adr/0035-rate-limiting-and-resilience.md)
+- **ADR 036:** [OWASP Top 10 Security and Quality Gate](docs/adr/0036-owasp-top-10-security-and-quality-gate.md)
+- **ADR 037:** [Testing Strategy & E2E Frameworks](docs/adr/0037-testing-strategy-e2e-frameworks.md)
+- **ADR 038:** [gRPC API Versioning Strategy](docs/adr/0038-grpc-api-versioning-strategy.md)
 
 ---
 
