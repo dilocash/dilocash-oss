@@ -7,14 +7,29 @@
 
 ## 1. Context and Problem Statement
 
-We need to ensure the ledger is 100% accurate and the UI is functional.
+To maintain the high reliability expected of a financial ledger, we need a testing strategy that covers everything from low-level logic (unit) to high-level user workflows (E2E) across multiple platforms.
 
 ## 2. Decision Drivers
 
-Implement a testing strategy that ensures the ledger is 100% accurate and the UI is functional.
+- 100% confidence in ledger mathematical accuracy.
+- Prevention of UI regressions during multi-platform releases.
+- Speed and stability of the testing pipeline.
 
 ## 3. Consequences
 
-1. **Backend:** 80% coverage with Unit Tests and Integration Tests (using **Testcontainers-go**).
-2. **Web E2E:** Use **Playwright** for automated browser testing.
-3. **React Native E2E:** Use **Detox** for "gray-box" testing on mobile emulators.
+### The Decision
+
+Implement a layered testing architecture covering Backend, Web, and Mobile.
+
+1. **Backend:** Minimum 80% coverage using Go `testing` for units and **Testcontainers-go** for full database integration tests.
+2. **Web E2E:** Use **Playwright** for high-speed, automated browser testing.
+3. **Mobile E2E:** Use **Detox** for "gray-box" automated testing on real emulators/simulators.
+
+### Implications
+
+- **Positive:** Drastically reduced risk of critical production bugs in the ledger or auth flows.
+- **Positive:** Faster development cycles as manual QA becomes less necessary.
+- **Negative:** Increased CI costs and execution time for full E2E suites.
+- **Negative:** Flakiness in mobile E2E tests (Detox) may require ongoing maintenance.
+
+---
