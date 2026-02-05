@@ -1,6 +1,6 @@
 # ADR-013: Diagram-Driven Contract Generation
 
-- **Status**: Accepted
+- **Status**: Superseded by [ADR-039](./0039-ai-assisted-manual-diagram-maintenance.md)
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
 - **Technical Domain**: Backend
