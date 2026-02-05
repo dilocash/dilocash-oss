@@ -1,0 +1,19 @@
+# Copyright (c) 2026 dilocash
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file.
+
+name: Docs Sync
+on:
+  push:
+    paths:
+      - "docs/diagrams/*.mmd"
+      - "proto/**/*.proto"
+      - "packages/database/*.sql"
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Render Diagrams
+        run: make generate-docs

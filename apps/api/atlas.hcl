@@ -9,7 +9,7 @@ variable "db_url" {
 
 env "local" {
   // Source of the schema
-  src = "file://../packages/database/schema.sql"
+  src = "file://../../packages/database/schema.sql"
 
   // URL of the database to migrate. 
   // This will be read from the DB_URL env var.

@@ -1,0 +1,29 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+
+package dilocash.v1;
+
+option go_package = "github.com/dilocash/dilocash-oss/gen/go/v1;v1";
+
+import "google/protobuf/timestamp.proto";
+
+message IntentRequest {
+  string text = 1;
+  string user_id = 2;
+}
+
+service IntentService {
+  rpc ProcessIntent(IntentRequest) returns (ProcessIntentResponse);
+}
+
+message ProcessIntentResponse {
+  string transaction_id = 1;
+  string amount = 2;
+  string currency = 3;
+  string category = 4;
+  string description = 5;
+  google.protobuf.Timestamp created_at = 6;
+}

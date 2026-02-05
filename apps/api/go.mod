@@ -1,4 +1,4 @@
-module github.com/jalbarran/dilocash-oss
+module github.com/dilocash/dilocash-oss
 
 go 1.22
 

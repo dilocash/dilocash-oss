@@ -13,8 +13,8 @@ import (
 	"syscall"
 	"time"
 
+	db "github.com/dilocash/dilocash-oss/internal/infra/storage/postgres/gen"
 	"github.com/jackc/pgx/v5/pgxpool"
-	db "github.com/jalbarran/dilocash-oss/internal/infra/storage/postgres/gen"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"

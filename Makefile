@@ -22,7 +22,7 @@ generate-code: ## Generate Go/TS code from Proto and SQL
 	@echo "🏗️  Generating API Contracts (Buf)..."
 	$(BUF) generate
 	@echo "🗄️  Generating Database Layer (SQLC)..."
-	$(SQLC) generate -f apps/packages/database/sqlc.yaml
+	$(SQLC) generate -f packages/database/sqlc.yaml
 	@echo "✅ Code generation complete."
 
 sqlc: ## Generate Go models from SQL (sqlc)
@@ -111,7 +111,8 @@ clean: ## Remove generated binaries and code
 	@echo "🧹 Cleaned all generated assets."
 
 tidy: ## Tidy Go modules
-	go mod tidy
+	cd apps/api && go mod tidy
+	cd infra && go mod tidy
 
 # --- Help ---
 

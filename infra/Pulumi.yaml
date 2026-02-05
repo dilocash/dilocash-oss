@@ -1,0 +1,3 @@
+name: dilocash-infra
+runtime: go
+description: Pulumi Infrastructure for Dilocash (AWS)
