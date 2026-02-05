@@ -56,18 +56,18 @@ Follow these steps to get the Dilocash ecosystem running on your machine.
 Ensure you have the following installed:
 
 - **Go** (1.22+)
-- **Node.js** (20+) & **pnpm**
+- **Node.js** (20+) & **pnpm** (`sudo npm install -g pnpm`)
 - **Docker** & **Docker Compose**
-- **Atlas CLI** (`brew install ariga/tap/atlas`)
-- **sqlc** (`brew install sqlc`)
+- **Atlas CLI** (`curl -sSf https://atlasgo.sh | sh`)
+- **sqlc** (`go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest`)
+- **mmdc** (`npm install -g @mermaid-js/mermaid-cli`)
 - **Pulumi** CLI (for cloud deployment)
 
 ### 2. Clone and Install
 
 ```bash
-git clone https://github.com/your-username/dilocash.git
-cd dilocash
-pnpm install
+git clone https://github.com/dilocash/dilocash-oss.git
+cd dilocash-oss
 ```
 
 ### 3. Infrastructure & Database
@@ -92,8 +92,6 @@ make sync-design
 ### 4. Environment Variables
 
 Copy the environment file: `cp .env.example .env` file in `apps/api/` and `apps/web/` and edit its properties according to your environment.
-
-**apps/api/.env:**
 
 ### 5. Running the Apps
 
@@ -227,6 +225,7 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 - **ADR 036:** [OWASP Top 10 Security and Quality Gate](docs/adr/0036-owasp-top-10-security-and-quality-gate.md)
 - **ADR 037:** [Testing Strategy & E2E Frameworks](docs/adr/0037-testing-strategy-e2e-frameworks.md)
 - **ADR 038:** [gRPC API Versioning Strategy](docs/adr/0038-grpc-api-versioning-strategy.md)
+- **ADR 039:** [AI-Assisted Manual Diagram Maintenance](docs/adr/0039-ai-assisted-manual-diagram-maintenance.md)
 
 ---
 
