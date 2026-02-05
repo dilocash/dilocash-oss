@@ -51,7 +51,15 @@ db-down: ## Stop local infrastructure
 
 # --- Quality Control ---
 
-check: lint test ## Run all quality checks
+check: lint test license-check ## Run all quality checks
+
+license-apply: ## Apply license headers to all source files
+	@echo "⚖️  Applying license headers..."
+	@~/go/bin/addlicense -f .license_header -v .
+
+license-check: ## Check if source files are missing license headers
+	@echo "🔍 Checking license headers..."
+	@~/go/bin/addlicense -check .
 
 lint: ## Run linters for Go and Protobuf
 	@echo "Checking project health for $(PROJECT_NAME)..."

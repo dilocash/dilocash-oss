@@ -1,4 +1,6 @@
--- TODO add license header
+-- Copyright (c) 2026 dilocash
+-- Use of this source code is governed by an MIT-style
+-- license that can be found in the LICENSE file.
 
 -- Users Table: Handles the "Consent Gate" and Training Opt-in
 CREATE TABLE IF NOT EXISTS users (
