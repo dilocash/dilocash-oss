@@ -3,48 +3,28 @@
 - **Status**: Accepted
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
-- **Technical Domain**: Frontend
+- **Technical Domain**: General
 
 ## 1. Context and Problem Statement
 
-[Describe the context of the decision...]
+To build a sustainable ecosystem, we need a legal framework that allows for both free community use and proprietary commercial extensions. Clear licensing from day one prevents future legal debt.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Clarity for contributors regarding their rights.
+- Protection of commercial value-adds.
+- Compliance with standard OSS practices.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement a dual-licensing strategy through physical repository separation.
 
-## 4. Decision Outcome
+- **OSS Repo (`dilocash-oss`):** Licensed under the permissive **MIT License**.
+- **Premium Repo:** Governed by a **Proprietary Commercial License**.
+- **Standard:** Every source file must include an SPDX header (e.g., `// SPDX-License-Identifier: MIT`).
 
-**Chosen Option: See bullets below**
-
-Implement a dual-licensing strategy to support the Open Core business model.
-
-- **Action 1:** Apply the **MIT License** to `dilocash-oss`.
-- **Action 2:** Draft a **Proprietary Commercial License** for the future premium repo.
-- **Requirement:** All source files in both repositories must include an SPDX header for clarity.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Transparent legal boundary for users and contributors.
+- **Positive:** MIT license encourages wide adoption of the core engine.
+- **Negative:** Requires legal review of contributions to ensure they are properly licensed.
 
 ---

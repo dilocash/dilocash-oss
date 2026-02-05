@@ -3,52 +3,27 @@
 - **Status**: Accepted
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
-- **Technical Domain**: Infra
+- **Technical Domain**: Backend
 
 ## 1. Context and Problem Statement
 
-Database errors (timeouts, connection loss) can crash the API if not handled gracefully.
+Database-level errors such as connection timeouts or network loss can degrade the API's responsiveness or cause partial state updates if not handled gracefully. We need a standardized way to manage these failures.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Resilience against intermittent infrastructure failures.
+- Prevent resource leaks (orphaned database connections).
+- Ensure the API returns clear results during high-load periods.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Standardize on context-aware repository methods and explicit error wrapping.
 
-## 4. Decision Outcome
+- **Context:** All repository methods must accept a `context.Context` to support cancellation and timeouts.
+- **Responsibility:** The repository layer must wrap database errors to provide domain-level context to the use-cases.
 
-\*\*Chosen Option: All repository methods must accept a `context.Context` to allow for query cancellation and timeouts, ensuring the API remains responsive under load.
-
-### Your Next Step
-
-The "Pipes" are connected. Now we need the "Heartbeat"—the entry point that wires all of this together and starts the server.\*\*
-
-All repository methods must accept a `context.Context` to allow for query cancellation and timeouts, ensuring the API remains responsive under load.
-
-### Your Next Step
-
-The "Pipes" are connected. Now we need the "Heartbeat"—the entry point that wires all of this together and starts the server.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Prevents "hanging" requests from consuming backend resources.
+- **Positive:** Enables much easier debugging of database-related failures via structured logs.
+- **Negative:** Adds a small amount of boilerplate to every database query method.
 
 ---

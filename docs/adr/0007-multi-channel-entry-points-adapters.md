@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Users need to log expenses where they happen—on their wrist, in a chat app, or via the dashboard.
+Users need to log expenses where they happen—on their wrist, in a chat app, or via the dashboard. We need a way to support multiple "Input Adapters" without duplicating parsing logic.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Decouple transport layers from business logic.
+- Support for Telegram, WhatsApp, WearOS, and Web.
+- Unified entry point for the NLU engine.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Decouple the **NLU Engine** from the transport layer using the **Adapter Pattern**.
 
-## 4. Decision Outcome
+- All adapters (Bot, Watch, Web) funnel into a unified `usecase.ProcessIntent(payload)` function.
+- **Telegram/WhatsApp:** Use Webhooks as intake.
+- **WearOS:** Use a lightweight gRPC client.
 
-**Chosen Option: See bullets below**
-
-We will decouple the **NLU Engine** from the HTTP transport layer. We will implement "Input Adapters" for external services.
-
-- **Telegram/WhatsApp:** Use Webhooks to feed the Go backend.
-- **WearOS:** Use a lightweight gRPC or REST client from the Android Watch app.
-- **Internal Service:** All adapters call a unified `usecase.ProcessIntent(payload)` function.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Adding a new entry point (e.g., Slack) requires zero changes to core logic.
+- **Positive:** Consistent parsing behavior across all platforms.
+- **Negative:** Requires careful versioning of the internal Intent payload to avoid breaking adapters.
 
 ---

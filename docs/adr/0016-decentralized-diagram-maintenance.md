@@ -7,44 +7,20 @@
 
 ## 1. Context and Problem Statement
 
-Monorepos can become cluttered if documentation is centralized in a single README. Decoupling diagrams allows for granular PR reviews on architectural changes.
+As a monorepo grows, centralized documentation becomes a bottleneck. We need a way to maintain diagrams close to the code they describe while keeping the root documentation clean.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Granular documentation ownership.
+- Cleaner root README.
+- Ease of reviewing architectural changes in localized PRs.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Adopt a **Decentralized Embedding** approach where diagrams live near their sub-projects but are linked from a central directory.
 
-## 4. Decision Outcome
-
-**Chosen Option: See bullets below**
-
-Adopt a **Decentralized Embedding** approach.
-
-- **Storage:** All diagrams live in `docs/diagrams/`.
-- **Format:** Use `.md` extensions for diagram files to leverage GitHub's native rendering on a per-file basis.
-- **Linking:** The root `README.md` acts as a directory using relative links.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Decoupled documentation reduces merge conflicts on the main README.
+- **Positive:** Encourages developers to update relevant docs during feature work.
+- **Negative:** Slightly harder to get a "one-page" complete system overview.
 
 ---

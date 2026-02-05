@@ -7,45 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Dilocash requires a Web interface (Next.js) and a Mobile interface (Android/iOS via Expo). Maintaining separate repos leads to duplicated logic for financial calculations, validation, and styling.
+Dilocash requires a Web interface (Next.js) and a Mobile interface (Android/iOS via Expo). Maintaining separate repositories leads to duplicated logic for financial calculations, validation, and styling.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Maximize code reuse between Web and Mobile.
+- Ensure type safety across the entire stack.
+- Simplify dependency management and deployment orchestration.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
-
-## 4. Decision Outcome
-
-**Chosen Option: See bullets below**
-
-Use a **Turborepo** monorepo structure with **Solito** for cross-platform navigation.
+Use a **Turborepo** monorepo structure with **Solito** for cross-platform navigation and **Tamagui** for shared UI.
 
 - **apps/web-next**: Next.js App Router for SSR.
 - **apps/mobile-expo**: React Native for the Android/iOS client.
-- **packages/ui**: Shared components using **Tamagui** for "Write Once, Run Everywhere" styling.
+- **packages/ui**: Shared components using "Write Once, Run Everywhere" styling.
 
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Shared business logic (80% code reuse).
-- Unified TypeScript types for the entire stack.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Shared business logic results in ~80% code reuse.
+- **Positive:** Unified TypeScript types across the entire stack.
+- **Negative:** Increased complexity in the initial development environment setup.
 
 ---

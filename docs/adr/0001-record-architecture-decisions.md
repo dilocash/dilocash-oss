@@ -11,37 +11,16 @@ As the project grows, the rationale behind key technical decisions can be lost. 
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Need for a historical record of architectural choices.
+- Alignment among current and future team members.
+- Need to justify technical trade-offs during Peer Reviews.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+We will use Architecture Decision Records (ADRs) stored in the repository as Markdown files in the `docs/adr/` directory.
 
-## 4. Decision Outcome
-
-**Chosen Option: We will use Architecture Decision Records (ADRs) stored in the repository as Markdown files.**
-
-We will use Architecture Decision Records (ADRs) stored in the repository as Markdown files.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Architecture is version-controlled alongside code.
-- Developers must justify major changes via PRs.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Architecture is version-controlled alongside code.
+- **Positive:** Developers must justify major changes via Pull Requests, improving quality.
+- **Negative:** Adds a small amount of overhead to the development process to keep documentation in sync.
 
 ---

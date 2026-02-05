@@ -7,44 +7,23 @@
 
 ## 1. Context and Problem Statement
 
-We need visual documentation that never diverges from the actual implementation. Manual diagramming is a high-maintenance overhead.
+We need visual documentation that never diverges from the actual implementation. Manual diagramming is a high-maintenance overhead that often results in stale documentation.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Maintain 100% accuracy in documentation.
+- Reduce manual overhead for developers.
+- Visual-first understanding of the system architecture.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Use **Protobuf (.proto)** as the single master definition for both code and diagrams.
 
-## 4. Decision Outcome
+- **Doc-Gen:** Generate Mermaid diagrams from `.proto` files using `protoc-gen-mermaid`.
+- **Enforcement:** CI/CD will fail if diagrams are not regenerated following contract changes.
 
-**Chosen Option: See bullets below**
-
-We will use **Protobuf (.proto)** as the master definition.
-
-- **Code-Gen:** Go interfaces and TS types are derived from `.proto`.
-- **Doc-Gen:** Mermaid diagrams are derived from `.proto` via `protoc-gen-mermaid`.
-- **Enforcement:** The CI/CD pipeline will fail if the documentation diagrams are not up-to-date with the latest contract changes.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Zero-maintenance diagrams — they update automatically with code.
+- **Positive:** High confidence for new developers reading the docs.
+- **Negative:** Limited flexibility in the visual layout of automatically generated diagrams.
 
 ---

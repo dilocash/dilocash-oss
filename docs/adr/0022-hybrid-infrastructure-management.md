@@ -7,42 +7,23 @@
 
 ## 1. Context and Problem Statement
 
-Local development must be accessible, but production must be reproducible and automated.
+Local development must be accessible and cost-free, while production infrastructure must be reproducible, automated, and secure. We need a way to manage both without duplicating infrastructure definitions.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Developer experience (Zero-cost local dev).
+- Production reliability and reproducibility.
+- Unified language for both app logic and infrastructure.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Adopt a hybrid approach: **Docker Compose** for local development and **Pulumi (Go SDK)** for cloud infrastructure.
 
-## 4. Decision Outcome
+- **Local:** `docker-compose.yaml` provides a replica of the production stack (Postgres/Redis/API).
+- **Cloud:** Pulumi scripts define the VPC, RDS, and ECS resources in AWS.
 
-**Chosen Option: See bullets below**
-
-- **Development:** Use `docker-compose` as the source of truth for local container orchestration.
-- **Production/Staging:** Use **Pulumi (Go SDK)** for Infrastructure as Code.
-- **Benefit:** Unified language (Go) for both logic and infrastructure; zero cost for local development; high reliability for cloud deployment.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Zero hosting costs during the local development and testing phase.
+- **Positive:** Staff-level reliability in production through Infrastructure as Code (IaC).
+- **Negative:** Requires maintaining two sets of configuration files (Compose and Pulumi).
 
 ---

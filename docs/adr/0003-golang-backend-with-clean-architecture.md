@@ -3,7 +3,7 @@
 - **Status**: Accepted
 - **Date**: 2026-02-03
 - **Authors**: @jalbarran
-- **Technical Domain**: Infra
+- **Technical Domain**: Backend
 
 ## 1. Context and Problem Statement
 
@@ -11,42 +11,21 @@ Fintech applications require high reliability, clear audit trails, and strict da
 
 ## 2. Decision Drivers
 
-- Included in Context
+- High performance and low memory footprint.
+- Testability and separation of business logic from infrastructure.
+- Strong typing and reliability.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement the backend in **Golang** following **Clean Architecture** principles.
 
-## 4. Decision Outcome
+- **Entities**: Pure business models.
+- **Use Cases**: Domain-specific orchestration logic.
+- **Infrastructure**: Implementations for PostgreSQL, OpenAI, etc.
+- **SQLC**: Generate type-safe Go code from pure SQL queries.
 
-**Chosen Option: See bullets below**
-
-Implement the backend in **Golang** using **Clean Architecture** (Uncle Bob).
-
-- **Entities**: Business models (Transaction, Account).
-- **Use Cases**: Orchestration (ProcessVoiceTransaction, GetReport).
-- **Infrastructure**: Implementations of interfaces (PostgreSQL, OpenAI).
-- **SQLC**: We will generate type-safe Go code from pure SQL.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Highly testable (mockable interfaces).
-- Low memory footprint compared to JVM-based alternatives.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Highly testable through mockable interfaces.
+- **Positive:** Low memory footprint compared to JVM-based alternatives.
+- **Negative:** Requires more boilerplate code initially than "all-in-one" frameworks.
 
 ---

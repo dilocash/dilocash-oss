@@ -3,44 +3,27 @@
 - **Status**: Accepted
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
-- **Technical Domain**: Infra
+- **Technical Domain**: General
 
 ## 1. Context and Problem Statement
 
-Need a secure method to manage Open Core and Proprietary codebases.
+To manage the Open Core model effectively, we need a governance structure that protects the commercial identity while enabling public community contributions.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Clear legal boundary between MIT and Proprietary code.
+- Minimize "Blast Radius" of potential security breaches.
+- Professional organization structure for external stakeholders.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Establish a **GitHub Organization** with a strict Public/Private repository split.
 
-## 4. Decision Outcome
+- **Identity:** Transition from a personal account to the `@dilocash-oss` organization.
+- **Isolation:** Infrastructure and Premium repositories remain private; the core engine is public.
 
-**Chosen Option: Establish a GitHub Organization with a Public/Private split. Infrastructure will be isolated in a separate private repository.**
-
-Establish a GitHub Organization with a Public/Private split. Infrastructure will be isolated in a separate private repository.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Clear separation of concerns for security and licensing.
+- **Positive:** Easier management of team permissions and secrets across different repos.
+- **Negative:** Adds a small administrative overhead for repository and member management.
 
 ---

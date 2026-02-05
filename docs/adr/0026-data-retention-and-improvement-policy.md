@@ -7,42 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Improving NLU accuracy requires real-world data, but storing raw audio indefinitely creates a privacy risk.
+Improving Natural Language Understanding (NLU) accuracy requires access to real-world voice data for training and fine-tuning. However, storing raw financial audio indefinitely creates a significant privacy and security risk.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Balanced approach between AI improvement and user privacy.
+- Minimize the impact of potential data breaches by reducing data life.
+- Regulatory compliance regarding data minimization.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Establish a strict 90-day retention and de-identification policy for audio assets.
 
-## 4. Decision Outcome
+- **Retention:** Delete original audio files after **90 days**.
+- **Isolation:** Store transcripts and audio in a separate, de-identified S3 bucket.
+- **Access:** Limit access to scrubbed training sets to "Contributor" roles only.
 
-**Chosen Option: See bullets below**
-
-- **Retention:** Raw audio files used for improvement will be deleted after **90 days**.
-- **Storage:** Audio and Transcripts will be stored in a separate, "de-identified" S3 bucket.
-- **Access:** Only "Contributor" level internal roles can access the scrubbed training sets.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Drastically reduces the privacy risk and legal liability of long-term voice storage.
+- **Positive:** Enables model improvement without permanent data hoarding.
+- **Negative:** Older data is lost for future longitudinal AI training sessions.
 
 ---

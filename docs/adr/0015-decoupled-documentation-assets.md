@@ -7,41 +7,20 @@
 
 ## 1. Context and Problem Statement
 
-Embedding large Mermaid code blocks directly into the README makes the file difficult to maintain and reduces the visibility of architectural changes in Git diffs.
+Embedding large Mermaid code blocks directly into the main `README.md` makes the file difficult to maintain, reduces readability, and clutters Git diffs with visual noise.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Maintain a clean and readable root README.
+- Enable granular version control for architecture artifacts.
+- Support diagram reuse across multiple technical documents.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Decouple Mermaid diagrams into independent `.mmd` files within a dedicated `docs/diagrams/` directory.
 
-## 4. Decision Outcome
-
-**Chosen Option: All Mermaid diagrams will reside as independent `.mmd` files in the `docs/diagrams/` directory.**
-
-All Mermaid diagrams will reside as independent `.mmd` files in the `docs/diagrams/` directory.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- \* **Pros:** Cleaner README; granular version control for architecture; diagrams can be reused in different documents.
-- **Cons:** Requires a link-click to view the diagram on some platforms unless converted to SVG/PNG.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Purer Git history for architectural changes.
+- **Positive:** README remains concise and focused on high-level goals.
+- **Negative:** Requires linking to external files, which might not render natively on all git hosting mirrors.
 
 ---

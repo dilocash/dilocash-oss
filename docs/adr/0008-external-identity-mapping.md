@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Dilocash supports multiple entry points. We need a secure way to map platform-specific IDs to internal User UUIDs.
+Dilocash supports multiple entry points (Telegram, Watch). We need a secure way to map platform-specific IDs (like ChatID) to internal User UUIDs without exposing PII.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Security and privacy (no storage of raw phone numbers).
+- One-time setup for external connectors.
+- Prevention of unauthorized identity takeovers.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement a **Connection Token Handshake** using short-lived PINs.
 
-## 4. Decision Outcome
+- Users generate a 6-digit PIN in the main Web/Mobile app.
+- The external adapter (Bot/Watch) validates this PIN to link the `platform_id` to the `user_id`.
+- Rely exclusively on platform-provided unique IDs (e.g., Telegram ChatID).
 
-**Chosen Option: See bullets below**
-
-We will use a **Connection Token Handshake**.
-
-- Users generate a 6-digit PIN in the authenticated web/mobile app.
-- The external adapter (Bot/Watch) validates this PIN to create a permanent mapping in the `connections` table.
-- Plaintext phone numbers or PII (Personally Identifiable Information) will not be used as primary identifiers; we rely on the unique IDs provided by the platform APIs (e.g., Telegram ChatID).
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** No Plaintext PII as primary identifiers.
+- **Positive:** Secure, user-initiated linking process.
+- **Negative:** One-time friction for the user during the initial setup of a new device or bot.
 
 ---

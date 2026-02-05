@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Financial accessibility is a core tenet of Dilocash. The system must remain affordable to run for the OSS community.
+Financial accessibility is a core tenet of the Dilocash project. The system must remain affordable to host for both the maintainers and OSS community members who wish to self-host.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Minimize monthly recurring infrastructure costs.
+- Support for "Serverless" and "Pay-as-you-go" cloud models.
+- Efficient usage of expensive resources (like AI tokens).
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Prioritize technical choices that minimize operating expenses through efficient resource usage and serverless-first policies.
 
-## 4. Decision Outcome
+- **AI:** Default to `gpt-4o-mini` for the OSS core to reduce costs by ~90%.
+- **Storage:** Use `sqlc` for high-efficiency queries to keep database tier requirements minimal.
+- **Cache:** Enforce strict Redis TTLs (5 mins) to stay within free infrastructure tiers.
 
-**Chosen Option: See bullets below**
-
-Prioritize "Serverless" and "Pay-as-you-go" infrastructure.
-
-- **Storage:** Use `sqlc` to keep queries efficient and DB size small.
-- **AI:** Default to `gpt-4o-mini` for the OSS core to keep costs 90% lower than standard GPT-4.
-- **Handshake:** Redis TTLs must be strictly enforced (5 mins) to keep memory usage in the free tier.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Lower barrier to entry for self-hosters and contributors.
+- **Positive:** Sustainable growth profile for the commercial entity.
+- **Negative:** `gpt-4o-mini` may be slightly less accurate than larger models for complex, multi-intent voice notes.
 
 ---

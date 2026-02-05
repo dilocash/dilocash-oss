@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Capturing voice data and financial records requires explicit user consent to meet global privacy standards (GDPR/LGPD).
+Capturing voice data and financial records requires explicit user consent to meet global privacy standards such as GDPR (Europe) and LGPD (Brazil). We need a system-wide mechanism to ensure no sensitive data is processed without a record of user agreement.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Legal compliance with global privacy regulations.
+- User trust and transparency regarding AI data usage.
+- Blocking enforcement across all entry points (Web, Mobile, Bots).
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement a blocking "Consent Gate" enforced at the application layer.
 
-## 4. Decision Outcome
+- **Database:** Track `terms_accepted_at` in the `users` table.
+- **Enforcement:** The `IntentService` logic must reject requests from users without a valid consent timestamp.
+- **UI:** Integrate an explicit OpenAI/AI disclosure during the onboarding "Consent Screen."
 
-**Chosen Option: See bullets below**
-
-Implement a blocking "Consent Gate" across all entry points.
-
-- **Database:** Add a `terms_accepted_at` timestamp to the `users` table.
-- **Logic:** The `IntentService` must reject requests from users where `terms_accepted_at` is NULL.
-- **UI:** Display a summary of AI data usage (OpenAI disclosure) directly on the consent screen.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Guarantees legal compliance for voice data handling.
+- **Positive:** Builds user confidence through clear data-handling disclosures.
+- **Negative:** Adds a mandatory step to the user onboarding flow, slightly increasing friction.
 
 ---

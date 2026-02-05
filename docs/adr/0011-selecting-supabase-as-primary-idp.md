@@ -1,60 +1,29 @@
 # ADR-011: Selecting Supabase as Primary IdP
 
 - **Status**: Accepted
-- **Context:** We need a scalable, OIDC-compliant provider to handle social logins (Google/Facebook) and secure session management.
-- **Decision:** Use **Supabase Auth**.
-- **Mechanism:** \* The **Frontend** (Next.js/Expo) uses the Supabase SDK to authenticate.
-- The **Go Backend** acts as a stateless "Resource Server" that validates the JWT signature using the Supabase `JWT_SECRET`.
-- **Identity Mapping:** The `sub` claim in the JWT is used as the `id` in our `users` table.
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
 - **Technical Domain**: Backend
 
 ## 1. Context and Problem Statement
 
-We need a scalable, OIDC-compliant provider to handle social logins (Google/Facebook) and secure session management.
-
-- **Decision:** Use **Supabase Auth**.
-- **Mechanism:** \* The **Frontend** (Next.js/Expo) uses the Supabase SDK to authenticate.
-- The **Go Backend** acts as a stateless "Resource Server" that validates the JWT signature using the Supabase `JWT_SECRET`.
-- **Identity Mapping:** The `sub` claim in the JWT is used as the `id` in our `users` table.
+We need a specific, scalable, and OIDC-compliant provider to handle social logins and secure session management for the Dilocash ecosystem.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Cost-effective (free tier for the OSS community).
+- Ease of integration with Next.js and Go.
+- Native support for multiple social providers out-of-the-box.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Select **Supabase Auth** as the primary Identity Provider for Dilocash.
 
-## 4. Decision Outcome
+- **Mechanism:** The **Frontend** uses Supabase SDK; the **Go Backend** validates JWT signatures using the shared secret.
+- **Mapping:** Use the Supabase `sub` claim for our internal identification.
 
-**Chosen Option: See bullets below**
-
-Use **Supabase Auth**.
-
-- **Mechanism:** \* The **Frontend** (Next.js/Expo) uses the Supabase SDK to authenticate.
-- The **Go Backend** acts as a stateless "Resource Server" that validates the JWT signature using the Supabase `JWT_SECRET`.
-- **Identity Mapping:** The `sub` claim in the JWT is used as the `id` in our `users` table.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Rapid implementation of Google/Facebook login.
+- **Positive:** Leverages Supabase's managed infrastructure and security patches.
+- **Negative:** Tighter coupling with the Supabase ecosystem for the core authentication layer.
 
 ---

@@ -3,49 +3,28 @@
 - **Status**: Accepted
 - **Date**: 2026-02-03
 - **Authors**: @jalbarran
-- **Technical Domain**: Backend
+- **Technical Domain**: AI
 
 ## 1. Context and Problem Statement
 
-The primary differentiator for **Dilocash** is the "Talk to Track" feature. Manual data entry is the main friction point for financial tracking.
+The primary differentiator for **Dilocash** is the "Talk to Track" feature. Manual data entry is the main friction point for financial tracking, and we need a reliable way to convert natural speech into structured financial records.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Accuracy in intent extraction.
+- Speed of transcription and parsing.
+- Prevention of "AI Hallucinations" in financial data.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement an asynchronous **Voice-to-Ledger** pipeline using OpenAI **Whisper** and **GPT-4o-mini**.
 
-## 4. Decision Outcome
+1. **Whisper**: Transcribe audio to text.
+2. **GPT-4o-mini**: Use "Structured Outputs" to map text to the Dilocash schema.
+3. **Smart Confirmation**: The UI must show interpreted data for user approval before persistence.
 
-**Chosen Option: See bullets below**
-
-Implement an asynchronous **Voice-to-Ledger** pipeline:
-
-1. **Whisper (OpenAI)**: Transcribe audio to text.
-2. **GPT-4o-mini**: Use "Structured Outputs" to map text to the Dilocash Transaction schema.
-3. **Smart Confirmation**: The UI must show the interpreted data for user approval before persistence to avoid AI hallucinations.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Frictionless UX for "on-the-go" logging.
-- Requires robust error handling for failed NLU mapping.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Frictionless UX for "on-the-go" logging.
+- **Negative:** Introduces external API dependency and associated costs.
+- **Negative:** Requires robust error handling for failed NLU mapping.
 
 ---

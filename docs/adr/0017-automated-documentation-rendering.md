@@ -7,41 +7,21 @@
 
 ## 1. Context and Problem Statement
 
-Manual documentation updates are often neglected, leading to "Doc Rot." We need a friction-less way to maintain visual architectural fidelity.
+Manual documentation updates are often neglected, leading to "Documentation Rot" where architectural diagrams diverge from the actual code. We need a frictionless way to maintain visual architectural fidelity.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Maintain 100% accuracy in visual documentation.
+- Zero manual effort for developers during diagram updates.
+- Support for version-controlled, text-based diagram sources.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Implement a **GitHub Action** to automatically render Mermaid `.mmd` files into `.svg` images upon every push to the `main` branch.
 
-## 4. Decision Outcome
-
-**Chosen Option: Implement a **GitHub Action** to render Mermaid `.mmd` files into `.svg` images.**
-
-Implement a **GitHub Action** to render Mermaid `.mmd` files into `.svg` images.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- **Pros:** README always reflects the current `main` branch state; Zero manual overhead for developers.
-- **Cons:** Slightly longer CI times (usually < 30s); repository size grows slightly due to binary/image assets.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** README and documentation always reflect the current state of the architecture.
+- **Positive:** Zero manual overhead for developers; diagrams are updated by simply editing text.
+- **Negative:** Slightly longer CI times (usually < 30s).
+- **Negative:** Repository size grows slightly over time due to storage of image assets.
 
 ---

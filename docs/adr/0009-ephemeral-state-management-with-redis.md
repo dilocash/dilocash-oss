@@ -1,63 +1,26 @@
 # ADR-009: Ephemeral State Management with Redis
 
 - **Status**: Accepted
-- **Context:** Identity linking and rate limiting require high-speed, temporary storage.
-- **Decision:** Introduce **Redis** as the "Sidecar" store.
-- **Handshake:** Generate 6-digit PINs stored in Redis with a 5-minute TTL.
-- **Rate Limiting:** Track AI usage per user to prevent API cost spikes.
-
-- **Consequences:** Reduces load on PostgreSQL and ensures short-lived tokens automatically expire.
 - **Date**: 2026-02-04
 - **Authors**: @jalbarran
 - **Technical Domain**: Infra
 
 ## 1. Context and Problem Statement
 
-Identity linking and rate limiting require high-speed, temporary storage.
-
-- **Decision:** Introduce **Redis** as the "Sidecar" store.
-- **Handshake:** Generate 6-digit PINs stored in Redis with a 5-minute TTL.
-- **Rate Limiting:** Track AI usage per user to prevent API cost spikes.
-
-- **Consequences:** Reduces load on PostgreSQL and ensures short-lived tokens automatically expire.
+For multi-channel handshakes (like the 6-digit PIN for Telegram linking), we need a fast, ephemeral storage solution. Storing these short-lived, high-frequency tokens in PostgreSQL would create unnecessary disk I/O and bloat the primary database.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Performance and low latency for token validation.
+- Automatic expiration of temporary data.
+- Reduction of load and bloat in the primary relational database.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Use **Redis** as a secondary, ephemeral data store for short-lived state.
 
-## 4. Decision Outcome
-
-**Chosen Option: See bullets below**
-
-Introduce **Redis** as the "Sidecar" store.
-
-- **Handshake:** Generate 6-digit PINs stored in Redis with a 5-minute TTL.
-- **Rate Limiting:** Track AI usage per user to prevent API cost spikes.
-
-- **Consequences:** Reduces load on PostgreSQL and ensures short-lived tokens automatically expire.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Reduces load on PostgreSQL and ensures short-lived tokens automatically expire.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Significant reduction in load on PostgreSQL.
+- **Positive:** Native TTL support ensures security tokens Automatically expire after a few minutes.
+- **Negative:** Adds a new architectural dependency that must be managed in Docker and production environments.
 
 ---

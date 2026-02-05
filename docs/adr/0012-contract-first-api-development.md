@@ -7,43 +7,23 @@
 
 ## 1. Context and Problem Statement
 
-We need a way to ensure that the Go backend and the multi-platform frontends (Web, Mobile, Telegram) stay in sync regarding API method signatures.
+We need a way to ensure that the Go backend and the multi-platform frontends (Web, Mobile, Telegram) stay in sync regarding API method signatures. Ad-hoc JSON changes often lead to runtime errors on disparate platforms.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Prevent breaking changes between backend and frontend.
+- Enable automatic code generation for multiple languages.
+- Minimize documentation lag by making the contract the documentation.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Use **Protocol Buffers (Protobuf)** and **Buf** as the source of truth for all API contracts.
 
-## 4. Decision Outcome
+- **Code Gen:** Use `buf generate` to produce Go interfaces and TypeScript definitions.
+- **Process:** Contracts must be updated and generated before implementation begins.
 
-**Chosen Option: See bullets below**
-
-Use **Protocol Buffers (Protobuf)** and **Buf** as the source of truth for all API and Internal Service interfaces.
-
-- **Diagrams:** Mermaid.js will be used in documentation to visualize these contracts.
-- **Code Gen:** `buf generate` will be integrated into the Makefile to produce Go interfaces and TypeScript definitions.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Cross-language type safety is guaranteed at compile time.
+- **Positive:** Reduced payload size due to binary serialization.
+- **Negative:** Slightly higher initial setup and learning curve for contributors unfamiliar with Protobuf.
 
 ---

@@ -227,7 +227,3 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 ## 📄 License
 
 Dilocash (Core) is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).
-
----
-
-TODO configure files licenses auto-injection from vscode

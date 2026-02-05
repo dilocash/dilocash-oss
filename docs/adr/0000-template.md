@@ -4,7 +4,7 @@ I recommend saving this as `docs/adr/0000-template.md`.
 
 ---
 
-# ADR-XXXX]: [Short, Descriptive Title]
+# ADR-XXXX: [Short, Descriptive Title]
 
 - **Status**: [Proposed | Accepted | Deprecated | Superseded by ADR-XXXX]
 - **Date**: YYYY-MM-DD
@@ -21,45 +21,9 @@ I recommend saving this as `docs/adr/0000-template.md`.
 - [Driver 2: e.g., The solution must be compatible with the Open Core model.]
 - [Driver 3: e.g., Minimize monthly infrastructure costs.]
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: [Brief description]
-- **Option 2**: [Brief description]
-- **Option 3**: [Brief description]
-
-## 4. Decision Outcome
-
-**Chosen Option: [Option X]**
-
-[Explain why this option was chosen. How does it address the drivers? Why were the other options rejected?]
-
-### Technical Implementation Details
-
-[Optional: Provide a high-level overview of the implementation, such as a snippet of Go interfaces or a diagram of the data flow.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- [Pro 1: e.g., Improves code reusability across Web and Mobile.]
-- [Pro 2: e.g., Simplifies the testing of business logic.]
-
-### Negative (Cons/Risks)
-
-- [Con 1: e.g., Adds complexity to the CI/CD pipeline.]
-- [Con 2: e.g., Requires a specific Go version (1.22+).]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-- **Good**: [Benefit]
-- **Bad**: [Drawback]
-
-### [Option 2]
-
-- **Good**: [Benefit]
-- **Bad**: [Drawback]
+- [Describe the consequences of the decision. Include any trade-offs or implications that should be considered.]
 
 ---
 

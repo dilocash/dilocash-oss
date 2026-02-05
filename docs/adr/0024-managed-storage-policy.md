@@ -7,40 +7,22 @@
 
 ## 1. Context and Problem Statement
 
-As an OSS project, users need a place to store high-volume audio data that is cheaper than a relational database.
+Dilocash processes high volumes of audio data and NLU activity logs. Storing these binary and unstructured assets in a relational database like PostgreSQL would be extremely expensive and degrade database performance.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Minimize storage costs for high-volume logs and audio.
+- Ensure high availability and scalability of asset storage.
+- Easy integration with CDNs for future web/mobile usage.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Use **Amazon S3** (or S3-compatible storage like MinIO for local dev) for raw audio files and NLU logs.
 
-## 4. Decision Outcome
+- **Implementation:** Managed via Pulumi Go SDK with mandatory **Versioning** and **Public Access Blocking** enabled by default.
 
-**Chosen Option: Use **Amazon S3** (or S3-compatible storage) for raw audio files and NLU logs.**
-
-Use **Amazon S3** (or S3-compatible storage) for raw audio files and NLU logs.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Keeps the primary PostgreSQL database lean and performant.
+- **Positive:** Drastically lower costs for storing multi-terabyte audio datasets.
+- **Negative:** Adds a new external infrastructure dependency and secret management requirement.
 
 ---

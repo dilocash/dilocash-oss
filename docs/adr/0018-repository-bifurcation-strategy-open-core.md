@@ -7,44 +7,23 @@
 
 ## 1. Context and Problem Statement
 
-To support a sustainable business model, the project requires a clear separation between the community-driven core and proprietary value-adds.
+To support a sustainable business model while fostering a community, Dilocash requires a clear strategy for separating community-driven "Core" code from proprietary "Premium" value-adds.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Sustain project development through monetization.
+- Foster community contributions through a high-quality OSS core.
+- Prevent accidental leakage of proprietary logic into public repositories.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Bifurcate the codebase into `dilocash-oss` (Public) and `dilocash-premium` (Private), using Go interfaces to permit "pluggable" premium modules.
 
-## 4. Decision Outcome
+- **OSS Scope:** NLU engine, basic adapters, and core ledger.
+- **Premium Scope:** Advanced analytics, managed bank sync, and multi-user household management.
 
-**Chosen Option: See bullets below**
-
-Rename the primary repository to `dilocash-oss`.
-
-- **Scope of OSS:** NLU engine, basic adapters (Telegram), and core ledger.
-- **Scope of Premium:** Advanced analytics, multi-user household management, and enterprise bank sync (managed in a private repository).
-- **Interface Strategy:** Use Go interfaces in `oss` to allow "Pluggable" premium modules.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Enables a sustainable Open Core business model.
+- **Positive:** Encourages external contributions to the foundational engine.
+- **Negative:** Requires more complex repository management (submodules or separate packages).
 
 ---

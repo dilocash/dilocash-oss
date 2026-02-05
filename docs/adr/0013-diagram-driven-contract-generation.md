@@ -7,44 +7,23 @@
 
 ## 1. Context and Problem Statement
 
-We want to minimize the gap between architectural diagrams and implementation. Manual synchronization between Mermaid and Protobuf is prone to human error.
+We want to minimize the gap between architectural diagrams and implementation. Manual synchronization between Mermaid diagrams and Protobuf definitions is prone to human error and "documentation rot."
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Synchronization between architecture visuals and code.
+- "Documentation as Code" (DaC) philosophy.
+- Automation of repetitive boilerplate tasks.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Adopt a **Diagram-Driven** approach where Mermaid Class Diagrams can generate or validate Protobuf contracts.
 
-## 4. Decision Outcome
+- **Automation:** Use scripts to parse Mermaid definitions during the `make generate` phase.
+- **Enforcement:** The build will fail if documentation diagrams diverge from the service naming conventions.
 
-**Chosen Option: See bullets below**
-
-We will adopt a **Diagram-as-Code (DaC)** approach.
-
-- **Master Source:** Mermaid Class Diagrams in the `/docs` folder.
-- **Automation:** A custom script (e.g., `scripts/mermaid_to_proto.py`) will parse these diagrams during the `make generate` phase to create the `.proto` definitions.
-- **Validation:** If the Mermaid diagram doesn't follow the "Service" naming convention, the build will fail.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Architectural diagrams are always an accurate reflection of the code.
+- **Negative:** Adds complexity to the build toolchain.
+- **Negative:** Requires strict adherence to specific Mermaid syntax to enable parsing.
 
 ---

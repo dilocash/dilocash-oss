@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-Financial data cannot tolerate rounding errors. Furthermore, the system must prevent duplicate entries from network retries.
+Financial data cannot tolerate rounding errors or duplicates from network retries. We need a robust storage strategy to ensure 100% accuracy and idempotency.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Zero tolerance for rounding errors.
+- System reliability in poor network conditions (e.g., LatAm mobile).
+- Reproducible and version-controlled schema management.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Use PostgreSQL `NUMERIC` types, gRPC Idempotency keys, and **Atlas** for migrations.
 
-## 4. Decision Outcome
+- **Precision**: PostgreSQL `NUMERIC` + Go `shopspring/decimal`.
+- **Idempotency**: Require `X-Idempotency-Key` for all transaction creation.
+- **Migrations**: Declarative schema management via **Atlas**.
 
-**Chosen Option: See bullets below**
-
-1. **Precision**: Use PostgreSQL `NUMERIC` for all currency amounts. In Go, use `shopspring/decimal`.
-2. **Idempotency**: All transaction creation requests must include an `X-Idempotency-Key` header.
-3. **Migrations**: Use **Atlas** for declarative database schema management.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- 100% mathematical accuracy.
-
-* Safe retries in poor network conditions (common in LatAm mobile use).
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** 100% mathematical accuracy.
+- **Positive:** Safe retries in poor network conditions without double-charging.
+- **Negative:** Slightly higher development overhead for handling decimal types compared to floats.
 
 ---

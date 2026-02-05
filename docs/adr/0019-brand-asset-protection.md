@@ -7,44 +7,24 @@
 
 ## 1. Context and Problem Statement
 
-As an Open Core project, the "Dilocash" name is a primary asset. Allowing third parties to claim the name on social media or domains creates significant business risk.
+As an Open Core project, the "Dilocash" brand name and its associated digital handles are primary assets. Allowing third parties to claim these identifiers on chat platforms or social media creates significant brand confusion and business risk.
 
 ## 2. Decision Drivers
 
-- Included in Context
+- Protect user trust by preventing "copycat" bots.
+- Ensure consistent brand identity across all adapters.
+- Establish a clear corporate presence for the commercial entity.
 
-## 3. Considered Options
+## 3. Consequences
 
-- **Option 1**: Proposed implementation.
+Execute a preemptive "land grab" strategy for all `dilocash` digital identifiers across primary platforms.
 
-## 4. Decision Outcome
+- **Domains:** Secure `dilocash.com` for the commercial portal.
+- **Handles:** Register `@dilocash` on Telegram, WhatsApp Business, and major social networks.
+- **Organization:** Move the repository to the `dilocash-oss` GitHub organization.
 
-**Chosen Option: See bullets below**
-
-Execute a "land grab" strategy for all `dilocash` digital identifiers.
-
-- **Primary:** `dilocash.com` for the commercial entity.
-- **Secondary:** `@dilocash` handles for all primary social adapters (Telegram/WhatsApp business profiles).
-- **Organization:** Transition the GitHub repo from a personal account to the `dilocash-oss` organization.
-
-### Technical Implementation Details
-
-[Refer to codebase or diagrams for implementation specifics.]
-
-## 5. Consequences
-
-### Positive (Pros)
-
-- Documentation and team alignment.
-
-### Negative (Cons/Risks)
-
-[TBD]
-
-## 6. Pros and Cons of Options
-
-### [Option 1]
-
-[TBD]
+- **Positive:** Prevents brand hijacking and phishing attempts.
+- **Positive:** Provides a professional, unified entry point for all users.
+- **Negative:** Requires ongoing management of multiple social and domain accounts.
 
 ---
