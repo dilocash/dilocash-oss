@@ -76,10 +76,12 @@ test: ## Run Go tests
 # --- Database Migrations ---
 
 migrate-apply: ## Apply pending migrations to local DB
-	cd apps/api && atlas migrate apply --env local
+	@echo "🚀 Applying migrations..."
+	cd apps/api && set -a && . ./.env && set +a && atlas migrate apply --env local
 
 migrate-new: ## Generate a new migration file (usage: make migrate-new name=add_users)
-	cd apps/api && atlas migrate diff $(name) --env local
+	@echo "📝 Generating new migration: $(name)..."
+	cd apps/api && set -a && . ./.env && set +a && atlas migrate diff $(name) --env local
 
 # --- Integrations & Debugging ---
 

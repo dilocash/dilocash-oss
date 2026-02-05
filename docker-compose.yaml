@@ -9,9 +9,9 @@ services:
     image: postgres:16-alpine
     container_name: dilocash-db
     environment:
-      POSTGRES_USER: dilocash
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: dilocash
+      POSTGRES_USER: dilocash_user
+      POSTGRES_PASSWORD: local_secret_pass
+      POSTGRES_DB: dilocash_core
     ports:
       - "5432:5432"
     volumes:
