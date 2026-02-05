@@ -1,59 +1,36 @@
+# Copyright (c) 2026 dilocash
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file.
+
 version: "3.8"
 
 services:
-  # --- Database (PostgreSQL) ---
-  # ADR-006: Persistence and High Precision Ledger
-  db:
+  postgres:
     image: postgres:16-alpine
-    container_name: dilocash_db
-    restart: always
+    container_name: dilocash-db
     environment:
-      - POSTGRES_USER=dilocash_user
-      - POSTGRES_PASSWORD=local_secret_pass
-      - POSTGRES_DB=dilocash_core
+      POSTGRES_USER: dilocash
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: dilocash
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      # Automatically run schema on startup (if it's the first time)
-      - ./apps/api/db/schema.sql:/docker-entrypoint-initdb.d/init.sql:ro
-    networks:
-      - dilocash_network
 
-  # --- Cache & Identity Management (Redis) ---
-  # ADR-009: Ephemeral linking tokens & AI caching
   redis:
     image: redis:7-alpine
-    container_name: dilocash_cache
-    restart: always
+    container_name: dilocash-cache
     ports:
       - "6379:6379"
-    command: ["redis-server", "--appendonly", "yes"] # Persistence enabled
-    volumes:
-      - redis_data:/data
-    networks:
-      - dilocash_network
 
-  # --- Database UI (pgAdmin) ---
-  # Useful for inspecting the ledger during development
   pgadmin:
     image: dpage/pgadmin4
-    container_name: dilocash_pgadmin
-    restart: always
+    container_name: dilocash-pgadmin
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@dilocash.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
+      PGADMIN_DEFAULT_EMAIL: admin@dilocash.com
+      PGADMIN_DEFAULT_PASSWORD: admin
     ports:
-      - "8080:80"
-    depends_on:
-      - db
-    networks:
-      - dilocash_network
-
-networks:
-  dilocash_network:
-    driver: bridge
+      - "5050:80"
 
 volumes:
   postgres_data:
-  redis_data:

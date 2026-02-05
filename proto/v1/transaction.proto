@@ -1,24 +1,7 @@
-syntax = "proto3";
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
 
-package dilocash.v1;
-
-option go_package = "github.com/your-username/dilocash-oss/api/proto/v1";
-
-import "google/protobuf/timestamp.go";
-
-service TransactionService {
-  // Processes a raw string or voice transcript into a structured ledger entry
-  rpc ProcessIntent(ProcessIntentRequest) returns (ProcessIntentResponse);
-  
-  // Retrieves the user's recent history
-  rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
-}
-
-message ProcessIntentRequest {
-  string raw_text = 1;      // e.g., "Coffee 5 USD"
-  string user_id = 2;
-  string source = 3;       // e.g., "telegram", "whatsapp", "ios"
-}
 
 message ProcessIntentResponse {
   string transaction_id = 1;

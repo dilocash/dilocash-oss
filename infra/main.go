@@ -3,3 +3,4 @@
 // license that can be found in the LICENSE file.
 
 // TODO: Implement Pulumi IaC for Dilocash
+package main

@@ -22,8 +22,12 @@ generate-code: ## Generate Go/TS code from Proto and SQL
 	@echo "🏗️  Generating API Contracts (Buf)..."
 	$(BUF) generate
 	@echo "🗄️  Generating Database Layer (SQLC)..."
-	$(SQLC) generate
+	$(SQLC) generate -f apps/packages/database/sqlc.yaml
 	@echo "✅ Code generation complete."
+
+sqlc: ## Generate Go models from SQL (sqlc)
+	@echo "🗄️  Generating Database Layer (SQLC)..."
+	$(SQLC) generate -f apps/packages/database/sqlc.yaml
 
 generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 	@echo "🎨 Rendering Mermaid diagrams to SVG..."
@@ -59,7 +63,7 @@ license-apply: ## Apply license headers to all source files
 
 license-check: ## Check if source files are missing license headers
 	@echo "🔍 Checking license headers..."
-	@~/go/bin/addlicense -check .
+	@~/go/bin/addlicense -f .license_header -check .
 
 lint: ## Run linters for Go and Protobuf
 	@echo "Checking project health for $(PROJECT_NAME)..."

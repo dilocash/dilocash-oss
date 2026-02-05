@@ -1,0 +1,29 @@
+# Copyright (c) 2026 dilocash
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file.
+
+version: "2"
+sql:
+  - schema: "schema.sql"
+    queries: "queries.sql"
+    engine: "postgresql"
+    gen:
+      go:
+        package: "db"
+        out: "../../api/internal/infra/storage/postgres/gen"
+        sql_package: "pgx/v5"
+        emit_json_tags: true
+        emit_prepared_queries: false
+        emit_interface: true
+        emit_exact_table_names: false
+        overrides:
+          - db_type: "uuid"
+            go_type: "github.com/google/uuid.UUID"
+          - column: "transactions.amount"
+            go_type: "github.com/shopspring/decimal.Decimal"
+          - column: "transactions.created_at"
+            go_type: "time.Time"
+          - column: "users.created_at"
+            go_type: "time.Time"
+          - column: "users.accepted_terms_at"
+            go_type: "time.Time"

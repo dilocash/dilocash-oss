@@ -5,14 +5,16 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/jackc/pgx/v5/pgxpool"
+	db "github.com/jalbarran/dilocash-oss/internal/infra/storage/postgres/gen"
 	"github.com/joho/godotenv"
-	"github.com/your-username/dilocash-oss/apps/api/internal/infra/storage/postgres"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
 )
@@ -23,21 +25,25 @@ func main() {
 		log.Println("No .env file found, relying on system env")
 	}
 
-	// 2. Initialize Database Connection
+	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	dbURL := os.Getenv("DB_URL")
 	if dbURL == "" {
 		log.Fatal("DB_URL environment variable is required")
 	}
 
-	db, err := postgres.NewConnection(dbURL)
+	config, err := pgxpool.ParseConfig(dbURL)
+	if err != nil {
+		log.Fatalf("Failed to parse database URL: %v", err)
+	}
+
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
-	defer db.Close()
+	defer pool.Close()
 
-	// 3. Initialize Repositories
-	// We inject the DB connection into our repo implementation
-	_ = postgres.NewTransactionRepository(db)
+	// 3. Initialize SQLC Querier
+	_ = db.New(pool)
 	// (Note: In future steps, we'll inject this into our Service/Use-Case layer)
 
 	// 4. Setup gRPC Server
@@ -53,7 +59,7 @@ func main() {
 
 	grpcServer := grpc.NewServer()
 
-	// Enable Reflection for easier debugging (e.g., using Postman or gRPCui)
+	// Enable Reflection for easier debugging
 	reflection.Register(grpcServer)
 
 	// 5. Graceful Shutdown Handling
