@@ -1,0 +1,11 @@
+{
+  "name": "@dilocash/api",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "go run cmd/main.go",
+    "build": "go build -o bin/api cmd/main.go",
+    "test": "go test ./...",
+    "lint": "go vet ./..."
+  }
+}
