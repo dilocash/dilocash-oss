@@ -11,6 +11,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	db "github.com/jalbarran/dilocash-oss/internal/infra/storage/postgres/gen"
@@ -76,6 +77,22 @@ func main() {
 	<-quit
 
 	log.Println("Shutting down gRPC server...")
-	grpcServer.GracefulStop()
+
+	// Create a context that will timeout after 30 seconds
+	// to ensure the process eventually exits if draining hangs.
+	stopped := make(chan struct{})
+	go func() {
+		grpcServer.GracefulStop()
+		close(stopped)
+	}()
+
+	select {
+	case <-stopped:
+		log.Println("Drained all connections successfully.")
+	case <-time.After(30 * time.Second):
+		log.Println("Shutdown timed out, forcing stop...")
+		grpcServer.Stop()
+	}
+
 	log.Println("Server stopped.")
 }
