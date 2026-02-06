@@ -57,12 +57,12 @@ func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	return domainUser
 }
 func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.ProcessIntentResponse {
-	var transportProcessIntentResponse v1.ProcessIntentResponse
-	transportProcessIntentResponse.TransactionId = mappers.UUIDToString(source.ID)
-	transportProcessIntentResponse.Amount = mappers.DecimalToString(source.Amount)
-	transportProcessIntentResponse.Currency = source.Currency
-	transportProcessIntentResponse.Category = source.Category
-	transportProcessIntentResponse.Description = source.Description
-	transportProcessIntentResponse.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
-	return &transportProcessIntentResponse
+	var v1ProcessIntentResponse v1.ProcessIntentResponse
+	v1ProcessIntentResponse.TransactionId = mappers.UUIDToString(source.ID)
+	v1ProcessIntentResponse.Amount = mappers.DecimalToString(source.Amount)
+	v1ProcessIntentResponse.Currency = source.Currency
+	v1ProcessIntentResponse.Category = source.Category
+	v1ProcessIntentResponse.Description = source.Description
+	v1ProcessIntentResponse.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
+	return &v1ProcessIntentResponse
 }

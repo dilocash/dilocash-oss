@@ -7,7 +7,7 @@ package mappers
 import (
 	database "github.com/dilocash/dilocash-oss/internal/database/postgres"
 	"github.com/dilocash/dilocash-oss/internal/domain"
-	"github.com/dilocash/dilocash-oss/internal/transport/v1"
+	transport "github.com/dilocash/dilocash-oss/internal/transport/v1"
 )
 
 // goverter:converter

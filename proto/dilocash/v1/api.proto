@@ -6,16 +6,16 @@ syntax = "proto3";
 
 package dilocash.v1;
 
-option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/transport;transport";
+option go_package = "github.com/dilocash/dilocash-oss/internal/transport/v1;v1";
 
 import "google/protobuf/timestamp.proto";
 
 service IntentService {
-  rpc ProcessIntent(IntentRequest) returns (ProcessIntentResponse);
+  rpc ProcessIntent(ProcessIntentRequest) returns (ProcessIntentResponse);
   rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
 }
 
-message IntentRequest {
+message ProcessIntentRequest {
   string text = 1;
   string user_id = 2;
 }

@@ -158,7 +158,7 @@ All entry points funnel into the `IntentService`:
 │   ├── web/             # Next.js Dashboard
 │   └── mobile/          # Expo (React Native)
 ├── proto/               # THE SOURCE OF TRUTH (ADR-012, 014)
-│   ├── v1/
+│   ├── dilocash/v1/
 │   │   └── api.proto    # Consolidated API Contract
 │   └── buf.yaml         # Buf configuration (ADR-040)
 ├── packages/
