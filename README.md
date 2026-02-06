@@ -62,6 +62,8 @@ Ensure you have the following installed:
 - **sqlc** (`go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest`)
 - **goverter** (`go install github.com/jmattheis/goverter/cmd/goverter@latest`)
 - **Buf CLI** (`brew install bufbuild/buf/buf` or see [buf.build](https://buf.build/docs/installation))
+- **protoc-gen-go** (`go install google.golang.org/protobuf/cmd/protoc-gen-go@latest`)
+- **protoc-gen-go-grpc** (`go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@latest`)
 - **mmdc** (`npm install -g @mermaid-js/mermaid-cli`)
 - **Pulumi** CLI (for cloud deployment)
 
