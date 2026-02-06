@@ -8,6 +8,7 @@ DOCS_DIR := ./docs/diagrams
 # Tools
 BUF := buf
 SQLC := sqlc
+GOVERTER := goverter
 MMDC := mmdc # Mermaid CLI (requires: npm install -g @mermaid-js/mermaid-cli)
 
 .PHONY: all help dev build generate generate-code generate-docs db-up db-down check lint test clean tidy adr jwt-decode
@@ -18,16 +19,22 @@ all: generate check
 
 generate: generate-code generate-docs ## Run all code and documentation generation
 
-generate-code: ## Generate Go/TS code from Proto and SQL
+generate-code: ## Generate Go/TS code from Proto, SQL and Mappers
 	@echo "🏗️  Generating API Contracts (Buf)..."
-	$(BUF) generate
+	$(BUF) generate proto
 	@echo "🗄️  Generating Database Layer (SQLC)..."
 	$(SQLC) generate -f packages/database/sqlc.yaml
+	@echo "🔄 Generating Model Mappers (Goverter)..."
+	cd apps/api && $(GOVERTER) gen ./internal/mappers
 	@echo "✅ Code generation complete."
 
 sqlc: ## Generate Go models from SQL (sqlc)
 	@echo "🗄️  Generating Database Layer (SQLC)..."
-	$(SQLC) generate -f apps/packages/database/sqlc.yaml
+	$(SQLC) generate -f packages/database/sqlc.yaml
+
+mappers: ## Generate type-safe model mappers (goverter)
+	@echo "🔄 Generating Model Mappers (Goverter)..."
+	cd apps/api && $(GOVERTER) gen ./internal/mappers
 
 generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 	@echo "🎨 Rendering Mermaid diagrams to SVG..."

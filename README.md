@@ -85,12 +85,11 @@ make db-up
 # Apply migrations to the local database
 make migrate-apply
 
-# Generate Go models from SQL
-make sqlc
+# Generate Go models, API contracts, and model mappers
+make generate-code
 
-# Generate Go/TS interfaces and refresh SVG diagrams
-make sync-design
-
+# Refresh SVG diagrams (requires mmdc)
+make generate-docs
 ```
 
 ### 4. Environment Variables
@@ -143,44 +142,39 @@ All entry points funnel into the `IntentService`:
 │   └── workflows/
 │       └── docs-sync.yml        # ADR-017: Auto-renders Mermaid to SVG
 ├── apps/
-│   ├── api/             # Go Backend (Clean Architecture - ADR-003)
+│   ├── api/             # Go Backend (Clean Architecture)
 │   │   ├── cmd/main.go          # Entry point
-│   │   └── internal/
-│   │       ├── adapters/        # Input/Output adapters (ADR-007)
-│   │       ├── domain/          # Entities & repository interfaces
-│   │       ├── infra/           # Persistence & external tools implementation
-│   │       │   ├── mappers/     # Type-safe model mappings (ADR-042: Goverter)
-│   │       │   └── health/      # Health check implementation (ADR-029)
-│   │       └── usecase/         # Business logic
+│   │   ├── internal/            # Core Business Logic
+│   │   │   ├── database/        # Database Access Layer (sqlc)
+│   │   │   ├── domain/          # Pure Entities (Independent)
+│   │   │   ├── transport/       # Transport Layer (gRPC/Proto)
+│   │   │   ├── mappers/         # Model Mappers (Goverter)
+│   │   │   ├── adapters/        # Entry/Exit Adapters
+│   │   │   ├── usecase/         # Use Case Interactors
+│   │   │   └── infra/           # Shared Infrastructure
+│   │   ├── migrations/          # Atlas managed SQL migrations (ADR-006)
+│   │   ├── atlas.hcl            # Migration configuration
+│   │   └── go.mod
 │   ├── web/             # Next.js Dashboard
 │   └── mobile/          # Expo (React Native)
 ├── proto/               # THE SOURCE OF TRUTH (ADR-012, 014)
 │   ├── v1/
-│   │   └── intent.proto
+│   │   └── api.proto    # Consolidated API Contract
 │   └── buf.yaml         # Buf configuration (ADR-040)
-├── gen/                 # GENERATED Code (Do not edit)
-│   ├── go/              # Go gRPC/Protobuf code
-│   └── ts/              # TypeScript types for frontend
 ├── packages/
-│   ├── ui/              # Shared Tamagui components
+│   ├── ui/              # Shared UI components (Tamagui)
 │   ├── schema/          # Shared Zod/TS schemas
-│   └── database/        # Database Layer
+│   └── database/        # Database Schema & Queries
 │       ├── schema.sql           # SQL Schema Source
 │       ├── queries.sql          # sqlc Queries
-│       ├── sqlc.yaml            # sqlc Configuration
-│       └── migrations/          # Atlas managed migrations (ADR-006)
+│       └── sqlc.yaml            # sqlc Configuration
 ├── docs/
 │   ├── adr/             # Architecture Decision Records
-│   └── diagrams/        # GENERATED (ADR-039: AI-Assisted Manual Maintenance)
-│       ├── database_er.svg
-│       └── intent_service.svg
+│   └── diagrams/        # System Diagrams (Manual/SVG)
 ├── infra/               # Pulumi IaC (ADR-023, ADR-041)
-│   ├── Pulumi.yaml
-│   ├── main.go          # AWS Fargate & ALB definitions
-│   └── go.mod
 ├── Makefile             # Global task runner
 ├── buf.gen.yaml         # Protobuf generation config (ADR-040)
-├── docker-compose.yaml  # Local infrastructure (Postgres, Redis, etc.)
+├── docker-compose.yaml  # Local infrastructure (Postgres, Redis)
 └── turbo.json           # Turborepo configuration
 
 

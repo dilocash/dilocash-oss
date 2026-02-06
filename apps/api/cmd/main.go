@@ -15,8 +15,8 @@ import (
 
 	"strconv"
 
+	db "github.com/dilocash/dilocash-oss/internal/database"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
-	db "github.com/dilocash/dilocash-oss/internal/infra/storage/postgres/gen"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"

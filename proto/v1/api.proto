@@ -6,17 +6,18 @@ syntax = "proto3";
 
 package dilocash.v1;
 
-option go_package = "github.com/dilocash/dilocash-oss/gen/go/v1;v1";
+option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/transport;transport";
 
 import "google/protobuf/timestamp.proto";
+
+service IntentService {
+  rpc ProcessIntent(IntentRequest) returns (ProcessIntentResponse);
+  rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
+}
 
 message IntentRequest {
   string text = 1;
   string user_id = 2;
-}
-
-service IntentService {
-  rpc ProcessIntent(IntentRequest) returns (ProcessIntentResponse);
 }
 
 message ProcessIntentResponse {
@@ -26,4 +27,13 @@ message ProcessIntentResponse {
   string category = 4;
   string description = 5;
   google.protobuf.Timestamp created_at = 6;
+}
+
+message GetHistoryRequest {
+  string user_id = 1;
+  int32 limit = 2;
+}
+
+message GetHistoryResponse {
+  repeated ProcessIntentResponse transactions = 1;
 }
