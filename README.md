@@ -23,7 +23,7 @@ Dilocash is built with a **Staff-level** focus on precision, security, and scala
 - **API:** gRPC + Protobuf
 - **Database:** PostgreSQL with `NUMERIC` types for 100% monetary precision.
 - **Cache:** Redis
-- **Type Safety:** `sqlc` for Go code generation and `Zod` for frontend validation.
+- **Type Safety**: `sqlc` for Go code generation, **Goverter** for type-safe model mapping, and `Zod` for frontend validation.
 - **Migrations:** **Atlas** (Declarative migration management).
 - **Frontend:** **Next.js 15** (Web) and **Expo** (Mobile) via a **Turborepo** monorepo.
 - **Observability:** Structured JSON logging via `slog` with request tracing.
@@ -60,6 +60,8 @@ Ensure you have the following installed:
 - **Docker** & **Docker Compose**
 - **Atlas CLI** (`curl -sSf https://atlasgo.sh | sh`)
 - **sqlc** (`go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest`)
+- **goverter** (`go install github.com/jmattheis/goverter/cmd/goverter@latest`)
+- **Buf CLI** (`brew install bufbuild/buf/buf` or see [buf.build](https://buf.build/docs/installation))
 - **mmdc** (`npm install -g @mermaid-js/mermaid-cli`)
 - **Pulumi** CLI (for cloud deployment)
 
@@ -138,36 +140,46 @@ All entry points funnel into the `IntentService`:
 ├── .github/
 │   └── workflows/
 │       └── docs-sync.yml        # ADR-017: Auto-renders Mermaid to SVG
-├── proto/               # THE SOURCE OF TRUTH
-│   └── v1/
-│       └── intent.proto
-├── docs/
-│   └── adr/             # Architecture Decision Records
-│   └── diagrams/        # GENERATED (Do not edit manually)
-│       ├── database_er.mmd      # Source (Generated from SQL)
-│       ├── database_er.svg      # Rendered (Action)
-│       ├── intent_service.mmd   # Source (Generated from Proto)
-│       └── intent_service.svg   # Rendered (Action)
-├── gen/                 # GENERATED Code
-│   ├── go/
-│   └── ts/
 ├── apps/
-│   ├── api/             # Go Backend (Clean Architecture)
-│   │   └── internal/domain      # Domain layer
-│   │   └── cmd/main.go      # Entry point
+│   ├── api/             # Go Backend (Clean Architecture - ADR-003)
+│   │   ├── cmd/main.go          # Entry point
+│   │   └── internal/
+│   │       ├── adapters/        # Input/Output adapters (ADR-007)
+│   │       ├── domain/          # Entities & repository interfaces
+│   │       ├── infra/           # Persistence & external tools implementation
+│   │       │   ├── mappers/     # Type-safe model mappings (ADR-042: Goverter)
+│   │       │   └── health/      # Health check implementation (ADR-029)
+│   │       └── usecase/         # Business logic
 │   ├── web/             # Next.js Dashboard
 │   └── mobile/          # Expo (React Native)
+├── proto/               # THE SOURCE OF TRUTH (ADR-012, 014)
+│   ├── v1/
+│   │   └── intent.proto
+│   └── buf.yaml         # Buf configuration (ADR-040)
+├── gen/                 # GENERATED Code (Do not edit)
+│   ├── go/              # Go gRPC/Protobuf code
+│   └── ts/              # TypeScript types for frontend
 ├── packages/
 │   ├── ui/              # Shared Tamagui components
 │   ├── schema/          # Shared Zod/TS schemas
-│   └── database/        # Atlas migrations & SQL queries
+│   └── database/        # Database Layer
+│       ├── schema.sql           # SQL Schema Source
+│       ├── queries.sql          # sqlc Queries
+│       ├── sqlc.yaml            # sqlc Configuration
+│       └── migrations/          # Atlas managed migrations (ADR-006)
+├── docs/
+│   ├── adr/             # Architecture Decision Records
+│   └── diagrams/        # GENERATED (ADR-039: AI-Assisted Manual Maintenance)
+│       ├── database_er.svg
+│       └── intent_service.svg
+├── infra/               # Pulumi IaC (ADR-023, ADR-041)
+│   ├── Pulumi.yaml
+│   ├── main.go          # AWS Fargate & ALB definitions
+│   └── go.mod
 ├── Makefile             # Global task runner
-├── infra/               # Pulumi IaC
-│   ├── Pulumi.yaml      # Metadata
-│   ├── Pulumi.dev.yaml  # Config for dev stack
-│   ├── main.go          # AWS Resource definitions (VPC, RDS, ECS)
-│   └── go.mod           # Infrastructure dependencies
-└── docker-compose.yaml  # Infrastructure orchestration
+├── buf.gen.yaml         # Protobuf generation config (ADR-040)
+├── docker-compose.yaml  # Local infrastructure (Postgres, Redis, etc.)
+└── turbo.json           # Turborepo configuration
 
 
 ```
@@ -226,6 +238,9 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 - **ADR 037:** [Testing Strategy & E2E Frameworks](docs/adr/0037-testing-strategy-e2e-frameworks.md)
 - **ADR 038:** [gRPC API Versioning Strategy](docs/adr/0038-grpc-api-versioning-strategy.md)
 - **ADR 039:** [AI-Assisted Manual Diagram Maintenance](docs/adr/0039-ai-assisted-manual-diagram-maintenance.md)
+- **ADR 040:** [Adoption of Buf for Protobuf Management](docs/adr/0040-adoption-of-buf-for-protobuf-management.md)
+- **ADR 041:** [Adoption of Fargate for gRPC Support](docs/adr/0041-adoption-of-fargate-for-grpc-support.md)
+- **ADR 042:** [Adoption of Goverter for Automated Model Mapping](docs/adr/0042-adoption-of-goverter-for-mapping.md)
 
 ---
 
