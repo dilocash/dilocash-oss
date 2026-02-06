@@ -4,7 +4,7 @@
 package generated
 
 import (
-	database "github.com/dilocash/dilocash-oss/internal/database"
+	postgres "github.com/dilocash/dilocash-oss/internal/database/postgres"
 	domain "github.com/dilocash/dilocash-oss/internal/domain"
 	mappers "github.com/dilocash/dilocash-oss/internal/mappers"
 	v1 "github.com/dilocash/dilocash-oss/internal/transport/v1"
@@ -12,29 +12,29 @@ import (
 
 type ConverterImpl struct{}
 
-func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) database.Transaction {
-	var databaseTransaction database.Transaction
-	databaseTransaction.ID = mappers.CopyUUID(source.ID)
-	databaseTransaction.UserID = mappers.CopyUUID(source.UserID)
-	databaseTransaction.Amount = mappers.CopyDecimal(source.Amount)
-	databaseTransaction.Currency = source.Currency
-	databaseTransaction.Category = mappers.StringToPgText(source.Category)
-	databaseTransaction.Description = mappers.StringToPgText(source.Description)
-	databaseTransaction.RawInput = mappers.StringToPgText(source.RawInput)
-	databaseTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return databaseTransaction
+func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) postgres.Transaction {
+	var postgresTransaction postgres.Transaction
+	postgresTransaction.ID = mappers.CopyUUID(source.ID)
+	postgresTransaction.UserID = mappers.CopyUUID(source.UserID)
+	postgresTransaction.Amount = mappers.CopyDecimal(source.Amount)
+	postgresTransaction.Currency = source.Currency
+	postgresTransaction.Category = mappers.StringToPgText(source.Category)
+	postgresTransaction.Description = mappers.StringToPgText(source.Description)
+	postgresTransaction.RawInput = mappers.StringToPgText(source.RawInput)
+	postgresTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return postgresTransaction
 }
-func (c *ConverterImpl) ToDBUser(source domain.User) database.User {
-	var databaseUser database.User
-	databaseUser.ID = mappers.CopyUUID(source.ID)
-	databaseUser.Email = source.Email
-	databaseUser.AcceptedTermsVersion = mappers.StringToPgText(source.AcceptedTermsVersion)
-	databaseUser.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
-	databaseUser.AllowDataAnalysis = mappers.BoolToPgBool(source.AllowDataAnalysis)
-	databaseUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return databaseUser
+func (c *ConverterImpl) ToDBUser(source domain.User) postgres.User {
+	var postgresUser postgres.User
+	postgresUser.ID = mappers.CopyUUID(source.ID)
+	postgresUser.Email = source.Email
+	postgresUser.AcceptedTermsVersion = mappers.StringToPgText(source.AcceptedTermsVersion)
+	postgresUser.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
+	postgresUser.AllowDataAnalysis = mappers.BoolToPgBool(source.AllowDataAnalysis)
+	postgresUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return postgresUser
 }
-func (c *ConverterImpl) ToDomainTransaction(source database.Transaction) domain.Transaction {
+func (c *ConverterImpl) ToDomainTransaction(source postgres.Transaction) domain.Transaction {
 	var domainTransaction domain.Transaction
 	domainTransaction.ID = mappers.CopyUUID(source.ID)
 	domainTransaction.UserID = mappers.CopyUUID(source.UserID)
@@ -46,7 +46,7 @@ func (c *ConverterImpl) ToDomainTransaction(source database.Transaction) domain.
 	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainTransaction
 }
-func (c *ConverterImpl) ToDomainUser(source database.User) domain.User {
+func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	var domainUser domain.User
 	domainUser.ID = mappers.CopyUUID(source.ID)
 	domainUser.Email = source.Email
