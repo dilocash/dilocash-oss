@@ -122,8 +122,6 @@ adr: ## Scaffold a new ADR (usage: make adr n=0005 t="use_redis_cache")
 
 clean: ## Remove generated binaries and code
 	rm -rf $(BIN_DIR)
-	rm -rf $(GEN_DIR)/go/*
-	rm -rf $(GEN_DIR)/ts/*
 	@echo "🧹 Cleaned all generated assets."
 
 tidy: ## Tidy Go modules
