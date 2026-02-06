@@ -1,7 +1,3 @@
--- Copyright (c) 2026 dilocash
--- Use of this source code is governed by an MIT-style
--- license that can be found in the LICENSE file.
-
 -- Create "users" table
 CREATE TABLE "public"."users" (
   "id" uuid NOT NULL,
