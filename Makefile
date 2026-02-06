@@ -107,7 +107,12 @@ ngrok: ## Expose local API for WhatsApp/Telegram webhooks
 bot-test: ## Send a mock voice payload to the intent engine
 	curl -X POST http://localhost:8080/v1/adapters/test -F "audio=@test.m4a"
 
-jwt-decode: ## Decode a JWT token for debugging (requires jq)
+jwt-decode: ## Decode a JWT token for debugging (usage: make jwt-decode token=<JWT>)
+	@if [ -z "$(token)" ]; then \
+		echo "❌ Error: No token provided"; \
+		echo "Usage: make jwt-decode token=<YOUR_JWT_TOKEN>"; \
+		exit 1; \
+	fi
 	@echo $(token) | cut -d. -f2 | base64 --decode | jq
 
 # --- Documentation ---
