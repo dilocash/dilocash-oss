@@ -13,6 +13,9 @@ import (
 	"syscall"
 	"time"
 
+	"strconv"
+
+	"github.com/dilocash/dilocash-oss/internal/infra/health"
 	db "github.com/dilocash/dilocash-oss/internal/infra/storage/postgres/gen"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -63,7 +66,25 @@ func main() {
 	// Enable Reflection for easier debugging
 	reflection.Register(grpcServer)
 
-	// 5. Graceful Shutdown Handling
+	// Register Health Service
+	healthManager := health.NewManager(pool)
+	healthManager.Register(grpcServer)
+
+	// 5. Database Health Monitor
+	healthIntervalStr := os.Getenv("DB_HEALTH_CHECK_INTERVAL")
+	healthInterval := 60 * time.Second
+	if healthIntervalStr != "" {
+		if val, err := strconv.Atoi(healthIntervalStr); err == nil {
+			healthInterval = time.Duration(val) * time.Second
+		}
+	}
+
+	healthCtx, cancelHealth := context.WithCancel(context.Background())
+	defer cancelHealth()
+
+	go healthManager.Monitor(healthCtx, healthInterval)
+
+	// 6. Graceful Shutdown Handling
 	go func() {
 		log.Printf("🚀 Dilocash-OSS API starting on port %s", port)
 		if err := grpcServer.Serve(lis); err != nil {
@@ -77,6 +98,7 @@ func main() {
 	<-quit
 
 	log.Println("Shutting down gRPC server...")
+	cancelHealth() // Stop the health monitor
 
 	// Create a context that will timeout after 30 seconds
 	// to ensure the process eventually exits if draining hangs.
