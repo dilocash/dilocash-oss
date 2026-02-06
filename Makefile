@@ -74,10 +74,14 @@ license-check: ## Check if source files are missing license headers
 	@~/go/bin/addlicense -f .license_header -check .
 
 lint: ## Run linters for Go and Protobuf
-	@echo "Checking project health for $(PROJECT_NAME)..."
+	@echo "🏥 Checking project health for $(PROJECT_NAME)..."
+	@echo "🔍 Linting API modules..."
 	cd apps/api && go vet ./...
+	@echo "🔍 Linting Infrastructure modules..."
 	cd infra && go vet ./...
+	@echo "🧹 Linting Protobuf definitions..."
 	$(BUF) lint proto
+	@echo "✨ All checks passed!"
 
 test: ## Run Go tests
 	cd apps/api && go test -v -race ./...

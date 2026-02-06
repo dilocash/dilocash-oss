@@ -10,11 +10,6 @@ option go_package = "github.com/dilocash/dilocash-oss/internal/transport/v1;v1";
 
 import "google/protobuf/timestamp.proto";
 
-service IntentService {
-  rpc ProcessIntent(ProcessIntentRequest) returns (ProcessIntentResponse);
-  rpc GetHistory(GetHistoryRequest) returns (GetHistoryResponse);
-}
-
 message ProcessIntentRequest {
   string text = 1;
   string user_id = 2;

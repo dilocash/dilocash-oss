@@ -6,7 +6,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.6.1
 // - protoc             (unknown)
-// source: v1/api.proto
+// source: dilocash/v1/intent_service.proto
 
 package v1
 
@@ -157,5 +157,5 @@ var IntentService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "v1/api.proto",
+	Metadata: "dilocash/v1/intent_service.proto",
 }
