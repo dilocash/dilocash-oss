@@ -1,0 +1,13 @@
+{
+    "Servers": {
+        "1": {
+            "Name": "Dilocash Local",
+            "Group": "Servers",
+            "Host": "postgres",
+            "Port": 5432,
+            "MaintenanceDB": "dilocash_core",
+            "Username": "dilocash_user",
+            "SSLMode": "prefer"
+        }
+    }
+}
