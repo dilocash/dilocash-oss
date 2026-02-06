@@ -1,4 +1,5 @@
 # Project Variables
+export PATH := $(shell go env GOPATH)/bin:$(PATH)
 PROJECT_NAME := dilocash-oss
 BIN_DIR := ./bin
 PROTO_DIR := ./proto
