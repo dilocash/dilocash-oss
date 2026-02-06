@@ -120,6 +120,57 @@ To test the voice feature locally:
 3. Speak: _"Gasté cincuenta pesos en tacos"_ (I spent 50 pesos on tacos).
 4. The Go backend will transcribe and parse the intent, returning a confirmation card to the UI.
 
+---
+
+## 🌐 Testing Webhooks with ngrok
+
+To test Telegram/WhatsApp webhooks and gRPC APIs from external services, you'll need to expose your local API to the internet using **ngrok**.
+
+### Setup ngrok
+
+1. **Get your authtoken** from [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
+
+2. **Configure the project:**
+
+   ```bash
+   # Copy the example configuration
+   cp ngrok.yml.example ngrok.yml
+
+   # Edit ngrok.yml and replace YOUR_AUTHTOKEN_HERE with your actual token
+   ```
+
+3. **Start the tunnels:**
+
+   ```bash
+   # Start both gRPC and webhook tunnels simultaneously
+   make ngrok
+
+   # Or start individual tunnels:
+   make ngrok-grpc     # Only gRPC tunnel (HTTP/2 for gRPC clients)
+   make ngrok-webhook  # Only webhook tunnel (HTTPS for Telegram/WhatsApp)
+   ```
+
+4. **Get your public URLs:**
+   - View URLs in the terminal output, or
+   - Visit `http://127.0.0.1:4040` (ngrok web interface)
+
+### Use Cases
+
+- **Telegram Bot Setup:**
+
+  ```bash
+  curl -X POST "https://api.telegram.org/bot<YOUR_TOKEN>/setWebhook" \
+    -d "url=https://YOUR_WEBHOOK_URL/v1/adapters/telegram"
+  ```
+
+- **WhatsApp Integration:** Use the webhook URL in your Meta Developer Console
+
+- **gRPC Client Testing:** Connect to the gRPC tunnel URL for external gRPC testing
+
+> ⚠️ **Security Note:** The `ngrok.yml` file contains your authtoken and is gitignored. Never commit it to version control.
+
+---
+
 ## 🔗 Universal Entry Points
 
 Dilocash isn't just an app; it's a financial layer that lives where you do.

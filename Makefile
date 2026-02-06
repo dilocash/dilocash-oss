@@ -55,8 +55,14 @@ generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 dev: ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm turbo run dev
 
-build: ## Build all applications
+build: ## Build all applications via Turborepo
+	@echo "🏗️  Building all applications..."
 	pnpm turbo run build
+
+build-api: ## Build API binary directly (faster than turbo build)
+	@echo "🏗️  Building API..."
+	cd apps/api && go build -o bin/api cmd/main.go
+	@echo "✅ API built to apps/api/bin/api"
 
 db-up: ## Start Postgres and Redis via Docker Compose
 	docker-compose up -d
@@ -87,6 +93,7 @@ lint: ## Run linters for Go and Protobuf
 	@echo "✨ All checks passed!"
 
 test: ## Run Go tests
+	@echo "🚀 Running tests..."
 	cd apps/api && go test -v -race ./...
 
 # --- Database Migrations ---
@@ -101,7 +108,10 @@ migrate-new: ## Generate a new migration file (usage: make migrate-new name=add_
 
 # --- Integrations & Debugging ---
 
-ngrok: ## Expose local API for WhatsApp/Telegram webhooks
+ngrok: ## Expose API via ngrok (handles both webhooks and gRPC)
+	ngrok start --all --config ngrok.yml
+
+ngrok-quick: ## Quick ngrok tunnel without config file
 	ngrok http 8080
 
 bot-test: ## Send a mock voice payload to the intent engine

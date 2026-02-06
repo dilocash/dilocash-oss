@@ -1,0 +1,19 @@
+# ngrok Configuration for Dilocash-OSS
+# Run 'make ngrok' to start all tunnels
+# 
+# Setup:
+# 1. Copy this file to ngrok.yml: cp ngrok.yml.example ngrok.yml
+# 2. Get your authtoken from https://dashboard.ngrok.com/get-started/your-authtoken
+# 3. Replace YOUR_AUTHTOKEN_HERE with your actual token
+
+version: "2"
+authtoken: YOUR_AUTHTOKEN_HERE
+
+tunnels:
+  # Single tunnel that handles both HTTP and gRPC
+  # gRPC works over HTTP/2, so one HTTPS tunnel is sufficient
+  api:
+    proto: http
+    addr: 8080
+    schemes:
+      - https
