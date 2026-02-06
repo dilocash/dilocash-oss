@@ -27,3 +27,12 @@ sql:
             go_type: "time.Time"
           - column: "users.accepted_terms_at"
             go_type: "time.Time"
+  # --- Future MySQL Configuration ---
+  # - schema: "mysql/schema.sql"
+  #   queries: "mysql/queries.sql"
+  #   engine: "mysql"
+  #   gen:
+  #     go:
+  #       package: "mysql"
+  #       out: "../../apps/api/internal/database/mysql"
+  # ... MySQL specific settings
