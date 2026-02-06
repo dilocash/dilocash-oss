@@ -10,7 +10,7 @@ DOCS_DIR := ./docs/diagrams
 BUF := buf
 SQLC := sqlc
 GOVERTER := goverter
-MMDC := mmdc # Mermaid CLI (requires: npm install -g @mermaid-js/mermaid-cli)
+# MMDC := mmdc # Mermaid CLI (requires: npm install -g @mermaid-js/mermaid-cli)
 
 .PHONY: all help dev build generate generate-code generate-docs db-up db-down check lint test clean tidy adr jwt-decode
 
@@ -36,16 +36,19 @@ sqlc: ## Generate Go models from SQL (sqlc)
 mappers: ## Generate type-safe model mappers (goverter)
 	@echo "🔄 Generating Model Mappers (Goverter)..."
 	cd apps/api && $(GOVERTER) gen ./internal/mappers
+	@mkdir -p apps/api/internal/generated/mappers
+	@mv apps/api/internal/mappers/generated/generated.go apps/api/internal/generated/mappers/ 2>/dev/null || true
+	@rm -rf apps/api/internal/mappers/generated
 
 generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
-	@echo "🎨 Rendering Mermaid diagrams to SVG..."
-	# Render the Service Architecture
-	$(MMDC) -i $(DOCS_DIR)/dilocash.mmd -o $(DOCS_DIR)/dilocash.svg -t neutral -b transparent || true
-	# Render the Database ERD
-	$(MMDC) -i $(DOCS_DIR)/database_er.mmd -o $(DOCS_DIR)/database_er.svg -t neutral -b transparent || true
-	# Render the Intent Service
-	$(MMDC) -i $(DOCS_DIR)/intent_service.mmd -o $(DOCS_DIR)/intent_service.svg -t neutral -b transparent || true
-	@echo "✨ Documentation rendered."
+# 	@echo "🎨 Rendering Mermaid diagrams to SVG..."
+# 	# Render the Service Architecture
+# 	$(MMDC) -i $(DOCS_DIR)/dilocash.mmd -o $(DOCS_DIR)/dilocash.svg -t neutral -b transparent || true
+# 	# Render the Database ERD
+# 	$(MMDC) -i $(DOCS_DIR)/database_er.mmd -o $(DOCS_DIR)/database_er.svg -t neutral -b transparent || true
+# 	# Render the Intent Service
+# 	$(MMDC) -i $(DOCS_DIR)/intent_service.mmd -o $(DOCS_DIR)/intent_service.svg -t neutral -b transparent || true
+# 	@echo "✨ Documentation rendered."
 
 # --- Development & Build ---
 

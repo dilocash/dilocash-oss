@@ -170,7 +170,8 @@ All entry points funnel into the `IntentService`:
 │       └── sqlc.yaml            # sqlc Configuration
 ├── docs/
 │   ├── adr/             # Architecture Decision Records
-│   └── diagrams/        # System Diagrams (Manual/SVG)
+│   ├── diagrams/        # Manual Diagrams
+│   └── generated/       # AUTOMATIC DIAGRAMS (Mermaid/SVG)
 ├── infra/               # Pulumi IaC (ADR-023, ADR-041)
 ├── Makefile             # Global task runner
 ├── buf.gen.yaml         # Protobuf generation config (ADR-040)

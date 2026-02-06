@@ -5,9 +5,9 @@
 package mappers
 
 import (
-	database "github.com/dilocash/dilocash-oss/internal/database/postgres"
 	"github.com/dilocash/dilocash-oss/internal/domain"
-	transport "github.com/dilocash/dilocash-oss/internal/transport/v1"
+	database "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
+	transport "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
 )
 
 // goverter:converter

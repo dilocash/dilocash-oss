@@ -6,7 +6,7 @@ syntax = "proto3";
 
 package dilocash.v1;
 
-option go_package = "github.com/dilocash/dilocash-oss/internal/transport/v1;v1";
+option go_package = "github.com/dilocash/dilocash-oss/internal/transport/dilocash/v1;v1";
 
 import "dilocash/v1/intent_types.proto";
 

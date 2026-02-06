@@ -1,10 +1,13 @@
 version: v1
 plugins:
   - name: go
-    out: apps/api/internal/transport
+    out: apps/api/internal/generated/transport
     opt: paths=source_relative
   - name: go-grpc
-    out: apps/api/internal/transport
+    out: apps/api/internal/generated/transport
     opt:
       - paths=source_relative
       - require_unimplemented_servers=false
+  # - name: doc
+  #   out: docs/generated
+  #   opt: mermaid,dilocash.mmd
