@@ -4,7 +4,9 @@ import (
 	"context"
 	"errors"
 
+	"connectrpc.com/connect"
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
+	mappers "github.com/dilocash/dilocash-oss/internal/generated/mappers"
 	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -24,29 +26,44 @@ func NewTransactionServer(pool *pgxpool.Pool) *TransactionServer {
 
 func (s *TransactionServer) CreateTransaction(
 	ctx context.Context,
-	req *connect.Request[v1.CreateTransactionRequest],
-) (*connect.Response[v1.CreateTransactionResponse], error) {
+	req *v1.CreateTransactionRequest,
+) (*v1.CreateTransactionResponse, error) {
 
 	// 1. Mapeo de gRPC Request a sqlc Params
-	arg := db.CreateTransactionParams{
-		UserID:      req.Msg.UserId,
-		Amount:      req.Msg.Amount,
-		Currency:    req.Msg.Currency,
-		Category:    req.Msg.Category,
-		Description: req.Msg.Description,
-		RawInput:    req.Msg.RawInput,
-	}
+	converter := &mappers.ConverterImpl{}
+	domainTransaction := converter.TransactionFromTransportToDomain(req)
+	dbTransactionParams := converter.ToDBCreateTransactionParams(domainTransaction)
 
 	// 2. Ejecución de la consulta usando sqlc
-	transaction, err := s.store.CreateTransaction(ctx, arg)
+	transaction, err := s.store.CreateTransaction(ctx, dbTransactionParams)
 	if err != nil {
 		// Manejo de errores profesional (Logging + gRPC Codes)
+		// log.Fatal("failed to store transaction", err)
 		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
 	}
 
+	domainTransactionResult := converter.TransactionFromDBToDomain(transaction)
+	// 4. Mapeo de gRPC Response a Transport Response
+
+	transportTransactionResult := converter.ToTransportTransaction(domainTransactionResult)
 	// 3. Respuesta exitosa
-	return connect.NewResponse(&v1.CreateTransactionResponse{
-		Id:        transaction.ID.String(),
-		CreatedAt: transaction.CreatedAt.String(),
-	}), nil
+	return &v1.CreateTransactionResponse{
+		Transaction: transportTransactionResult,
+	}, nil
+}
+
+func (s *TransactionServer) GetTransaction(
+	ctx context.Context,
+	req *v1.GetTransactionRequest,
+) (*v1.GetTransactionResponse, error) {
+
+	return &v1.GetTransactionResponse{}, errors.New("GetTransaction called. not implemented yet")
+}
+
+func (s *TransactionServer) ListTransactions(
+	ctx context.Context,
+	req *v1.ListTransactionsRequest,
+) (*v1.ListTransactionsResponse, error) {
+
+	return &v1.ListTransactionsResponse{}, errors.New("ListTransactions called. not implemented yet")
 }

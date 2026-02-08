@@ -31,14 +31,17 @@ type Converter interface {
 
 	// Domain -> Database
 	ToDBTransaction(d domain.Transaction) database.Transaction
+	ToDBCreateTransactionParams(d domain.Transaction) database.CreateTransactionParams
 	ToDBUser(d domain.User) database.User
 
 	// Domain -> Transport
-	// goverter:map ID TransactionId
 	// goverter:ignore state sizeCache unknownFields
-	ToTransportTransaction(d domain.Transaction) *transport.ProcessIntentResponse
+	// goverter:map ID Id
+	// goverter:map UserID UserId
+	ToTransportTransaction(d domain.Transaction) *transport.Transaction
 
 	// Transport -> Domain
 	// goverter:ignoreMissing
-	TransactionFromTransportToDomain(t transport.CreateTransactionRequest) *domain.Transaction
+	// goverter:useZeroValueOnPointerInconsistency
+	TransactionFromTransportToDomain(t *transport.CreateTransactionRequest) domain.Transaction
 }

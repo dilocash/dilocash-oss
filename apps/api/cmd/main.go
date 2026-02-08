@@ -17,12 +17,15 @@ import (
 
 	"net/http"
 
+	"connectrpc.com/connect"
+	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
+	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
+	v1connect "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
+	"github.com/dilocash/dilocash-oss/internal/services/transaction"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
-	"golang.org/x/net/http2"
-	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
@@ -40,6 +43,11 @@ func registerAllServices(grpcServer *grpc.Server, pool *pgxpool.Pool) {
 	// - IntentService
 	// - TransactionService
 	// etc.
+	// TransactionService is registered via connectrpc handler in HTTP mux, not here.
+	transactionServer := transaction.NewTransactionServer(pool)
+	v1.RegisterTransactionServiceServer(grpcServer, transactionServer)
+
+	// v1.RegisterIntentServiceServer(grpcServer, &v1connect.IntentService{})
 }
 
 func main() {
@@ -117,10 +125,23 @@ func main() {
 		// Create a custom HTTP server that supports both HTTP and gRPC over the same port
 		mux := http.NewServeMux()
 
+		// Register connectrpc TransactionService handler
+
+		transactionServer := transaction.NewTransactionServer(pool)
+		path, handler := v1connect.NewTransactionServiceHandler(
+			transactionServer,
+			connect.WithInterceptors(validate.NewInterceptor()),
+		)
+		mux.Handle(path, handler)
+		p := new(http.Protocols)
+		p.SetHTTP1(true)
+		p.SetUnencryptedHTTP2(true)
+
 		// Use h2c to allow both HTTP and gRPC on the same port
-		h2cServer := &http.Server{
-			Addr:    ":" + port,
-			Handler: h2c.NewHandler(mux, &http2.Server{}),
+		h2cServer := http.Server{
+			Addr:      ":" + port,
+			Handler:   mux,
+			Protocols: p,
 		}
 
 		// Set up the main HTTP handler to route gRPC calls to the gRPC server

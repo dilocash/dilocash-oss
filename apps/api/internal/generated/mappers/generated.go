@@ -12,6 +12,16 @@ import (
 
 type ConverterImpl struct{}
 
+func (c *ConverterImpl) ToDBCreateTransactionParams(source domain.Transaction) postgres.CreateTransactionParams {
+	var postgresCreateTransactionParams postgres.CreateTransactionParams
+	postgresCreateTransactionParams.UserID = mappers.CopyUUID(source.UserID)
+	postgresCreateTransactionParams.Amount = mappers.CopyDecimal(source.Amount)
+	postgresCreateTransactionParams.Currency = source.Currency
+	postgresCreateTransactionParams.Category = mappers.StringToPgText(source.Category)
+	postgresCreateTransactionParams.Description = mappers.StringToPgText(source.Description)
+	postgresCreateTransactionParams.RawInput = mappers.StringToPgText(source.RawInput)
+	return postgresCreateTransactionParams
+}
 func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) postgres.Transaction {
 	var postgresTransaction postgres.Transaction
 	postgresTransaction.ID = mappers.CopyUUID(source.ID)
@@ -44,15 +54,17 @@ func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	domainUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainUser
 }
-func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.ProcessIntentResponse {
-	var v1ProcessIntentResponse v1.ProcessIntentResponse
-	v1ProcessIntentResponse.TransactionId = mappers.UUIDToString(source.ID)
-	v1ProcessIntentResponse.Amount = mappers.DecimalToString(source.Amount)
-	v1ProcessIntentResponse.Currency = source.Currency
-	v1ProcessIntentResponse.Category = source.Category
-	v1ProcessIntentResponse.Description = source.Description
-	v1ProcessIntentResponse.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
-	return &v1ProcessIntentResponse
+func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.Transaction {
+	var v1Transaction v1.Transaction
+	v1Transaction.Id = mappers.UUIDToString(source.ID)
+	v1Transaction.UserId = mappers.UUIDToString(source.UserID)
+	v1Transaction.Amount = mappers.DecimalToString(source.Amount)
+	v1Transaction.Currency = source.Currency
+	v1Transaction.Category = source.Category
+	v1Transaction.Description = source.Description
+	v1Transaction.RawInput = source.RawInput
+	v1Transaction.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
+	return &v1Transaction
 }
 func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) domain.Transaction {
 	var domainTransaction domain.Transaction
@@ -66,12 +78,14 @@ func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) d
 	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainTransaction
 }
-func (c *ConverterImpl) TransactionFromTransportToDomain(source v1.CreateTransactionRequest) *domain.Transaction {
+func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.CreateTransactionRequest) domain.Transaction {
 	var domainTransaction domain.Transaction
-	domainTransaction.Amount = mappers.StringToDecimal(source.Amount)
-	domainTransaction.Currency = source.Currency
-	domainTransaction.Category = source.Category
-	domainTransaction.Description = source.Description
-	domainTransaction.CreatedAt = mappers.TimestampToTime(source.CreatedAt)
-	return &domainTransaction
+	if source != nil {
+		domainTransaction.Amount = mappers.StringToDecimal((*source).Amount)
+		domainTransaction.Currency = (*source).Currency
+		domainTransaction.Category = (*source).Category
+		domainTransaction.Description = (*source).Description
+		domainTransaction.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
+	}
+	return domainTransaction
 }

@@ -12,7 +12,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
+	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
 	http "net/http"
 	strings "strings"
 )

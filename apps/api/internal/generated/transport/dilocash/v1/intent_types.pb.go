@@ -278,7 +278,7 @@ const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
 	"\x05limit\x18\x02 \x01(\x05R\x05limit\"\\\n" +
 	"\x12GetHistoryResponse\x12F\n" +
-	"\ftransactions\x18\x01 \x03(\v2\".dilocash.v1.ProcessIntentResponseR\ftransactionsBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"\ftransactions\x18\x01 \x03(\v2\".dilocash.v1.ProcessIntentResponseR\ftransactionsBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_intent_types_proto_rawDescOnce sync.Once

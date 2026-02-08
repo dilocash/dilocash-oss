@@ -499,7 +499,7 @@ const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"page_token\x18\x03 \x01(\tR\tpageToken\"\x80\x01\n" +
 	"\x18ListTransactionsResponse\x12<\n" +
 	"\ftransactions\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\ftransactions\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_transaction_types_proto_rawDescOnce sync.Once

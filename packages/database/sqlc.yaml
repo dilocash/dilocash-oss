@@ -27,6 +27,10 @@ sql:
             go_type: "time.Time"
           - column: "users.accepted_terms_at"
             go_type: "time.Time"
+overrides:
+  go:
+    rename:
+      ID: Id
   # --- Future MySQL Configuration ---
   # - schema: "mysql/schema.sql"
   #   queries: "mysql/queries.sql"

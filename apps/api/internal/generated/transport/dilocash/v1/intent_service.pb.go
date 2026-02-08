@@ -32,7 +32,7 @@ const file_dilocash_v1_intent_service_proto_rawDesc = "" +
 	"\rIntentService\x12V\n" +
 	"\rProcessIntent\x12!.dilocash.v1.ProcessIntentRequest\x1a\".dilocash.v1.ProcessIntentResponse\x12M\n" +
 	"\n" +
-	"GetHistory\x12\x1e.dilocash.v1.GetHistoryRequest\x1a\x1f.dilocash.v1.GetHistoryResponseBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"GetHistory\x12\x1e.dilocash.v1.GetHistoryRequest\x1a\x1f.dilocash.v1.GetHistoryResponseBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var file_dilocash_v1_intent_service_proto_goTypes = []any{
 	(*ProcessIntentRequest)(nil),  // 0: dilocash.v1.ProcessIntentRequest

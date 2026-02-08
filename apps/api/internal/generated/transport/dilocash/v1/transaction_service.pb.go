@@ -32,7 +32,7 @@ const file_dilocash_v1_transaction_service_proto_rawDesc = "" +
 	"\x12TransactionService\x12b\n" +
 	"\x11CreateTransaction\x12%.dilocash.v1.CreateTransactionRequest\x1a&.dilocash.v1.CreateTransactionResponse\x12Y\n" +
 	"\x0eGetTransaction\x12\".dilocash.v1.GetTransactionRequest\x1a#.dilocash.v1.GetTransactionResponse\x12_\n" +
-	"\x10ListTransactions\x12$.dilocash.v1.ListTransactionsRequest\x1a%.dilocash.v1.ListTransactionsResponseBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"\x10ListTransactions\x12$.dilocash.v1.ListTransactionsRequest\x1a%.dilocash.v1.ListTransactionsResponseBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var file_dilocash_v1_transaction_service_proto_goTypes = []any{
 	(*CreateTransactionRequest)(nil),  // 0: dilocash.v1.CreateTransactionRequest
