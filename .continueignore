@@ -1,0 +1,40 @@
+# --- Heavy Build Artifacts ---
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+out/
+.vercel/
+.pulumi/
+
+# --- Go / Proto Generation Artifacts ---
+# We ignore the heavy generated code so the 30B model focuses on your LOGIC
+# but we keep the .proto files so it knows the interface
+bin/
+obj/
+*.exe
+*.test
+*.prof
+vendor/
+
+# --- Database & Infra Artifacts ---
+# Ignore Atlas/Pulumi state but keep the source migrations/configs
+.atlas/
+*.state
+*.state.backup
+
+# --- Media & Design ---
+# Mermaid source is good, but exported images/PDFs are useless to the AI
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.pdf
+
+# --- Logs & Temp ---
+*.log
+tmp/
+temp/
+.DS_Store
