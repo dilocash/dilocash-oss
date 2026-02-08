@@ -27,18 +27,14 @@ generate-code: ## Generate Go/TS code from Proto, SQL and Mappers
 	$(SQLC) generate -f packages/database/sqlc.yaml
 	@echo "🔄 Generating Model Mappers (Goverter)..."
 	cd apps/api && $(GOVERTER) gen ./internal/mappers
+	@mkdir -p apps/api/internal/generated/mappers
+	@mv apps/api/internal/mappers/generated/generated.go apps/api/internal/generated/mappers/ 2>/dev/null || true
+	@rm -rf apps/api/internal/mappers/generated
 	@echo "✅ Code generation complete."
 
 sqlc: ## Generate Go models from SQL (sqlc)
 	@echo "🗄️  Generating Database Layer (SQLC)..."
 	$(SQLC) generate -f packages/database/sqlc.yaml
-
-mappers: ## Generate type-safe model mappers (goverter)
-	@echo "🔄 Generating Model Mappers (Goverter)..."
-	cd apps/api && $(GOVERTER) gen ./internal/mappers
-	@mkdir -p apps/api/internal/generated/mappers
-	@mv apps/api/internal/mappers/generated/generated.go apps/api/internal/generated/mappers/ 2>/dev/null || true
-	@rm -rf apps/api/internal/mappers/generated
 
 generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 # 	@echo "🎨 Rendering Mermaid diagrams to SVG..."
