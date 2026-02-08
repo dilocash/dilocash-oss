@@ -26,7 +26,7 @@ import (
 // goverter:extend github.com/dilocash/dilocash-oss/internal/mappers:BoolToPgBool
 type Converter interface {
 	// Database -> Domain
-	ToDomainTransaction(db database.Transaction) domain.Transaction
+	TransactionFromDBToDomain(db database.Transaction) domain.Transaction
 	ToDomainUser(db database.User) domain.User
 
 	// Domain -> Database
@@ -37,4 +37,8 @@ type Converter interface {
 	// goverter:map ID TransactionId
 	// goverter:ignore state sizeCache unknownFields
 	ToTransportTransaction(d domain.Transaction) *transport.ProcessIntentResponse
+
+	// Transport -> Domain
+	// goverter:ignoreMissing
+	TransactionFromTransportToDomain(t transport.CreateTransactionRequest) *domain.Transaction
 }

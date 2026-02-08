@@ -34,18 +34,6 @@ func (c *ConverterImpl) ToDBUser(source domain.User) postgres.User {
 	postgresUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return postgresUser
 }
-func (c *ConverterImpl) ToDomainTransaction(source postgres.Transaction) domain.Transaction {
-	var domainTransaction domain.Transaction
-	domainTransaction.ID = mappers.CopyUUID(source.ID)
-	domainTransaction.UserID = mappers.CopyUUID(source.UserID)
-	domainTransaction.Amount = mappers.CopyDecimal(source.Amount)
-	domainTransaction.Currency = source.Currency
-	domainTransaction.Category = mappers.PgTextToString(source.Category)
-	domainTransaction.Description = mappers.PgTextToString(source.Description)
-	domainTransaction.RawInput = mappers.PgTextToString(source.RawInput)
-	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return domainTransaction
-}
 func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	var domainUser domain.User
 	domainUser.ID = mappers.CopyUUID(source.ID)
@@ -65,4 +53,25 @@ func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.Pr
 	v1ProcessIntentResponse.Description = source.Description
 	v1ProcessIntentResponse.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
 	return &v1ProcessIntentResponse
+}
+func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) domain.Transaction {
+	var domainTransaction domain.Transaction
+	domainTransaction.ID = mappers.CopyUUID(source.ID)
+	domainTransaction.UserID = mappers.CopyUUID(source.UserID)
+	domainTransaction.Amount = mappers.CopyDecimal(source.Amount)
+	domainTransaction.Currency = source.Currency
+	domainTransaction.Category = mappers.PgTextToString(source.Category)
+	domainTransaction.Description = mappers.PgTextToString(source.Description)
+	domainTransaction.RawInput = mappers.PgTextToString(source.RawInput)
+	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return domainTransaction
+}
+func (c *ConverterImpl) TransactionFromTransportToDomain(source v1.CreateTransactionRequest) *domain.Transaction {
+	var domainTransaction domain.Transaction
+	domainTransaction.Amount = mappers.StringToDecimal(source.Amount)
+	domainTransaction.Currency = source.Currency
+	domainTransaction.Category = source.Category
+	domainTransaction.Description = source.Description
+	domainTransaction.CreatedAt = mappers.TimestampToTime(source.CreatedAt)
+	return &domainTransaction
 }
