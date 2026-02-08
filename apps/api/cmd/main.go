@@ -6,6 +6,7 @@ package main
 
 import (
 	"context"
+	"errors"
 	"log"
 	"net"
 	"os"
@@ -17,12 +18,15 @@ import (
 
 	"net/http"
 
+	"github.com/golang-jwt/jwt/v5"
+
 	"connectrpc.com/connect"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
 	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
 	v1connect "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
+	"github.com/dilocash/dilocash-oss/internal/middleware"
 	"github.com/dilocash/dilocash-oss/internal/services/transaction"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
@@ -51,6 +55,8 @@ func registerAllServices(grpcServer *grpc.Server, pool *pgxpool.Pool) {
 }
 
 func main() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	// 1. Load Environment Variables
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found, relying on system env")
@@ -128,10 +134,23 @@ func main() {
 		// Register connectrpc TransactionService handler
 
 		transactionServer := transaction.NewTransactionServer(pool)
+		supabaseServer := os.Getenv("SUPABASE_SERVER")
+		if supabaseServer == "" {
+			log.Fatalf("SUPABASE_SERVER environment variable not set")
+		}
+
+		supabaseAuth, err := middleware.NewSupabaseAuth(ctx, supabaseServer)
+		if err != nil {
+			log.Fatalf("NewSupabaseAuth init failed: %v", err)
+		}
 		path, handler := v1connect.NewTransactionServiceHandler(
 			transactionServer,
-			connect.WithInterceptors(validate.NewInterceptor()),
+			connect.WithInterceptors(
+				NewAuthInterceptor(supabaseAuth),
+				validate.NewInterceptor()),
 		)
+
+		// Apply the middleware to protected routes
 		mux.Handle(path, handler)
 		p := new(http.Protocols)
 		p.SetHTTP1(true)
@@ -171,7 +190,7 @@ func main() {
 
 	// Create a context that will timeout after 30 seconds
 	// to ensure the process eventually exits if draining hangs.
-	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	_, cancel = context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	// Stop the HTTP server gracefully
@@ -179,4 +198,101 @@ func main() {
 	// For now, we'll just gracefully stop the gRPC server
 	grpcServer.GracefulStop()
 	log.Println("Server stopped.")
+}
+
+// const supabaseJWKSEndpoint = "https://<project-ref>.supabase.co/auth/v1/.well-known/jwks.json"
+
+// func NewAuthInterceptor(jwtSecret string) connect.Interceptor {
+// 	return connect.UnaryInterceptorFunc(func(next connect.UnaryFunc) connect.UnaryFunc {
+// 		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+// 			// 1. Extraer el header de Autorización
+// 			authHeader := req.Header().Get("Authorization")
+// 			if authHeader == "" {
+// 				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("no auth token provided"))
+// 			}
+
+// 			// 2. Limpiar el prefijo "Bearer "
+// 			tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+// 			// 3. Validar el JWT (usando una librería como golang-jwt/jwt)
+// 			token, err := validateSupabaseJWT(tokenString)
+
+// 			if err != nil {
+// 				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("invalid token"))
+// 			}
+
+// 			// 4. (Opcional) Guardar el ID del usuario en el contexto
+// 			claims, ok := token.Claims.(jwt.MapClaims)
+// 			if ok {
+// 				ctx = context.WithValue(ctx, "user_id", claims["sub"])
+// 			}
+
+// 			return next(ctx, req)
+// 		}
+// 	})
+// }
+
+func validateSupabaseJWT(tokenString string) (*jwt.Token, error) {
+	// Initialize a JWKS client
+	// This library handles fetching and caching the keys for you.
+
+	// // Parse the token
+	// token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+	// 	// Ensure the signing algorithm is the expected one (typically RS256 for asymmetric keys)
+	// 	if _, ok := token.Method.(*jwt.SigningMethodRSA); !ok {
+	// 		return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+	// 	}
+
+	// 	// Retrieve the public key from the JWKS cache using the 'kid' from the token header
+	// 	kid, ok := token.Header["kid"].(string)
+	// 	if !ok {
+	// 		return nil, fmt.Errorf("kid not found in token header")
+	// 	}
+
+	// 	key, err := keyCache.GetKey(kid)
+	// 	if err != nil {
+	// 		return nil, fmt.Errorf("failed to get key from JWKS: %w", err)
+	// 	}
+
+	// 	// Return the public key for verification
+	// 	return key.Key, nil
+	// })
+
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// if !token.Valid {
+	// 	return nil, fmt.Errorf("invalid token")
+	// }
+	// claims := token.Claims.(jwt.MapClaims)
+	// fmt.Printf("Token is valid! User ID: %s\n", claims["sub"]) // "sub" is the user ID
+
+	// return token, nil
+	return nil, nil
+}
+
+func NewAuthInterceptor(auth *middleware.SupabaseAuth) connect.UnaryInterceptorFunc {
+	return func(next connect.UnaryFunc) connect.UnaryFunc {
+		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			// 1. Extract Bearer token
+			authHeader := req.Header().Get("Authorization")
+			if len(authHeader) < 8 || authHeader[:7] != "Bearer " {
+				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("missing token"))
+			}
+
+			// 2. Validate using cached JWKS
+			token, err := auth.Validate(authHeader[7:])
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			}
+
+			// 3. Add user ID to context for downstream use
+			if claims, ok := token.Claims.(jwt.MapClaims); ok {
+				ctx = context.WithValue(ctx, "user_id", claims["sub"])
+			}
+
+			return next(ctx, req)
+		}
+	}
 }
