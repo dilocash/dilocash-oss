@@ -2,9 +2,10 @@ package middleware
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"log"
 
+	"connectrpc.com/connect"
 	"github.com/MicahParks/keyfunc/v3"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -23,11 +24,36 @@ func NewSupabaseAuth(ctx context.Context, supabaseServer string) (*SupabaseAuth,
 	if err != nil {
 		return nil, err
 	}
-
+	log.Printf("Auth Issuer %s", supabaseServer+"/auth/v1")
 	return &SupabaseAuth{
 		keyfunc: k.Keyfunc,
 		issuer:  supabaseServer + "/auth/v1",
 	}, nil
+}
+
+func NewAuthInterceptor(auth *SupabaseAuth) connect.UnaryInterceptorFunc {
+	return func(next connect.UnaryFunc) connect.UnaryFunc {
+		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
+			// 1. Extract Bearer token
+			authHeader := req.Header().Get("Authorization")
+			if len(authHeader) < 8 || authHeader[:7] != "Bearer " {
+				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("missing token"))
+			}
+
+			// 2. Validate using cached JWKS
+			token, err := auth.Validate(authHeader[7:])
+			if err != nil {
+				return nil, connect.NewError(connect.CodeUnauthenticated, err)
+			}
+
+			// 3. Add user ID to context for downstream use
+			if claims, ok := token.Claims.(jwt.MapClaims); ok {
+				ctx = context.WithValue(ctx, "user_id", claims["sub"])
+			}
+
+			return next(ctx, req)
+		}
+	}
 }
 
 func (s *SupabaseAuth) Validate(tokenString string) (*jwt.Token, error) {
@@ -40,11 +66,11 @@ func (s *SupabaseAuth) Validate(tokenString string) (*jwt.Token, error) {
 	)
 
 	if err != nil {
-		log.Fatalf("Token validation failed: %v", err)
+		log.Printf("Token validation failed: %v", err)
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		fmt.Printf("Authenticated user ID: %v\n", claims["sub"])
+		log.Printf("Authenticated user ID: %v\n", claims["sub"])
 	}
 	return token, nil
 }

@@ -6,7 +6,6 @@ package main
 
 import (
 	"context"
-	"errors"
 	"log"
 	"net"
 	"os"
@@ -18,13 +17,11 @@ import (
 
 	"net/http"
 
-	"github.com/golang-jwt/jwt/v5"
-
 	"connectrpc.com/connect"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
 	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
-	v1connect "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
+	"github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
 	"github.com/dilocash/dilocash-oss/internal/middleware"
 	"github.com/dilocash/dilocash-oss/internal/services/transaction"
@@ -36,20 +33,23 @@ import (
 )
 
 // registerAllServices registers all gRPC services from v1
-func registerAllServices(grpcServer *grpc.Server, pool *pgxpool.Pool) {
-	// Register health service
-	healthManager := health.NewManager(pool)
-	healthManager.Register(grpcServer)
+func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *grpc.Server, pool *pgxpool.Pool) {
 
-	// TODO: Register other services here when they are implemented
-	// For now, we'll just register the health service
-	// In a real implementation, you would import and register:
-	// - IntentService
-	// - TransactionService
-	// etc.
-	// TransactionService is registered via connectrpc handler in HTTP mux, not here.
+	log.Println("Configure auth server")
+	supabaseAuth := configureAuthServer(ctx)
+
+	log.Println("Registering gRPC services...")
+	// transaction server
 	transactionServer := transaction.NewTransactionServer(pool)
 	v1.RegisterTransactionServiceServer(grpcServer, transactionServer)
+	path, handler := v1connect.NewTransactionServiceHandler(
+		transactionServer,
+		connect.WithInterceptors(
+			middleware.NewAuthInterceptor(&supabaseAuth),
+			validate.NewInterceptor()),
+	)
+	// Apply the middleware to protected routes
+	mux.Handle(path, handler)
 
 	// v1.RegisterIntentServiceServer(grpcServer, &v1connect.IntentService{})
 }
@@ -63,25 +63,8 @@ func main() {
 	}
 
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
-	dbURL := os.Getenv("DB_URL")
-	if dbURL == "" {
-		log.Fatal("DB_URL environment variable is required")
-	}
-
-	config, err := pgxpool.ParseConfig(dbURL)
-	if err != nil {
-		log.Fatalf("Failed to parse database URL: %v", err)
-	}
-
-	pool, err := pgxpool.NewWithConfig(context.Background(), config)
-	if err != nil {
-		log.Fatalf("Failed to connect to database: %v", err)
-	}
+	pool := initDB()
 	defer pool.Close()
-
-	// 3. Initialize SQLC Querier
-	_ = db.New(pool)
-	// (Note: In future steps, we'll inject this into our Service/Use-Case layer)
 
 	// 4. Setup gRPC Server
 	port := os.Getenv("APP_PORT")
@@ -104,54 +87,18 @@ func main() {
 
 	// Enable Reflection for easier debugging
 	reflection.Register(grpcServer)
-
-	// Register all services
-	registerAllServices(grpcServer, pool)
-
-	// 5. Database Health Monitor
-	healthIntervalStr := os.Getenv("DB_HEALTH_CHECK_INTERVAL")
-	healthInterval := 60 * time.Second
-	if healthIntervalStr != "" {
-		if val, err := strconv.Atoi(healthIntervalStr); err == nil {
-			healthInterval = time.Duration(val) * time.Second
-		}
-	}
-
-	healthCtx, cancelHealth := context.WithCancel(context.Background())
+	cancelHealth := configureHealthCheck(pool, grpcServer)
 	defer cancelHealth()
-
-	// Create health manager instance for monitoring
-	healthManager := health.NewManager(pool)
-	go healthManager.Monitor(healthCtx, healthInterval)
-
-	// 6. Setup HTTP/2 Clear Text (h2c) server to handle both gRPC and HTTP calls
+	// Setup HTTP/2 Clear Text (h2c) server to handle both gRPC and HTTP calls
 	go func() {
 		log.Printf("🚀 Dilocash-OSS API starting on port %s", port)
 
 		// Create a custom HTTP server that supports both HTTP and gRPC over the same port
 		mux := http.NewServeMux()
 
-		// Register connectrpc TransactionService handler
+		// Register all services
+		registerAllServices(ctx, mux, grpcServer, pool)
 
-		transactionServer := transaction.NewTransactionServer(pool)
-		supabaseServer := os.Getenv("SUPABASE_SERVER")
-		if supabaseServer == "" {
-			log.Fatalf("SUPABASE_SERVER environment variable not set")
-		}
-
-		supabaseAuth, err := middleware.NewSupabaseAuth(ctx, supabaseServer)
-		if err != nil {
-			log.Fatalf("NewSupabaseAuth init failed: %v", err)
-		}
-		path, handler := v1connect.NewTransactionServiceHandler(
-			transactionServer,
-			connect.WithInterceptors(
-				NewAuthInterceptor(supabaseAuth),
-				validate.NewInterceptor()),
-		)
-
-		// Apply the middleware to protected routes
-		mux.Handle(path, handler)
 		p := new(http.Protocols)
 		p.SetHTTP1(true)
 		p.SetUnencryptedHTTP2(true)
@@ -200,27 +147,58 @@ func main() {
 	log.Println("Server stopped.")
 }
 
-func NewAuthInterceptor(auth *middleware.SupabaseAuth) connect.UnaryInterceptorFunc {
-	return func(next connect.UnaryFunc) connect.UnaryFunc {
-		return func(ctx context.Context, req connect.AnyRequest) (connect.AnyResponse, error) {
-			// 1. Extract Bearer token
-			authHeader := req.Header().Get("Authorization")
-			if len(authHeader) < 8 || authHeader[:7] != "Bearer " {
-				return nil, connect.NewError(connect.CodeUnauthenticated, errors.New("missing token"))
-			}
+func initDB() *pgxpool.Pool {
+	dbURL := os.Getenv("DB_URL")
+	if dbURL == "" {
+		log.Fatal("DB_URL environment variable is required")
+	}
 
-			// 2. Validate using cached JWKS
-			token, err := auth.Validate(authHeader[7:])
-			if err != nil {
-				return nil, connect.NewError(connect.CodeUnauthenticated, err)
-			}
+	config, err := pgxpool.ParseConfig(dbURL)
+	if err != nil {
+		log.Fatalf("Failed to parse database URL: %v", err)
+	}
 
-			// 3. Add user ID to context for downstream use
-			if claims, ok := token.Claims.(jwt.MapClaims); ok {
-				ctx = context.WithValue(ctx, "user_id", claims["sub"])
-			}
+	//
+	pool, err := pgxpool.NewWithConfig(context.Background(), config)
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
 
-			return next(ctx, req)
+	// Initialize SQLC Querier
+	_ = db.New(pool)
+
+	return pool
+}
+
+func configureHealthCheck(pool *pgxpool.Pool, grpcServer *grpc.Server) context.CancelFunc {
+	// Set up Database Health Monitor
+	healthIntervalStr := os.Getenv("DB_HEALTH_CHECK_INTERVAL")
+	healthInterval := 60 * time.Second
+	if healthIntervalStr != "" {
+		if val, err := strconv.Atoi(healthIntervalStr); err == nil {
+			healthInterval = time.Duration(val) * time.Second
 		}
 	}
+
+	healthCtx, cancelHealth := context.WithCancel(context.Background())
+
+	// Create health manager instance for monitoring
+	healthManager := health.NewManager(pool)
+	go healthManager.Monitor(healthCtx, healthInterval) // Register health service
+	healthManager.Register(grpcServer)
+
+	return cancelHealth
+}
+
+func configureAuthServer(ctx context.Context) middleware.SupabaseAuth {
+	supabaseServer := os.Getenv("SUPABASE_SERVER")
+	if supabaseServer == "" {
+		log.Fatalf("SUPABASE_SERVER environment variable not set")
+	}
+
+	supabaseAuth, err := middleware.NewSupabaseAuth(ctx, supabaseServer)
+	if err != nil {
+		log.Fatalf("NewSupabaseAuth init failed: %v", err)
+	}
+	return *supabaseAuth
 }
