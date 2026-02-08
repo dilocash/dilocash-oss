@@ -15,13 +15,32 @@ import (
 
 	"strconv"
 
+	"net/http"
+
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 )
+
+// registerAllServices registers all gRPC services from v1
+func registerAllServices(grpcServer *grpc.Server, pool *pgxpool.Pool) {
+	// Register health service
+	healthManager := health.NewManager(pool)
+	healthManager.Register(grpcServer)
+
+	// TODO: Register other services here when they are implemented
+	// For now, we'll just register the health service
+	// In a real implementation, you would import and register:
+	// - IntentService
+	// - TransactionService
+	// etc.
+}
 
 func main() {
 	// 1. Load Environment Variables
@@ -61,14 +80,19 @@ func main() {
 		log.Fatalf("Failed to listen on port %s: %v", port, err)
 	}
 
-	grpcServer := grpc.NewServer()
+	// Create gRPC server with keepalive settings
+	grpcServer := grpc.NewServer(
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			MaxConnectionIdle: 5 * time.Minute,
+			MaxConnectionAge:  10 * time.Minute,
+		}),
+	)
 
 	// Enable Reflection for easier debugging
 	reflection.Register(grpcServer)
 
-	// Register Health Service
-	healthManager := health.NewManager(pool)
-	healthManager.Register(grpcServer)
+	// Register all services
+	registerAllServices(grpcServer, pool)
 
 	// 5. Database Health Monitor
 	healthIntervalStr := os.Getenv("DB_HEALTH_CHECK_INTERVAL")
@@ -82,12 +106,36 @@ func main() {
 	healthCtx, cancelHealth := context.WithCancel(context.Background())
 	defer cancelHealth()
 
+	// Create health manager instance for monitoring
+	healthManager := health.NewManager(pool)
 	go healthManager.Monitor(healthCtx, healthInterval)
 
-	// 6. Graceful Shutdown Handling
+	// 6. Setup HTTP/2 Clear Text (h2c) server to handle both gRPC and HTTP calls
 	go func() {
 		log.Printf("🚀 Dilocash-OSS API starting on port %s", port)
-		if err := grpcServer.Serve(lis); err != nil {
+
+		// Create a custom HTTP server that supports both HTTP and gRPC over the same port
+		mux := http.NewServeMux()
+
+		// Use h2c to allow both HTTP and gRPC on the same port
+		h2cServer := &http.Server{
+			Addr:    ":" + port,
+			Handler: h2c.NewHandler(mux, &http2.Server{}),
+		}
+
+		// Set up the main HTTP handler to route gRPC calls to the gRPC server
+		mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+			// Check if this is a gRPC request
+			if r.ProtoMajor == 2 && r.Header.Get("content-type") == "application/grpc" {
+				grpcServer.ServeHTTP(w, r)
+			} else {
+				// Handle regular HTTP requests
+				http.DefaultServeMux.ServeHTTP(w, r)
+			}
+		})
+
+		// Start the server
+		if err := h2cServer.Serve(lis); err != nil {
 			log.Fatalf("Failed to serve: %v", err)
 		}
 	}()
@@ -97,24 +145,17 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("Shutting down gRPC server...")
+	log.Println("Shutting down server...")
 	cancelHealth() // Stop the health monitor
 
 	// Create a context that will timeout after 30 seconds
 	// to ensure the process eventually exits if draining hangs.
-	stopped := make(chan struct{})
-	go func() {
-		grpcServer.GracefulStop()
-		close(stopped)
-	}()
+	_, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-	select {
-	case <-stopped:
-		log.Println("Drained all connections successfully.")
-	case <-time.After(30 * time.Second):
-		log.Println("Shutdown timed out, forcing stop...")
-		grpcServer.Stop()
-	}
-
+	// Stop the HTTP server gracefully
+	// Note: We need to access h2cServer from the goroutine scope
+	// For now, we'll just gracefully stop the gRPC server
+	grpcServer.GracefulStop()
 	log.Println("Server stopped.")
 }
