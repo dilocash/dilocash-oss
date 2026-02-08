@@ -22,13 +22,13 @@ generate: generate-code generate-docs ## Run all code and documentation generati
 
 generate-code: ## Generate Go/TS code from Proto, SQL and Mappers
 	@echo "🏗️  Generating API Contracts (Buf)..."
-	$(BUF) generate proto
+	@cd $(PROTO_DIR) && $(BUF) generate
 	@echo "🗄️  Generating Database Layer (SQLC)..."
-	$(SQLC) generate -f packages/database/sqlc.yaml
+	@$(SQLC) generate -f packages/database/sqlc.yaml
 	@echo "🔄 Generating Model Mappers (Goverter)..."
-	cd apps/api && $(GOVERTER) gen ./internal/mappers
+	@cd apps/api && $(GOVERTER) gen ./internal/mappers
 	@mkdir -p apps/api/internal/generated/mappers
-	@mv apps/api/internal/mappers/generated/generated.go apps/api/internal/generated/mappers/ 2>/dev/null || true
+	@mv apps/api/internal/mappers/generated/generated.go apps/api/internal/generated/mappers/
 	@rm -rf apps/api/internal/mappers/generated
 	@echo "✅ Code generation complete."
 
@@ -85,7 +85,7 @@ lint: ## Run linters for Go and Protobuf
 	@echo "🔍 Linting Infrastructure modules..."
 	cd infra && go vet ./...
 	@echo "🧹 Linting Protobuf definitions..."
-	$(BUF) lint proto
+	cd $(PROTO_DIR) && $(BUF) lint proto
 	@echo "✨ All checks passed!"
 
 test: ## Run Go tests
