@@ -51,6 +51,12 @@ generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 dev: ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm turbo run dev
 
+supabase-up:
+	npx supabase start
+
+supabase-down:
+	npx supabase stop
+
 build: ## Build all applications via Turborepo
 	@echo "🏗️  Building all applications..."
 	pnpm turbo run build
