@@ -1,7 +1,6 @@
 import { AuthButton } from "@/components/auth-button";
 import { Suspense } from "react";
 import { ThemeSwitcher } from "@/components/theme-switcher";
-import { Link } from "lucide-react";
 import { Hero } from "@/components/hero";
 
 export default function Home() {
@@ -12,7 +11,6 @@ export default function Home() {
           <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
             <Suspense fallback={<div>Loading...</div>}>
               <AuthButton />
-              <ThemeSwitcher></ThemeSwitcher>
             </Suspense>
           </div>
         </nav>
@@ -36,7 +34,7 @@ export default function Home() {
               Supabase
             </a>
           </p>
-          <ThemeSwitcher />
+          <ThemeSwitcher></ThemeSwitcher>
         </footer>
       </div>
     </main>
