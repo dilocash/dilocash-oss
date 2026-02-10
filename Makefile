@@ -5,6 +5,7 @@ BIN_DIR := ./bin
 PROTO_DIR := ./proto
 GEN_DIR := ./gen
 DOCS_DIR := ./docs/diagrams
+LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**"
 
 # Tools
 BUF := buf
@@ -78,11 +79,11 @@ check: lint test license-check ## Run all quality checks
 
 license-apply: ## Apply license headers to all source files
 	@echo "⚖️  Applying license headers..."
-	@~/go/bin/addlicense -f .license_header -v -ignore "apps/api/migrations/**" .
+	@~/go/bin/addlicense -f .license_header -v $(LICENSE_IGNORE) .
 
 license-check: ## Check if source files are missing license headers
 	@echo "🔍 Checking license headers..."
-	@~/go/bin/addlicense -f .license_header -check -ignore "apps/api/migrations/**" .
+	@~/go/bin/addlicense -f .license_header -check $(LICENSE_IGNORE) .
 
 lint: ## Run linters for Go and Protobuf
 	@echo "🏥 Checking project health for $(PROJECT_NAME)..."
@@ -91,7 +92,7 @@ lint: ## Run linters for Go and Protobuf
 	@echo "🔍 Linting Infrastructure modules..."
 	cd infra && go vet ./...
 	@echo "🧹 Linting Protobuf definitions..."
-	cd $(PROTO_DIR) && $(BUF) lint proto
+	cd $(PROTO_DIR) && $(BUF) lint
 	@echo "✨ All checks passed!"
 
 test: ## Run Go tests
