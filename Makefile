@@ -53,10 +53,12 @@ dev: ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm turbo run dev
 
 supabase-up:
-	npx supabase start
+	@echo "🔐 Starting Supabase..."
+	cd supabase && npx supabase start
 
 supabase-down:
-	npx supabase stop
+	@echo "🔐 Stopping Supabase..."
+	cd supabase && npx supabase stop
 
 build: ## Build all applications via Turborepo
 	@echo "🏗️  Building all applications..."
