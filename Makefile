@@ -5,7 +5,7 @@ BIN_DIR := ./bin
 PROTO_DIR := ./proto
 GEN_DIR := ./gen
 DOCS_DIR := ./docs/diagrams
-LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**"
+LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts"
 
 # Tools
 BUF := buf

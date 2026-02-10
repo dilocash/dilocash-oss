@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 export function DilocashLogo() {
   return (
     <svg width="400" height="400" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-label="Dilocash Logo">
