@@ -25,9 +25,9 @@ Dilocash is built with a **Staff-level** focus on precision, security, and scala
 - **Cache:** Redis
 - **Type Safety**: `sqlc` for Go code generation, **Goverter** for type-safe model mapping, and `Zod` for frontend validation.
 - **Migrations:** **Atlas** (Declarative migration management).
-- **Frontend:** **Next.js 15** (Web) and **Expo** (Mobile) via a **Turborepo** monorepo.
+- **Frontend:** **Next.js 16** (Web) and **Expo** (Mobile) via a **Turborepo** monorepo.
 - **Observability:** Structured JSON logging via `slog` with request tracing.
-- **Shared:** **Solito** for universal routing and **Tamagui** for shared UI components.
+- **Shared:** **Gluestack v3** for shared UI components.
 - **AI Engine:** OpenAI **Whisper** (Transcription) + **GPT-4o-mini** (Intent Extraction).
 - **Infrastructure:** Docker Compose (Local) / Infrastructure as Code (IaC) via **Pulumi** (Go) (AWS Cloud)
 
