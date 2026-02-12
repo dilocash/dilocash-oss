@@ -5,15 +5,19 @@
  */
 
 import type { NextConfig } from "next";
-
+import { withGluestackUI } from '@gluestack/ui-next-adapter';
 const path = require('path');
 
 const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
+  reactStrictMode: true,
   turbopack : {
     root : path.join(__dirname, '../..')
-  }
+  },
+  transpilePackages: [
+    "@dilocash/ui",
+  ],
 };
 
-export default nextConfig;
+export default withGluestackUI(nextConfig);
