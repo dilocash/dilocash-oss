@@ -2,6 +2,7 @@
 // packages/ui/src/components/AuthForm.tsx
 import React from 'react';
 import { VStack } from '@dilocash/ui';
+import { Box } from '@dilocash/ui';
 
 import { Heading } from '@dilocash/ui';
 import { Input, InputField } from '@dilocash/ui';
@@ -10,7 +11,7 @@ import { Text } from '@dilocash/ui';
 
 export const AuthForm = ({ type = 'login' }: { type: 'login' | 'register' }) => {
   return (
-    <VStack space="xl" className="w-full max-w-[380px] p-6 bg-white rounded-2xl shadow-sm border border-outline-100">
+    <VStack space="md" className="w-full center p-6 rounded-2xl shadow-sm border border-outline-100">
       <VStack space="xs">
         <Heading size="xl" className="text-typography-900">
           {type === 'login' ? 'Bienvenido' : 'Crea tu cuenta'}
@@ -29,7 +30,7 @@ export const AuthForm = ({ type = 'login' }: { type: 'login' | 'register' }) => 
         </Input>
       </VStack>
 
-      <Button className="bg-primary-500 hover:bg-primary-600">
+      <Button>
         <ButtonText>{type === 'login' ? 'Entrar' : 'Registrarse'}</ButtonText>
       </Button>
     </VStack>
