@@ -1,5 +1,6 @@
 {
   "name": "dilocash-oss",
+  "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.28.2",
   "scripts": {
@@ -12,8 +13,12 @@
     "turbo": "^2.8.3"
   },
   "dependencies": {
+    "@dilocash/api": "workspace:*",
     "@dilocash/ui": "workspace:*",
-    "@dilocash/web": "workspace:*",
-    "@dilocash/api": "workspace:*"
-  }
+    "@dilocash/web": "workspace:*"
+  },
+  "workspaces": [
+    "apps/*", 
+    "packages/*"
+  ]
 }
