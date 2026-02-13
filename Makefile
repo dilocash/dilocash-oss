@@ -113,12 +113,6 @@ migrate-new: ## Generate a new migration file (usage: make migrate-new name=add_
 
 # --- Integrations & Debugging ---
 
-ngrok: ## Expose API via ngrok (handles both webhooks and gRPC)
-	ngrok start --all --config ngrok.yml
-
-ngrok-quick: ## Quick ngrok tunnel without config file
-	ngrok http 8080
-
 bot-test: ## Send a mock voice payload to the intent engine
 	curl -X POST http://localhost:8080/v1/adapters/test -F "audio=@test.m4a"
 
