@@ -122,37 +122,7 @@ To test the voice feature locally:
 
 ---
 
-## 🌐 Testing Webhooks with ngrok
-
-To test Telegram/WhatsApp webhooks and gRPC APIs from external services, you'll need to expose your local API to the internet using **ngrok**.
-
-### Setup ngrok
-
-1. **Get your authtoken** from [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken)
-
-2. **Configure the project:**
-
-   ```bash
-   # Copy the example configuration
-   cp ngrok.yml.example ngrok.yml
-
-   # Edit ngrok.yml and replace YOUR_AUTHTOKEN_HERE with your actual token
-   ```
-
-3. **Start the tunnels:**
-
-   ```bash
-   # Start both gRPC and webhook tunnels simultaneously
-   make ngrok
-
-   # Or start individual tunnels:
-   make ngrok-grpc     # Only gRPC tunnel (HTTP/2 for gRPC clients)
-   make ngrok-webhook  # Only webhook tunnel (HTTPS for Telegram/WhatsApp)
-   ```
-
-4. **Get your public URLs:**
-   - View URLs in the terminal output, or
-   - Visit `http://127.0.0.1:4040` (ngrok web interface)
+## 🌐 Testing Webhooks (TBD)
 
 ### Use Cases
 
@@ -166,8 +136,6 @@ To test Telegram/WhatsApp webhooks and gRPC APIs from external services, you'll 
 - **WhatsApp Integration:** Use the webhook URL in your Meta Developer Console
 
 - **gRPC Client Testing:** Connect to the gRPC tunnel URL for external gRPC testing
-
-> ⚠️ **Security Note:** The `ngrok.yml` file contains your authtoken and is gitignored. Never commit it to version control.
 
 ---
 
