@@ -12,6 +12,8 @@
     "turbo": "^2.8.3"
   },
   "dependencies": {
-    "@dilocash/ui": "workspace:*"
+    "@dilocash/ui": "workspace:*",
+    "@dilocash/web": "workspace:*",
+    "@dilocash/api": "workspace:*"
   }
 }

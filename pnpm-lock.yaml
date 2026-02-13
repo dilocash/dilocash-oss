@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@dilocash/api':
+        specifier: workspace:*
+        version: link:apps/api
       '@dilocash/ui':
         specifier: workspace:*
         version: link:packages/ui
+      '@dilocash/web':
+        specifier: workspace:*
+        version: link:apps/web
     devDependencies:
       turbo:
         specifier: ^2.8.3
