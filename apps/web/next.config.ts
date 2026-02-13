@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
   },
   transpilePackages: [
     "@dilocash/ui",
+    "@gluestack-ui/core",
+    "@gluestack-ui/utils",
+    "@gluestack/ui-next-adapter",
+    "react-native-web",
   ],
 };
 

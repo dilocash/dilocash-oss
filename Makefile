@@ -49,8 +49,11 @@ generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 
 # --- Development & Build ---
 
-dev: ## Start all applications (API, Web, Mobile) via Turborepo
-	pnpm turbo run dev
+install: ## Install all dependencies at the root
+	pnpm install
+
+dev: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev
 
 supabase-up:
 	@echo "🔐 Starting Supabase..."
@@ -134,9 +137,19 @@ adr: ## Scaffold a new ADR (usage: make adr n=0005 t="use_redis_cache")
 
 # --- Cleanup ---
 
-clean: ## Remove generated binaries and code
+clean: clean-ui ## Remove generated binaries and code
 	rm -rf $(BIN_DIR)
+	rm -rf node_modules
+	rm -rf apps/api/bin
+	rm -rf .turbo
+	find . -name "pnpm-lock.yaml" -not -path "./pnpm-lock.yaml" -delete
 	@echo "🧹 Cleaned all generated assets."
+
+clean-ui: ## Remove generated ui code
+	rm -rf apps/web/node_modules apps/web/.next
+	rm -rf apps/mobile/node_modules
+	rm -rf packages/ui/node_modules
+	@echo "🧹 Cleaned all generated ui assets."
 
 tidy: ## Tidy Go modules
 	cd apps/api && go mod tidy

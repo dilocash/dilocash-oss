@@ -9,16 +9,11 @@
     "lint": "turbo run lint",
     "test": "turbo run test"
   },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "devDependencies": {
     "turbo": "^2.8.3"
-  },
-  "dependencies": {
-    "@dilocash/api": "workspace:*",
-    "@dilocash/ui": "workspace:*",
-    "@dilocash/web": "workspace:*"
-  },
-  "workspaces": [
-    "apps/*", 
-    "packages/*"
-  ]
+  }
 }
