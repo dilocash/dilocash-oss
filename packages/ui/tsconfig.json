@@ -27,7 +27,7 @@
         "./*"
       ],
       "tailwind.config": [
-        "./tailwind.config.js"
+        "./tailwind.config.ts"
       ]
     },
     "jsxImportSource": "nativewind"
@@ -40,5 +40,7 @@
     ".next/dev/types/**/*.ts",
     "**/*.mts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

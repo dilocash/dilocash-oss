@@ -31,7 +31,6 @@ vendor/
 .env.test.local
 .env.production.local
 *.env
-ngrok.yml
 
 # Logs
 logs/

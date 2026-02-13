@@ -49,8 +49,11 @@ generate-docs: ## Render Mermaid diagrams (.mmd) to SVG
 
 # --- Development & Build ---
 
-dev: ## Start all applications (API, Web, Mobile) via Turborepo
-	pnpm turbo run dev
+install: ## Install all dependencies at the root
+	pnpm install
+
+dev: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev
 
 supabase-up:
 	@echo "🔐 Starting Supabase..."
@@ -62,7 +65,7 @@ supabase-down:
 
 build: ## Build all applications via Turborepo
 	@echo "🏗️  Building all applications..."
-	pnpm turbo run build
+	pnpm build
 
 build-api: ## Build API binary directly (faster than turbo build)
 	@echo "🏗️  Building API..."
@@ -113,12 +116,6 @@ migrate-new: ## Generate a new migration file (usage: make migrate-new name=add_
 
 # --- Integrations & Debugging ---
 
-ngrok: ## Expose API via ngrok (handles both webhooks and gRPC)
-	ngrok start --all --config ngrok.yml
-
-ngrok-quick: ## Quick ngrok tunnel without config file
-	ngrok http 8080
-
 bot-test: ## Send a mock voice payload to the intent engine
 	curl -X POST http://localhost:8080/v1/adapters/test -F "audio=@test.m4a"
 
@@ -140,9 +137,19 @@ adr: ## Scaffold a new ADR (usage: make adr n=0005 t="use_redis_cache")
 
 # --- Cleanup ---
 
-clean: ## Remove generated binaries and code
+clean: clean-ui ## Remove generated binaries and code
 	rm -rf $(BIN_DIR)
+	rm -rf node_modules
+	rm -rf apps/api/bin
+	rm -rf .turbo
+	find . -name "pnpm-lock.yaml" -not -path "./pnpm-lock.yaml" -delete
 	@echo "🧹 Cleaned all generated assets."
+
+clean-ui: ## Remove generated ui code
+	rm -rf apps/web/node_modules apps/web/.next
+	rm -rf apps/mobile/node_modules
+	rm -rf packages/ui/node_modules
+	@echo "🧹 Cleaned all generated ui assets."
 
 tidy: ## Tidy Go modules
 	cd apps/api && go mod tidy

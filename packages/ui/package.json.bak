@@ -1,0 +1,63 @@
+{
+  "name": "@dilocash/ui",
+  "version": "0.1.0",
+  "description": "shared ui components",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "default": "./src/index.ts"
+    },
+    "./global.css": "./src/global.css",
+    "./tailwind.config": "./tailwind.config.ts"
+  },
+  "types": "./src/index.ts",
+  "dependencies": {
+    "react-native-safe-area-context": "^5.6.2",
+    "tailwindcss": "^3.4.19",
+    "@expo/html-elements": "^0.10.1",
+    "@gluestack-ui/core": "^3.0.12",
+    "@gluestack-ui/utils": "^3.0.15",
+    "@gluestack/ui-next-adapter": "^3.0.3",
+    "@legendapp/motion": "^2.5.3",
+    "dom-helpers": "^5.2.1",
+    "nativewind": "^4.2.1",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-aria": "^3.46.0",
+    "react-dom": "19.2.3",
+    "react-native-reanimated": "~4.1.6",
+    "react-native-svg": "^15.15.3",
+    "react-native-web": "^0.19.13",
+    "react-native-worklets": "^0.5.2",
+    "react-stately": "^3.44.0",
+    "tailwind-variants": "^0.1.20"
+  },
+  "devDependencies": {
+    "react": "^18.0.0",
+    "@types/react": "^19",
+    "next": "16.1.6",
+    "@react-native/assets-registry": "^0.79.7",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react-dom": "^19",
+    "@types/react-native": "0.72.8",
+    "autoprefixer": "^10.4.24",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5"
+  },
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}
