@@ -65,7 +65,7 @@ supabase-down:
 
 build: ## Build all applications via Turborepo
 	@echo "🏗️  Building all applications..."
-	pnpm turbo run build
+	pnpm build
 
 build-api: ## Build API binary directly (faster than turbo build)
 	@echo "🏗️  Building API..."

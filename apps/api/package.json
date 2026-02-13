@@ -6,7 +6,8 @@
     "dev": "go run cmd/main.go",
     "build": "go build -o bin/api cmd/main.go",
     "test": "go test ./...",
-    "lint": "go vet ./..."
+    "lint": "go vet ./...",
+    "start": "go run cmd/main.go"
   },
   "dependencies": {
     "@bufbuild/buf": "^1.65.0"
