@@ -11,6 +11,5 @@ const config: Config = {
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
   ],
 };
-console.log(config)
 
 export default config;
