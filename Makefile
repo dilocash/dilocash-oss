@@ -55,6 +55,15 @@ install: ## Install all dependencies at the root
 dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
+dev-mobile: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/mobile
+
+dev-web: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/web
+
+dev-api: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/api
+
 supabase-up:
 	@echo "🔐 Starting Supabase..."
 	cd supabase && npx supabase start
