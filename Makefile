@@ -156,7 +156,7 @@ clean: clean-ui ## Remove generated binaries and code
 
 clean-ui: ## Remove generated ui code
 	rm -rf apps/web/node_modules apps/web/.next
-	rm -rf apps/mobile/node_modules
+	rm -rf apps/mobile/node_modules apps/mobile/.expo
 	rm -rf packages/ui/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
 
