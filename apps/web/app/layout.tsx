@@ -1,5 +1,5 @@
 "use client";
-import "@dilocash/ui/global.css";  // Make sure this path is correct
+import "../styles/global.css"; 
 
 import { GluestackUIProvider } from "@dilocash/ui";
 
