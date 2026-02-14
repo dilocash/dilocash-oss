@@ -1,13 +1,11 @@
 'use client';
 // packages/ui/src/components/AuthForm.tsx
 import React from 'react';
-import { VStack } from '@dilocash/ui';
-import { Box } from '@dilocash/ui';
-
-import { Heading } from '@dilocash/ui';
-import { Input, InputField } from '@dilocash/ui';
-import { Button, ButtonText } from '@dilocash/ui';
-import { Text } from '@dilocash/ui';
+import { VStack } from '../../../components/ui/vstack';
+import { Heading } from '../../../components/ui/heading';
+import { Input, InputField } from '../../../components/ui/input';
+import { Button, ButtonText } from '../../../components/ui/button';
+import { Text } from '../../../components/ui/text';
 
 export const AuthForm = ({ type = 'login' }: { type: 'login' | 'register' }) => {
   return (
