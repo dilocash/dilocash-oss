@@ -1,16 +1,15 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
 import { useColorScheme } from "@/components/useColorScheme";
 import "../global.css";
+import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
+import { Box } from "@dilocash/ui/components/ui/box";
+import { VStack } from "@dilocash/ui/components/ui/vstack";
+import { HStack } from "@dilocash/ui/components/ui/hstack";
+import { Heading } from "@dilocash/ui/components/ui/heading";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -50,12 +49,11 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const colorScheme = useColorScheme();
   return (
-    <GluestackUIProvider mode={colorScheme === 'dark' ? 'dark' : 'light'}>
-       <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Slot />
-      </ThemeProvider>
+    <GluestackUIProvider>
+      <Box className="w-full h-full items-center justify-center">
+        <AuthForm/>
+      </Box>
     </GluestackUIProvider>
   );
 }

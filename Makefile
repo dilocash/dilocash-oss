@@ -151,7 +151,7 @@ clean: clean-ui ## Remove generated binaries and code
 	rm -rf node_modules
 	rm -rf apps/api/bin
 	rm -rf .turbo
-	find . -name "pnpm-lock.yaml" -not -path "./pnpm-lock.yaml" -delete
+	rm -rf pnpm-lock.yaml
 	@echo "🧹 Cleaned all generated assets."
 
 clean-ui: ## Remove generated ui code
