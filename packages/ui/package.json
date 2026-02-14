@@ -2,16 +2,9 @@
   "name": "@dilocash/ui",
   "version": "0.1.0",
   "description": "shared ui components",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts",
-      "default": "./src/index.ts"
-    },
-    "./tailwind.config": "./tailwind.config.ts"
-  },
-  "types": "./src/index.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "dependencies": {
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",

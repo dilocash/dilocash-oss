@@ -1,7 +1,7 @@
 "use client";
 import "../styles/global.css"; 
 
-import { GluestackUIProvider } from "@dilocash/ui";
+import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
 
 export default function RootLayout({
   children,

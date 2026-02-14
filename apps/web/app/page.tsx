@@ -5,7 +5,7 @@
  */
 import { Suspense } from "react";
 
-import { AuthForm } from "@dilocash/ui";
+import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
 
 export default function Home() {
   return (
