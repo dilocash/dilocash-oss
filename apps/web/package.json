@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dilocash/ui": "workspace:*",
+    "@dilocash/i18n": "workspace:*",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
