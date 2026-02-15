@@ -14,7 +14,7 @@ import { HStack } from '../ui/hstack';
 export const AuthForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   return (
-    <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full">
+    <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full align-center justify-center">
       <Heading>Log in</Heading>
       <Text className="mt-2">Login to start using gluestack</Text>
 
