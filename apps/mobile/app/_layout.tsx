@@ -6,6 +6,12 @@ import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-pro
 import "../global.css";
 import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
 import { Center } from "@dilocash/ui/components/ui/center";
+import * as Localization from 'expo-localization';
+import { initI18n } from '@dilocash/i18n';
+
+// we get the mobile language (ej. 'en', 'es')
+const deviceLanguage = Localization.getLocales()[0].languageCode ?? 'en';
+initI18n(false, deviceLanguage);
 
 export {
   // Catch any errors thrown by the Layout component.

@@ -55,13 +55,13 @@ install: ## Install all dependencies at the root
 dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
-dev-mobile: install ## Start all applications (API, Web, Mobile) via Turborepo
-	pnpm dev --filter @dilocash/mobile
+dev-mobile: install ## Start Mobile Android app via Turborepo
+	pnpm dev --filter @dilocash/mobile -- --android --clear
 
-dev-web: install ## Start all applications (API, Web, Mobile) via Turborepo
+dev-web: install ## Start Web app via Turborepo
 	pnpm dev --filter @dilocash/web
 
-dev-api: install ## Start all applications (API, Web, Mobile) via Turborepo
+dev-api: install ## Start API via Turborepo
 	pnpm dev --filter @dilocash/api
 
 supabase-up:

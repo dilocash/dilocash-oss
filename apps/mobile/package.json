@@ -7,12 +7,14 @@
     "reset-project": "node ./scripts/reset-project.js",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "dev": "export BROWSER=none && expo start --android --clear",
-    "web": "expo start --web",
+    "dev": "CI=1 expo start",
+    "web": "export BROWSER=none && expo start --web --clear",
     "lint": "expo lint"
   },
   "dependencies": {
     "@dilocash/ui": "workspace:*",
+    "@dilocash/i18n": "workspace:*",
+    "expo-localization": "^17.0.8",
     "@expo/vector-icons": "^15.0.3",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
