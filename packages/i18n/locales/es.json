@@ -1,0 +1,34 @@
+{
+  "login": {
+    "title": "Inicio de Sesión",
+    "subtitle": "Ingresa tus datos para iniciar sesión",
+    "email": "Correo electrónico",
+    "email_placeholder": "Ingresa tu correo electrónico",
+    "password": "Contraseña",
+    "password_placeholder": "Ingresa tu contraseña",
+    "action": "Iniciar Sesión",
+    "forgot_password": "¿Olvidaste tu contraseña?",
+    "remember_me": "Recordarme",
+    "sign_up": "¿No tienes cuenta?",
+    "sign_up_link": "Regístrate"
+  },
+  "intents": {
+    "types": {
+      "transaction": "Transacción",
+      "audio": "Nota de Voz",
+      "text": "Texto Crudo"
+    },
+    "status": {
+      "synced": "Sincronizado",
+      "pending": "Pendiente",
+      "processing": "Procesando",
+      "failed": "Error"
+    },
+    "placeholders": {
+      "voice_note": "Nota de voz: {{context}}"
+    }
+  },
+  "common": {
+    "currency": "USD"
+  }
+}

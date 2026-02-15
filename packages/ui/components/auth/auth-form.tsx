@@ -1,6 +1,7 @@
 'use client';
 // packages/ui/src/components/AuthForm.tsx
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { VStack } from '../ui/vstack';
 import { Heading } from '../ui/heading';
 import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
@@ -12,22 +13,23 @@ import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "../ui/
 import { HStack } from '../ui/hstack';
 
 export const AuthForm = () => {
+  const { t, i18n } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   return (
     <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full align-center justify-center">
-      <Heading>Log in</Heading>
-      <Text className="mt-2">Login to start using gluestack</Text>
+      <Heading>{t('login.title')}</Heading>
+      <Text className="mt-2">{t('login.subtitle')}</Text>
 
-      <Text className="mt-4">Email</Text>
+      <Text className="mt-4">{t('login.email')}</Text>
       <Input>
-        <InputField type="text" placeholder="Enter your email" />
+        <InputField type="text" placeholder={t('login.email_placeholder')} />
       </Input>
 
-      <Text className="mt-6">Password</Text>
+      <Text className="mt-6">{t('login.password')}</Text>
       <Input>
         <InputField
               type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
+              placeholder={t('login.password_placeholder')}
             />
             <InputSlot
               onPress={() => setShowPassword(!showPassword)}
@@ -42,18 +44,18 @@ export const AuthForm = () => {
               <CheckboxIndicator>
                 <CheckboxIcon as={CheckIcon} />
               </CheckboxIndicator>
-              <CheckboxLabel>Remember me</CheckboxLabel>
+              <CheckboxLabel>{t('login.remember_me')}</CheckboxLabel>
             </Checkbox>
 
             <Button variant="link" size="sm">
               <ButtonText className="underline underline-offset-1">
-                Forgot Password?
+                {t('login.forgot_password')}
               </ButtonText>
             </Button>
           </HStack>
 
           <Button className="w-full" size="sm">
-            <ButtonText>Log in</ButtonText>
+            <ButtonText>{t('login.action')}</ButtonText>
           </Button>
         </VStack>
   );
