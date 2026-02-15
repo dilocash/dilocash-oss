@@ -1,4 +1,4 @@
-// packages/ui/tailwind.config.ts
+// apps/mobile/tailwind.config.ts
 import type { Config } from "tailwindcss";
 
 // @ts-ignore
@@ -7,10 +7,19 @@ import type { Config } from "tailwindcss";
 const config: Config = {
   darkMode: process.env.DARK_MODE === 'media' ? 'media' : 'class',
   content: [
+    './app/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './components/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './utils/**/*.{html,js,jsx,ts,tsx,mdx}',
+    './*.{html,js,jsx,ts,tsx,mdx}',
+    './src/**/*.{html,js,jsx,ts,tsx,mdx}',
+    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
+    "./src/**/*.{js,ts,jsx,tsx}",
     "./app/**/*.{js,ts,jsx,tsx}",
+    "@dilocash/ui/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "../../packages/ui/components/**/*.{js,ts,jsx,tsx}",
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
+    
   ],
   presets: [require('nativewind/preset')],
   important: 'html',

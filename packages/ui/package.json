@@ -2,26 +2,18 @@
   "name": "@dilocash/ui",
   "version": "0.1.0",
   "description": "shared ui components",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./src/index.ts",
-      "import": "./src/index.ts",
-      "default": "./src/index.ts"
-    },
-    "./global.css": "./src/global.css",
-    "./tailwind.config": "./tailwind.config.ts"
-  },
-  "types": "./src/index.ts",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "dependencies": {
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
     "@expo/html-elements": "^0.10.1",
     "next": "16.1.6",
-    "react": "^19.2.3",
+    "react": "^19.2.0",
     "react-aria": "^3.41.1",
-    "react-dom": "^19.2.3",
+    "react-dom": "^19.2.0",
     "nativewind": "^4.1.23",
     "react-native-safe-area-context": "^5.6.1",
     "react-native-svg": "^15.12.0",
@@ -31,8 +23,8 @@
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
-    "@types/react": "^19.2.3",
-    "@types/react-dom": "^19.2.3",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "postcss": "^8.5.6",

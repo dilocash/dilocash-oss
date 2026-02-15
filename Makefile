@@ -55,6 +55,15 @@ install: ## Install all dependencies at the root
 dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
+dev-mobile: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/mobile
+
+dev-web: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/web
+
+dev-api: install ## Start all applications (API, Web, Mobile) via Turborepo
+	pnpm dev --filter @dilocash/api
+
 supabase-up:
 	@echo "🔐 Starting Supabase..."
 	cd supabase && npx supabase start
@@ -142,12 +151,12 @@ clean: clean-ui ## Remove generated binaries and code
 	rm -rf node_modules
 	rm -rf apps/api/bin
 	rm -rf .turbo
-	find . -name "pnpm-lock.yaml" -not -path "./pnpm-lock.yaml" -delete
+	rm -rf pnpm-lock.yaml
 	@echo "🧹 Cleaned all generated assets."
 
 clean-ui: ## Remove generated ui code
 	rm -rf apps/web/node_modules apps/web/.next
-	rm -rf apps/mobile/node_modules
+	rm -rf apps/mobile/node_modules apps/mobile/.expo
 	rm -rf packages/ui/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
 
