@@ -151,6 +151,9 @@ clean: clean-ui ## Remove generated binaries and code
 	rm -rf node_modules
 	rm -rf apps/api/bin
 	rm -rf .turbo
+	@echo "🧹 Cleaned all generated assets."
+
+clean-full: clean ## Remove generated binaries and code
 	rm -rf pnpm-lock.yaml
 	@echo "🧹 Cleaned all generated assets."
 

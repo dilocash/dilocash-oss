@@ -8,6 +8,7 @@ import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
 import { Center } from "@dilocash/ui/components/ui/center";
 import * as Localization from 'expo-localization';
 import { initI18n } from '@dilocash/i18n';
+import { Slot } from "expo-router";
 
 // we get the mobile language (ej. 'en', 'es')
 const deviceLanguage = Localization.getLocales()[0].languageCode ?? 'en';
@@ -54,7 +55,7 @@ function RootLayoutNav() {
   return (
     <GluestackUIProvider>
       <Center className="flex-1 w-full h-full">
-        <AuthForm/>
+        <Slot/>
       </Center>
     </GluestackUIProvider>
   );
