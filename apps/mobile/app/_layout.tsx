@@ -53,7 +53,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <GluestackUIProvider>
+    <GluestackUIProvider mode="light">
       <Center className="flex-1 w-full h-full">
         <Slot/>
       </Center>
