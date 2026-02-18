@@ -31,7 +31,7 @@ const file_dilocash_v1_intent_service_proto_rawDesc = "" +
 	" dilocash/v1/intent_service.proto\x12\vdilocash.v1\x1a\x1edilocash/v1/intent_types.proto2\xb3\x01\n" +
 	"\rIntentService\x12P\n" +
 	"\vPullIntents\x12\x1f.dilocash.v1.PullIntentsRequest\x1a .dilocash.v1.PullIntentsResponse\x12P\n" +
-	"\vPushIntents\x12\x1f.dilocash.v1.PushIntentsRequest\x1a .dilocash.v1.PushIntentsResponseBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
+	"\vPushIntents\x12\x1f.dilocash.v1.PushIntentsRequest\x1a .dilocash.v1.PushIntentsResponseBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var file_dilocash_v1_intent_service_proto_goTypes = []any{
 	(*PullIntentsRequest)(nil),  // 0: dilocash.v1.PullIntentsRequest

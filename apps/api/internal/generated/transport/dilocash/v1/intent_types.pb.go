@@ -349,7 +349,7 @@ const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\x12PushIntentsRequest\x12-\n" +
 	"\aintents\x18\x01 \x03(\v2\x13.dilocash.v1.IntentR\aintents\"8\n" +
 	"\x13PushIntentsResponse\x12!\n" +
-	"\fconflict_ids\x18\x01 \x03(\tR\vconflictIdsBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
+	"\fconflict_ids\x18\x01 \x03(\tR\vconflictIdsBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_intent_types_proto_rawDescOnce sync.Once
