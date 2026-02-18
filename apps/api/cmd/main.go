@@ -19,12 +19,11 @@ import (
 
 	"connectrpc.com/connect"
 	"connectrpc.com/validate"
-	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
-	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
-	"github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
-	"github.com/dilocash/dilocash-oss/internal/infra/health"
-	"github.com/dilocash/dilocash-oss/internal/middleware"
-	"github.com/dilocash/dilocash-oss/internal/services/transaction"
+	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1/v1connect"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/health"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/middleware"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/services/transaction"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
@@ -41,7 +40,6 @@ func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *gr
 	log.Println("Registering gRPC services...")
 	// transaction server
 	transactionServer := transaction.NewTransactionServer(pool)
-	v1.RegisterTransactionServiceServer(grpcServer, transactionServer)
 	path, handler := v1connect.NewTransactionServiceHandler(
 		transactionServer,
 		connect.WithInterceptors(

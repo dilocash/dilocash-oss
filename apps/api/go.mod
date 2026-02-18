@@ -1,4 +1,4 @@
-module github.com/dilocash/dilocash-oss
+module github.com/dilocash/dilocash-oss/apps/api
 
 go 1.25.5
 

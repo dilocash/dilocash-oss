@@ -6,8 +6,7 @@ syntax = "proto3";
 
 package dilocash.v1;
 
-option go_package = "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1";
-
+option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 import "dilocash/v1/transaction_types.proto";
 
 service TransactionService {

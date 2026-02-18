@@ -26,28 +26,36 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type ProcessIntentRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Text          string                 `protobuf:"bytes,1,opt,name=text,proto3" json:"text,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+// represents the intent of a financial transaction
+type Intent struct {
+	state       protoimpl.MessageState `protogen:"open.v1"`
+	Id          string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // UUID generated in the client (RxDB primary key)
+	Amount      float64                `protobuf:"fixed64,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Currency    string                 `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
+	RecipientId string                 `protobuf:"bytes,4,opt,name=recipient_id,json=recipientId,proto3" json:"recipient_id,omitempty"`
+	Note        string                 `protobuf:"bytes,5,opt,name=note,proto3" json:"note,omitempty"`
+	// critical fields for offline-first synchronization
+	Status        string                 `protobuf:"bytes,6,opt,name=status,proto3" json:"status,omitempty"`                        // "pending", "completed", "failed"
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
+	Deleted       bool                   `protobuf:"varint,8,opt,name=deleted,proto3" json:"deleted,omitempty"`                     // Flag for "Soft Deletes" (RxDB requires it)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *ProcessIntentRequest) Reset() {
-	*x = ProcessIntentRequest{}
+func (x *Intent) Reset() {
+	*x = Intent{}
 	mi := &file_dilocash_v1_intent_types_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *ProcessIntentRequest) String() string {
+func (x *Intent) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*ProcessIntentRequest) ProtoMessage() {}
+func (*Intent) ProtoMessage() {}
 
-func (x *ProcessIntentRequest) ProtoReflect() protoreflect.Message {
+func (x *Intent) ProtoReflect() protoreflect.Message {
 	mi := &file_dilocash_v1_intent_types_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -59,132 +67,91 @@ func (x *ProcessIntentRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use ProcessIntentRequest.ProtoReflect.Descriptor instead.
-func (*ProcessIntentRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use Intent.ProtoReflect.Descriptor instead.
+func (*Intent) Descriptor() ([]byte, []int) {
 	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *ProcessIntentRequest) GetText() string {
+func (x *Intent) GetId() string {
 	if x != nil {
-		return x.Text
+		return x.Id
 	}
 	return ""
 }
 
-func (x *ProcessIntentRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-type ProcessIntentResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TransactionId string                 `protobuf:"bytes,1,opt,name=transaction_id,json=transactionId,proto3" json:"transaction_id,omitempty"`
-	Amount        string                 `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Currency      string                 `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
-	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ProcessIntentResponse) Reset() {
-	*x = ProcessIntentResponse{}
-	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ProcessIntentResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ProcessIntentResponse) ProtoMessage() {}
-
-func (x *ProcessIntentResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ProcessIntentResponse.ProtoReflect.Descriptor instead.
-func (*ProcessIntentResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *ProcessIntentResponse) GetTransactionId() string {
-	if x != nil {
-		return x.TransactionId
-	}
-	return ""
-}
-
-func (x *ProcessIntentResponse) GetAmount() string {
+func (x *Intent) GetAmount() float64 {
 	if x != nil {
 		return x.Amount
 	}
-	return ""
+	return 0
 }
 
-func (x *ProcessIntentResponse) GetCurrency() string {
+func (x *Intent) GetCurrency() string {
 	if x != nil {
 		return x.Currency
 	}
 	return ""
 }
 
-func (x *ProcessIntentResponse) GetCategory() string {
+func (x *Intent) GetRecipientId() string {
 	if x != nil {
-		return x.Category
+		return x.RecipientId
 	}
 	return ""
 }
 
-func (x *ProcessIntentResponse) GetDescription() string {
+func (x *Intent) GetNote() string {
 	if x != nil {
-		return x.Description
+		return x.Note
 	}
 	return ""
 }
 
-func (x *ProcessIntentResponse) GetCreatedAt() *timestamppb.Timestamp {
+func (x *Intent) GetStatus() string {
 	if x != nil {
-		return x.CreatedAt
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Intent) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
 	}
 	return nil
 }
 
-type GetHistoryRequest struct {
+func (x *Intent) GetDeleted() bool {
+	if x != nil {
+		return x.Deleted
+	}
+	return false
+}
+
+// request to pull changes from the server
+type PullIntentsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`
+	LastUpdatedAt *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=last_updated_at,json=lastUpdatedAt,proto3" json:"last_updated_at,omitempty"` // The checkpoint that RxDB will send
+	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`                                       // Batch size
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetHistoryRequest) Reset() {
-	*x = GetHistoryRequest{}
-	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
+func (x *PullIntentsRequest) Reset() {
+	*x = PullIntentsRequest{}
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetHistoryRequest) String() string {
+func (x *PullIntentsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetHistoryRequest) ProtoMessage() {}
+func (*PullIntentsRequest) ProtoMessage() {}
 
-func (x *GetHistoryRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
+func (x *PullIntentsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -195,46 +162,100 @@ func (x *GetHistoryRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetHistoryRequest.ProtoReflect.Descriptor instead.
-func (*GetHistoryRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{2}
+// Deprecated: Use PullIntentsRequest.ProtoReflect.Descriptor instead.
+func (*PullIntentsRequest) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetHistoryRequest) GetUserId() string {
+func (x *PullIntentsRequest) GetLastUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		return x.UserId
+		return x.LastUpdatedAt
 	}
-	return ""
+	return nil
 }
 
-func (x *GetHistoryRequest) GetLimit() int32 {
+func (x *PullIntentsRequest) GetLimit() int32 {
 	if x != nil {
 		return x.Limit
 	}
 	return 0
 }
 
-type GetHistoryResponse struct {
-	state         protoimpl.MessageState   `protogen:"open.v1"`
-	Transactions  []*ProcessIntentResponse `protobuf:"bytes,1,rep,name=transactions,proto3" json:"transactions,omitempty"`
+// server response with the new data
+type PullIntentsResponse struct {
+	state               protoimpl.MessageState `protogen:"open.v1"`
+	Intents             []*Intent              `protobuf:"bytes,1,rep,name=intents,proto3" json:"intents,omitempty"`
+	CheckpointUpdatedAt int64                  `protobuf:"varint,2,opt,name=checkpoint_updated_at,json=checkpointUpdatedAt,proto3" json:"checkpoint_updated_at,omitempty"` // The new checkpoint for the next time
+	unknownFields       protoimpl.UnknownFields
+	sizeCache           protoimpl.SizeCache
+}
+
+func (x *PullIntentsResponse) Reset() {
+	*x = PullIntentsResponse{}
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullIntentsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullIntentsResponse) ProtoMessage() {}
+
+func (x *PullIntentsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullIntentsResponse.ProtoReflect.Descriptor instead.
+func (*PullIntentsResponse) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *PullIntentsResponse) GetIntents() []*Intent {
+	if x != nil {
+		return x.Intents
+	}
+	return nil
+}
+
+func (x *PullIntentsResponse) GetCheckpointUpdatedAt() int64 {
+	if x != nil {
+		return x.CheckpointUpdatedAt
+	}
+	return 0
+}
+
+// request to push changes from the client
+type PushIntentsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Intents       []*Intent              `protobuf:"bytes,1,rep,name=intents,proto3" json:"intents,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *GetHistoryResponse) Reset() {
-	*x = GetHistoryResponse{}
+func (x *PushIntentsRequest) Reset() {
+	*x = PushIntentsRequest{}
 	mi := &file_dilocash_v1_intent_types_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *GetHistoryResponse) String() string {
+func (x *PushIntentsRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetHistoryResponse) ProtoMessage() {}
+func (*PushIntentsRequest) ProtoMessage() {}
 
-func (x *GetHistoryResponse) ProtoReflect() protoreflect.Message {
+func (x *PushIntentsRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_dilocash_v1_intent_types_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -246,14 +267,60 @@ func (x *GetHistoryResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetHistoryResponse.ProtoReflect.Descriptor instead.
-func (*GetHistoryResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use PushIntentsRequest.ProtoReflect.Descriptor instead.
+func (*PushIntentsRequest) Descriptor() ([]byte, []int) {
 	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{3}
 }
 
-func (x *GetHistoryResponse) GetTransactions() []*ProcessIntentResponse {
+func (x *PushIntentsRequest) GetIntents() []*Intent {
 	if x != nil {
-		return x.Transactions
+		return x.Intents
+	}
+	return nil
+}
+
+// response with the new data
+type PushIntentsResponse struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	// Here you could return conflicts if the server rejects a version
+	ConflictIds   []string `protobuf:"bytes,1,rep,name=conflict_ids,json=conflictIds,proto3" json:"conflict_ids,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PushIntentsResponse) Reset() {
+	*x = PushIntentsResponse{}
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PushIntentsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PushIntentsResponse) ProtoMessage() {}
+
+func (x *PushIntentsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PushIntentsResponse.ProtoReflect.Descriptor instead.
+func (*PushIntentsResponse) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *PushIntentsResponse) GetConflictIds() []string {
+	if x != nil {
+		return x.ConflictIds
 	}
 	return nil
 }
@@ -262,23 +329,27 @@ var File_dilocash_v1_intent_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1edilocash/v1/intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"C\n" +
-	"\x14ProcessIntentRequest\x12\x12\n" +
-	"\x04text\x18\x01 \x01(\tR\x04text\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\"\xeb\x01\n" +
-	"\x15ProcessIntentResponse\x12%\n" +
-	"\x0etransaction_id\x18\x01 \x01(\tR\rtransactionId\x12\x16\n" +
-	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
-	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12\x1a\n" +
-	"\bcategory\x18\x04 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\x129\n" +
+	"\x1edilocash/v1/intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf0\x01\n" +
+	"\x06Intent\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
+	"\x06amount\x18\x02 \x01(\x01R\x06amount\x12\x1a\n" +
+	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12!\n" +
+	"\frecipient_id\x18\x04 \x01(\tR\vrecipientId\x12\x12\n" +
+	"\x04note\x18\x05 \x01(\tR\x04note\x12\x16\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status\x129\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"B\n" +
-	"\x11GetHistoryRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
-	"\x05limit\x18\x02 \x01(\x05R\x05limit\"\\\n" +
-	"\x12GetHistoryResponse\x12F\n" +
-	"\ftransactions\x18\x01 \x03(\v2\".dilocash.v1.ProcessIntentResponseR\ftransactionsBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
+	"updated_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x18\n" +
+	"\adeleted\x18\b \x01(\bR\adeleted\"n\n" +
+	"\x12PullIntentsRequest\x12B\n" +
+	"\x0flast_updated_at\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\rlastUpdatedAt\x12\x14\n" +
+	"\x05limit\x18\x02 \x01(\x05R\x05limit\"x\n" +
+	"\x13PullIntentsResponse\x12-\n" +
+	"\aintents\x18\x01 \x03(\v2\x13.dilocash.v1.IntentR\aintents\x122\n" +
+	"\x15checkpoint_updated_at\x18\x02 \x01(\x03R\x13checkpointUpdatedAt\"C\n" +
+	"\x12PushIntentsRequest\x12-\n" +
+	"\aintents\x18\x01 \x03(\v2\x13.dilocash.v1.IntentR\aintents\"8\n" +
+	"\x13PushIntentsResponse\x12!\n" +
+	"\fconflict_ids\x18\x01 \x03(\tR\vconflictIdsBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_intent_types_proto_rawDescOnce sync.Once
@@ -292,22 +363,25 @@ func file_dilocash_v1_intent_types_proto_rawDescGZIP() []byte {
 	return file_dilocash_v1_intent_types_proto_rawDescData
 }
 
-var file_dilocash_v1_intent_types_proto_msgTypes = make([]protoimpl.MessageInfo, 4)
+var file_dilocash_v1_intent_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_dilocash_v1_intent_types_proto_goTypes = []any{
-	(*ProcessIntentRequest)(nil),  // 0: dilocash.v1.ProcessIntentRequest
-	(*ProcessIntentResponse)(nil), // 1: dilocash.v1.ProcessIntentResponse
-	(*GetHistoryRequest)(nil),     // 2: dilocash.v1.GetHistoryRequest
-	(*GetHistoryResponse)(nil),    // 3: dilocash.v1.GetHistoryResponse
-	(*timestamppb.Timestamp)(nil), // 4: google.protobuf.Timestamp
+	(*Intent)(nil),                // 0: dilocash.v1.Intent
+	(*PullIntentsRequest)(nil),    // 1: dilocash.v1.PullIntentsRequest
+	(*PullIntentsResponse)(nil),   // 2: dilocash.v1.PullIntentsResponse
+	(*PushIntentsRequest)(nil),    // 3: dilocash.v1.PushIntentsRequest
+	(*PushIntentsResponse)(nil),   // 4: dilocash.v1.PushIntentsResponse
+	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
 var file_dilocash_v1_intent_types_proto_depIdxs = []int32{
-	4, // 0: dilocash.v1.ProcessIntentResponse.created_at:type_name -> google.protobuf.Timestamp
-	1, // 1: dilocash.v1.GetHistoryResponse.transactions:type_name -> dilocash.v1.ProcessIntentResponse
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	5, // 0: dilocash.v1.Intent.updated_at:type_name -> google.protobuf.Timestamp
+	5, // 1: dilocash.v1.PullIntentsRequest.last_updated_at:type_name -> google.protobuf.Timestamp
+	0, // 2: dilocash.v1.PullIntentsResponse.intents:type_name -> dilocash.v1.Intent
+	0, // 3: dilocash.v1.PushIntentsRequest.intents:type_name -> dilocash.v1.Intent
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_dilocash_v1_intent_types_proto_init() }
@@ -321,7 +395,7 @@ func file_dilocash_v1_intent_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_intent_types_proto_rawDesc), len(file_dilocash_v1_intent_types_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   4,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

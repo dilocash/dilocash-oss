@@ -4,10 +4,10 @@
 package generated
 
 import (
-	domain "github.com/dilocash/dilocash-oss/internal/domain"
-	postgres "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
-	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
-	mappers "github.com/dilocash/dilocash-oss/internal/mappers"
+	domain "github.com/dilocash/dilocash-oss/apps/api/internal/domain"
+	postgres "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
+	v1 "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
+	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/mappers"
 )
 
 type ConverterImpl struct{}

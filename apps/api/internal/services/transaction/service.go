@@ -9,9 +9,9 @@ import (
 	"errors"
 
 	"connectrpc.com/connect"
-	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
-	mappers "github.com/dilocash/dilocash-oss/internal/generated/mappers"
-	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
+	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
+	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
+	v1 "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 

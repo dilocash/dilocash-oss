@@ -5,6 +5,10 @@
 version: v2
 # deps:
 #   - buf.build/bufbuild/protovalidate
+modules:
+  - path: .
+    excludes:
+      - node_modules
 lint:
   use:
     - STANDARD

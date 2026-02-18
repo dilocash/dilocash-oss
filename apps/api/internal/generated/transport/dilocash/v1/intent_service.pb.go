@@ -28,23 +28,22 @@ var File_dilocash_v1_intent_service_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_intent_service_proto_rawDesc = "" +
 	"\n" +
-	" dilocash/v1/intent_service.proto\x12\vdilocash.v1\x1a\x1edilocash/v1/intent_types.proto2\xb6\x01\n" +
-	"\rIntentService\x12V\n" +
-	"\rProcessIntent\x12!.dilocash.v1.ProcessIntentRequest\x1a\".dilocash.v1.ProcessIntentResponse\x12M\n" +
-	"\n" +
-	"GetHistory\x12\x1e.dilocash.v1.GetHistoryRequest\x1a\x1f.dilocash.v1.GetHistoryResponseBKZIgithub.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1b\x06proto3"
+	" dilocash/v1/intent_service.proto\x12\vdilocash.v1\x1a\x1edilocash/v1/intent_types.proto2\xb3\x01\n" +
+	"\rIntentService\x12P\n" +
+	"\vPullIntents\x12\x1f.dilocash.v1.PullIntentsRequest\x1a .dilocash.v1.PullIntentsResponse\x12P\n" +
+	"\vPushIntents\x12\x1f.dilocash.v1.PushIntentsRequest\x1a .dilocash.v1.PushIntentsResponseBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var file_dilocash_v1_intent_service_proto_goTypes = []any{
-	(*ProcessIntentRequest)(nil),  // 0: dilocash.v1.ProcessIntentRequest
-	(*GetHistoryRequest)(nil),     // 1: dilocash.v1.GetHistoryRequest
-	(*ProcessIntentResponse)(nil), // 2: dilocash.v1.ProcessIntentResponse
-	(*GetHistoryResponse)(nil),    // 3: dilocash.v1.GetHistoryResponse
+	(*PullIntentsRequest)(nil),  // 0: dilocash.v1.PullIntentsRequest
+	(*PushIntentsRequest)(nil),  // 1: dilocash.v1.PushIntentsRequest
+	(*PullIntentsResponse)(nil), // 2: dilocash.v1.PullIntentsResponse
+	(*PushIntentsResponse)(nil), // 3: dilocash.v1.PushIntentsResponse
 }
 var file_dilocash_v1_intent_service_proto_depIdxs = []int32{
-	0, // 0: dilocash.v1.IntentService.ProcessIntent:input_type -> dilocash.v1.ProcessIntentRequest
-	1, // 1: dilocash.v1.IntentService.GetHistory:input_type -> dilocash.v1.GetHistoryRequest
-	2, // 2: dilocash.v1.IntentService.ProcessIntent:output_type -> dilocash.v1.ProcessIntentResponse
-	3, // 3: dilocash.v1.IntentService.GetHistory:output_type -> dilocash.v1.GetHistoryResponse
+	0, // 0: dilocash.v1.IntentService.PullIntents:input_type -> dilocash.v1.PullIntentsRequest
+	1, // 1: dilocash.v1.IntentService.PushIntents:input_type -> dilocash.v1.PushIntentsRequest
+	2, // 2: dilocash.v1.IntentService.PullIntents:output_type -> dilocash.v1.PullIntentsResponse
+	3, // 3: dilocash.v1.IntentService.PushIntents:output_type -> dilocash.v1.PushIntentsResponse
 	2, // [2:4] is the sub-list for method output_type
 	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
