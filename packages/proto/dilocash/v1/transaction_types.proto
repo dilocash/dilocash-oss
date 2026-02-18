@@ -1,0 +1,54 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
+syntax = "proto3";
+
+package dilocash.v1;
+
+option go_package = "github.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1";
+import "google/protobuf/timestamp.proto";
+
+message Transaction {
+  string id = 1;
+  string user_id = 2;
+  string amount = 3;
+  string currency = 4;
+  string category = 5;
+  string description = 6;
+  string raw_input = 7;
+  google.protobuf.Timestamp created_at = 8;
+}
+
+message CreateTransactionRequest {
+  string user_id = 1;
+  string amount = 2;
+  string currency = 3;
+  string category = 4;
+  string description = 5;
+  google.protobuf.Timestamp created_at = 6; // Optional, defaults to now
+}
+
+message CreateTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message GetTransactionRequest {
+  string id = 1;
+  string user_id = 2; // For authorization verify
+}
+
+message GetTransactionResponse {
+  Transaction transaction = 1;
+}
+
+message ListTransactionsRequest {
+  string user_id = 1;
+  int32 page_size = 2;
+  string page_token = 3;
+}
+
+message ListTransactionsResponse {
+  repeated Transaction transactions = 1;
+  string next_page_token = 2;
+}

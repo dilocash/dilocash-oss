@@ -1,0 +1,26 @@
+{
+  "name": "@dilocash/proto",
+  "version": "0.1.0",
+  "description": "shared grpc proto",
+  "main": "index.ts",
+  "module": "index.ts",
+  "types": "index.ts",
+  "devDependencies": {
+    "@bufbuild/buf": "^1.65.0",
+    "@bufbuild/protoc-gen-es": "^2.11.0",
+    "@connectrpc/connect": "^2.1.1",
+    "@connectrpc/protoc-gen-connect-es": "^1.7.0",
+    "@protobuf-ts/plugin": "^2.11.1",
+    "protoc-gen-ts": "^0.8.7"
+  },
+  "scripts": {
+    "proto:generate": "buf generate packages/proto",
+    "proto:lint": "buf lint packages/proto"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.11.0"
+  }
+}

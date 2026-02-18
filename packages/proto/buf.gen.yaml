@@ -1,0 +1,31 @@
+# Copyright (c) 2026 dilocash
+# Use of this source code is governed by an MIT-style
+# license that can be found in the LICENSE file.
+
+version: v2
+
+plugins:
+  - local: protoc-gen-go
+    out: ../../packages/gen/go/transport
+    opt: paths=source_relative
+    include_imports: true
+
+  - local: protoc-gen-connect-go
+    out: ../../packages/gen/go/transport
+    include_imports: true
+    opt:
+      - paths=source_relative
+      - simple
+
+  # - local: "node_modules/.bin/protoc-gen-ts"
+  #   out: ../../packages/gen/ts/transport
+  #   opt:
+  #     - target=ts
+  # - local: "node_modules/.bin/protoc-gen-connect-es"
+  #   out: ../../packages/gen/ts/transport
+  #   opt:
+  #     - target=ts
+  #     - import_extension=none
+# - name: doc
+#   out: docs/generated
+#   opt: mermaid,dilocash.mmd
