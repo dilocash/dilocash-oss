@@ -6,12 +6,12 @@ version: v2
 
 plugins:
   - local: protoc-gen-go
-    out: ../../packages/gen/go/transport
+    out: ../../apps/api/internal/generated/transport
     opt: paths=source_relative
     include_imports: true
 
   - local: protoc-gen-connect-go
-    out: ../../packages/gen/go/transport
+    out: ../../apps/api/internal/generated/transport
     include_imports: true
     opt:
       - paths=source_relative

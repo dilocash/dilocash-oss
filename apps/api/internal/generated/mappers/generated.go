@@ -6,7 +6,7 @@ package generated
 import (
 	domain "github.com/dilocash/dilocash-oss/internal/domain"
 	postgres "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
-	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
+	transport "github.com/dilocash/dilocash-oss/internal/generated/transport"
 	mappers "github.com/dilocash/dilocash-oss/internal/mappers"
 )
 
@@ -54,8 +54,8 @@ func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	domainUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainUser
 }
-func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.Transaction {
-	var v1Transaction v1.Transaction
+func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *transport.Transaction {
+	var v1Transaction transport.Transaction
 	v1Transaction.Id = mappers.UUIDToString(source.ID)
 	v1Transaction.UserId = mappers.UUIDToString(source.UserID)
 	v1Transaction.Amount = mappers.DecimalToString(source.Amount)
@@ -78,7 +78,7 @@ func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) d
 	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainTransaction
 }
-func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.CreateTransactionRequest) domain.Transaction {
+func (c *ConverterImpl) TransactionFromTransportToDomain(source *transport.CreateTransactionRequest) domain.Transaction {
 	var domainTransaction domain.Transaction
 	if source != nil {
 		domainTransaction.Amount = mappers.StringToDecimal((*source).Amount)
