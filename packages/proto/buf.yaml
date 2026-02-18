@@ -6,7 +6,9 @@ version: v2
 # deps:
 #   - buf.build/bufbuild/protovalidate
 modules:
-  - path: dilocash/v1
+  - path: .
+    excludes:
+      - node_modules
 lint:
   use:
     - STANDARD

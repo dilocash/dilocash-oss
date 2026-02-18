@@ -6,7 +6,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: intent_types.proto
+// source: dilocash/v1/intent_types.proto
 
 package v1
 
@@ -44,7 +44,7 @@ type Intent struct {
 
 func (x *Intent) Reset() {
 	*x = Intent{}
-	mi := &file_intent_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -56,7 +56,7 @@ func (x *Intent) String() string {
 func (*Intent) ProtoMessage() {}
 
 func (x *Intent) ProtoReflect() protoreflect.Message {
-	mi := &file_intent_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -69,7 +69,7 @@ func (x *Intent) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Intent.ProtoReflect.Descriptor instead.
 func (*Intent) Descriptor() ([]byte, []int) {
-	return file_intent_types_proto_rawDescGZIP(), []int{0}
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Intent) GetId() string {
@@ -139,7 +139,7 @@ type PullIntentsRequest struct {
 
 func (x *PullIntentsRequest) Reset() {
 	*x = PullIntentsRequest{}
-	mi := &file_intent_types_proto_msgTypes[1]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -151,7 +151,7 @@ func (x *PullIntentsRequest) String() string {
 func (*PullIntentsRequest) ProtoMessage() {}
 
 func (x *PullIntentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_intent_types_proto_msgTypes[1]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -164,7 +164,7 @@ func (x *PullIntentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PullIntentsRequest.ProtoReflect.Descriptor instead.
 func (*PullIntentsRequest) Descriptor() ([]byte, []int) {
-	return file_intent_types_proto_rawDescGZIP(), []int{1}
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PullIntentsRequest) GetLastUpdatedAt() *timestamppb.Timestamp {
@@ -192,7 +192,7 @@ type PullIntentsResponse struct {
 
 func (x *PullIntentsResponse) Reset() {
 	*x = PullIntentsResponse{}
-	mi := &file_intent_types_proto_msgTypes[2]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -204,7 +204,7 @@ func (x *PullIntentsResponse) String() string {
 func (*PullIntentsResponse) ProtoMessage() {}
 
 func (x *PullIntentsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_intent_types_proto_msgTypes[2]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -217,7 +217,7 @@ func (x *PullIntentsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PullIntentsResponse.ProtoReflect.Descriptor instead.
 func (*PullIntentsResponse) Descriptor() ([]byte, []int) {
-	return file_intent_types_proto_rawDescGZIP(), []int{2}
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *PullIntentsResponse) GetIntents() []*Intent {
@@ -244,7 +244,7 @@ type PushIntentsRequest struct {
 
 func (x *PushIntentsRequest) Reset() {
 	*x = PushIntentsRequest{}
-	mi := &file_intent_types_proto_msgTypes[3]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -256,7 +256,7 @@ func (x *PushIntentsRequest) String() string {
 func (*PushIntentsRequest) ProtoMessage() {}
 
 func (x *PushIntentsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_intent_types_proto_msgTypes[3]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -269,7 +269,7 @@ func (x *PushIntentsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PushIntentsRequest.ProtoReflect.Descriptor instead.
 func (*PushIntentsRequest) Descriptor() ([]byte, []int) {
-	return file_intent_types_proto_rawDescGZIP(), []int{3}
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *PushIntentsRequest) GetIntents() []*Intent {
@@ -290,7 +290,7 @@ type PushIntentsResponse struct {
 
 func (x *PushIntentsResponse) Reset() {
 	*x = PushIntentsResponse{}
-	mi := &file_intent_types_proto_msgTypes[4]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -302,7 +302,7 @@ func (x *PushIntentsResponse) String() string {
 func (*PushIntentsResponse) ProtoMessage() {}
 
 func (x *PushIntentsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_intent_types_proto_msgTypes[4]
+	mi := &file_dilocash_v1_intent_types_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -315,7 +315,7 @@ func (x *PushIntentsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PushIntentsResponse.ProtoReflect.Descriptor instead.
 func (*PushIntentsResponse) Descriptor() ([]byte, []int) {
-	return file_intent_types_proto_rawDescGZIP(), []int{4}
+	return file_dilocash_v1_intent_types_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *PushIntentsResponse) GetConflictIds() []string {
@@ -325,11 +325,11 @@ func (x *PushIntentsResponse) GetConflictIds() []string {
 	return nil
 }
 
-var File_intent_types_proto protoreflect.FileDescriptor
+var File_dilocash_v1_intent_types_proto protoreflect.FileDescriptor
 
-const file_intent_types_proto_rawDesc = "" +
+const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\n" +
-	"\x12intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf0\x01\n" +
+	"\x1edilocash/v1/intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\xf0\x01\n" +
 	"\x06Intent\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\x01R\x06amount\x12\x1a\n" +
@@ -352,19 +352,19 @@ const file_intent_types_proto_rawDesc = "" +
 	"\fconflict_ids\x18\x01 \x03(\tR\vconflictIdsBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
 
 var (
-	file_intent_types_proto_rawDescOnce sync.Once
-	file_intent_types_proto_rawDescData []byte
+	file_dilocash_v1_intent_types_proto_rawDescOnce sync.Once
+	file_dilocash_v1_intent_types_proto_rawDescData []byte
 )
 
-func file_intent_types_proto_rawDescGZIP() []byte {
-	file_intent_types_proto_rawDescOnce.Do(func() {
-		file_intent_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_intent_types_proto_rawDesc), len(file_intent_types_proto_rawDesc)))
+func file_dilocash_v1_intent_types_proto_rawDescGZIP() []byte {
+	file_dilocash_v1_intent_types_proto_rawDescOnce.Do(func() {
+		file_dilocash_v1_intent_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_dilocash_v1_intent_types_proto_rawDesc), len(file_dilocash_v1_intent_types_proto_rawDesc)))
 	})
-	return file_intent_types_proto_rawDescData
+	return file_dilocash_v1_intent_types_proto_rawDescData
 }
 
-var file_intent_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_intent_types_proto_goTypes = []any{
+var file_dilocash_v1_intent_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_dilocash_v1_intent_types_proto_goTypes = []any{
 	(*Intent)(nil),                // 0: dilocash.v1.Intent
 	(*PullIntentsRequest)(nil),    // 1: dilocash.v1.PullIntentsRequest
 	(*PullIntentsResponse)(nil),   // 2: dilocash.v1.PullIntentsResponse
@@ -372,7 +372,7 @@ var file_intent_types_proto_goTypes = []any{
 	(*PushIntentsResponse)(nil),   // 4: dilocash.v1.PushIntentsResponse
 	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
 }
-var file_intent_types_proto_depIdxs = []int32{
+var file_dilocash_v1_intent_types_proto_depIdxs = []int32{
 	5, // 0: dilocash.v1.Intent.updated_at:type_name -> google.protobuf.Timestamp
 	5, // 1: dilocash.v1.PullIntentsRequest.last_updated_at:type_name -> google.protobuf.Timestamp
 	0, // 2: dilocash.v1.PullIntentsResponse.intents:type_name -> dilocash.v1.Intent
@@ -384,26 +384,26 @@ var file_intent_types_proto_depIdxs = []int32{
 	0, // [0:4] is the sub-list for field type_name
 }
 
-func init() { file_intent_types_proto_init() }
-func file_intent_types_proto_init() {
-	if File_intent_types_proto != nil {
+func init() { file_dilocash_v1_intent_types_proto_init() }
+func file_dilocash_v1_intent_types_proto_init() {
+	if File_dilocash_v1_intent_types_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_intent_types_proto_rawDesc), len(file_intent_types_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_intent_types_proto_rawDesc), len(file_dilocash_v1_intent_types_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_intent_types_proto_goTypes,
-		DependencyIndexes: file_intent_types_proto_depIdxs,
-		MessageInfos:      file_intent_types_proto_msgTypes,
+		GoTypes:           file_dilocash_v1_intent_types_proto_goTypes,
+		DependencyIndexes: file_dilocash_v1_intent_types_proto_depIdxs,
+		MessageInfos:      file_dilocash_v1_intent_types_proto_msgTypes,
 	}.Build()
-	File_intent_types_proto = out.File
-	file_intent_types_proto_goTypes = nil
-	file_intent_types_proto_depIdxs = nil
+	File_dilocash_v1_intent_types_proto = out.File
+	file_dilocash_v1_intent_types_proto_goTypes = nil
+	file_dilocash_v1_intent_types_proto_depIdxs = nil
 }

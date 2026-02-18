@@ -6,7 +6,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: transaction_types.proto
+// source: dilocash/v1/transaction_types.proto
 
 package v1
 
@@ -42,7 +42,7 @@ type Transaction struct {
 
 func (x *Transaction) Reset() {
 	*x = Transaction{}
-	mi := &file_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -54,7 +54,7 @@ func (x *Transaction) String() string {
 func (*Transaction) ProtoMessage() {}
 
 func (x *Transaction) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -67,7 +67,7 @@ func (x *Transaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Transaction.ProtoReflect.Descriptor instead.
 func (*Transaction) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{0}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Transaction) GetId() string {
@@ -140,7 +140,7 @@ type CreateTransactionRequest struct {
 
 func (x *CreateTransactionRequest) Reset() {
 	*x = CreateTransactionRequest{}
-	mi := &file_transaction_types_proto_msgTypes[1]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -152,7 +152,7 @@ func (x *CreateTransactionRequest) String() string {
 func (*CreateTransactionRequest) ProtoMessage() {}
 
 func (x *CreateTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[1]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -165,7 +165,7 @@ func (x *CreateTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTransactionRequest.ProtoReflect.Descriptor instead.
 func (*CreateTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{1}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *CreateTransactionRequest) GetUserId() string {
@@ -219,7 +219,7 @@ type CreateTransactionResponse struct {
 
 func (x *CreateTransactionResponse) Reset() {
 	*x = CreateTransactionResponse{}
-	mi := &file_transaction_types_proto_msgTypes[2]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -231,7 +231,7 @@ func (x *CreateTransactionResponse) String() string {
 func (*CreateTransactionResponse) ProtoMessage() {}
 
 func (x *CreateTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[2]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -244,7 +244,7 @@ func (x *CreateTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateTransactionResponse.ProtoReflect.Descriptor instead.
 func (*CreateTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{2}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateTransactionResponse) GetTransaction() *Transaction {
@@ -264,7 +264,7 @@ type GetTransactionRequest struct {
 
 func (x *GetTransactionRequest) Reset() {
 	*x = GetTransactionRequest{}
-	mi := &file_transaction_types_proto_msgTypes[3]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -276,7 +276,7 @@ func (x *GetTransactionRequest) String() string {
 func (*GetTransactionRequest) ProtoMessage() {}
 
 func (x *GetTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[3]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -289,7 +289,7 @@ func (x *GetTransactionRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTransactionRequest.ProtoReflect.Descriptor instead.
 func (*GetTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{3}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *GetTransactionRequest) GetId() string {
@@ -315,7 +315,7 @@ type GetTransactionResponse struct {
 
 func (x *GetTransactionResponse) Reset() {
 	*x = GetTransactionResponse{}
-	mi := &file_transaction_types_proto_msgTypes[4]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -327,7 +327,7 @@ func (x *GetTransactionResponse) String() string {
 func (*GetTransactionResponse) ProtoMessage() {}
 
 func (x *GetTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[4]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -340,7 +340,7 @@ func (x *GetTransactionResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetTransactionResponse.ProtoReflect.Descriptor instead.
 func (*GetTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{4}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *GetTransactionResponse) GetTransaction() *Transaction {
@@ -361,7 +361,7 @@ type ListTransactionsRequest struct {
 
 func (x *ListTransactionsRequest) Reset() {
 	*x = ListTransactionsRequest{}
-	mi := &file_transaction_types_proto_msgTypes[5]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -373,7 +373,7 @@ func (x *ListTransactionsRequest) String() string {
 func (*ListTransactionsRequest) ProtoMessage() {}
 
 func (x *ListTransactionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[5]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -386,7 +386,7 @@ func (x *ListTransactionsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTransactionsRequest.ProtoReflect.Descriptor instead.
 func (*ListTransactionsRequest) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{5}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ListTransactionsRequest) GetUserId() string {
@@ -420,7 +420,7 @@ type ListTransactionsResponse struct {
 
 func (x *ListTransactionsResponse) Reset() {
 	*x = ListTransactionsResponse{}
-	mi := &file_transaction_types_proto_msgTypes[6]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -432,7 +432,7 @@ func (x *ListTransactionsResponse) String() string {
 func (*ListTransactionsResponse) ProtoMessage() {}
 
 func (x *ListTransactionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_transaction_types_proto_msgTypes[6]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -445,7 +445,7 @@ func (x *ListTransactionsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListTransactionsResponse.ProtoReflect.Descriptor instead.
 func (*ListTransactionsResponse) Descriptor() ([]byte, []int) {
-	return file_transaction_types_proto_rawDescGZIP(), []int{6}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ListTransactionsResponse) GetTransactions() []*Transaction {
@@ -462,11 +462,11 @@ func (x *ListTransactionsResponse) GetNextPageToken() string {
 	return ""
 }
 
-var File_transaction_types_proto protoreflect.FileDescriptor
+var File_dilocash_v1_transaction_types_proto protoreflect.FileDescriptor
 
-const file_transaction_types_proto_rawDesc = "" +
+const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\n" +
-	"\x17transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x80\x02\n" +
+	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x80\x02\n" +
 	"\vTransaction\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x16\n" +
@@ -502,19 +502,19 @@ const file_transaction_types_proto_rawDesc = "" +
 	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
 
 var (
-	file_transaction_types_proto_rawDescOnce sync.Once
-	file_transaction_types_proto_rawDescData []byte
+	file_dilocash_v1_transaction_types_proto_rawDescOnce sync.Once
+	file_dilocash_v1_transaction_types_proto_rawDescData []byte
 )
 
-func file_transaction_types_proto_rawDescGZIP() []byte {
-	file_transaction_types_proto_rawDescOnce.Do(func() {
-		file_transaction_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_transaction_types_proto_rawDesc), len(file_transaction_types_proto_rawDesc)))
+func file_dilocash_v1_transaction_types_proto_rawDescGZIP() []byte {
+	file_dilocash_v1_transaction_types_proto_rawDescOnce.Do(func() {
+		file_dilocash_v1_transaction_types_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_dilocash_v1_transaction_types_proto_rawDesc), len(file_dilocash_v1_transaction_types_proto_rawDesc)))
 	})
-	return file_transaction_types_proto_rawDescData
+	return file_dilocash_v1_transaction_types_proto_rawDescData
 }
 
-var file_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
-var file_transaction_types_proto_goTypes = []any{
+var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_dilocash_v1_transaction_types_proto_goTypes = []any{
 	(*Transaction)(nil),               // 0: dilocash.v1.Transaction
 	(*CreateTransactionRequest)(nil),  // 1: dilocash.v1.CreateTransactionRequest
 	(*CreateTransactionResponse)(nil), // 2: dilocash.v1.CreateTransactionResponse
@@ -524,7 +524,7 @@ var file_transaction_types_proto_goTypes = []any{
 	(*ListTransactionsResponse)(nil),  // 6: dilocash.v1.ListTransactionsResponse
 	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
 }
-var file_transaction_types_proto_depIdxs = []int32{
+var file_dilocash_v1_transaction_types_proto_depIdxs = []int32{
 	7, // 0: dilocash.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
 	7, // 1: dilocash.v1.CreateTransactionRequest.created_at:type_name -> google.protobuf.Timestamp
 	0, // 2: dilocash.v1.CreateTransactionResponse.transaction:type_name -> dilocash.v1.Transaction
@@ -537,26 +537,26 @@ var file_transaction_types_proto_depIdxs = []int32{
 	0, // [0:5] is the sub-list for field type_name
 }
 
-func init() { file_transaction_types_proto_init() }
-func file_transaction_types_proto_init() {
-	if File_transaction_types_proto != nil {
+func init() { file_dilocash_v1_transaction_types_proto_init() }
+func file_dilocash_v1_transaction_types_proto_init() {
+	if File_dilocash_v1_transaction_types_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_transaction_types_proto_rawDesc), len(file_transaction_types_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_transaction_types_proto_rawDesc), len(file_dilocash_v1_transaction_types_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_transaction_types_proto_goTypes,
-		DependencyIndexes: file_transaction_types_proto_depIdxs,
-		MessageInfos:      file_transaction_types_proto_msgTypes,
+		GoTypes:           file_dilocash_v1_transaction_types_proto_goTypes,
+		DependencyIndexes: file_dilocash_v1_transaction_types_proto_depIdxs,
+		MessageInfos:      file_dilocash_v1_transaction_types_proto_msgTypes,
 	}.Build()
-	File_transaction_types_proto = out.File
-	file_transaction_types_proto_goTypes = nil
-	file_transaction_types_proto_depIdxs = nil
+	File_dilocash_v1_transaction_types_proto = out.File
+	file_dilocash_v1_transaction_types_proto_goTypes = nil
+	file_dilocash_v1_transaction_types_proto_depIdxs = nil
 }

@@ -6,7 +6,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: intent_service.proto
+// source: dilocash/v1/intent_service.proto
 
 package v1
 
@@ -24,22 +24,22 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_intent_service_proto protoreflect.FileDescriptor
+var File_dilocash_v1_intent_service_proto protoreflect.FileDescriptor
 
-const file_intent_service_proto_rawDesc = "" +
+const file_dilocash_v1_intent_service_proto_rawDesc = "" +
 	"\n" +
-	"\x14intent_service.proto\x12\vdilocash.v1\x1a\x12intent_types.proto2\xb3\x01\n" +
+	" dilocash/v1/intent_service.proto\x12\vdilocash.v1\x1a\x1edilocash/v1/intent_types.proto2\xb3\x01\n" +
 	"\rIntentService\x12P\n" +
 	"\vPullIntents\x12\x1f.dilocash.v1.PullIntentsRequest\x1a .dilocash.v1.PullIntentsResponse\x12P\n" +
 	"\vPushIntents\x12\x1f.dilocash.v1.PushIntentsRequest\x1a .dilocash.v1.PushIntentsResponseBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
 
-var file_intent_service_proto_goTypes = []any{
+var file_dilocash_v1_intent_service_proto_goTypes = []any{
 	(*PullIntentsRequest)(nil),  // 0: dilocash.v1.PullIntentsRequest
 	(*PushIntentsRequest)(nil),  // 1: dilocash.v1.PushIntentsRequest
 	(*PullIntentsResponse)(nil), // 2: dilocash.v1.PullIntentsResponse
 	(*PushIntentsResponse)(nil), // 3: dilocash.v1.PushIntentsResponse
 }
-var file_intent_service_proto_depIdxs = []int32{
+var file_dilocash_v1_intent_service_proto_depIdxs = []int32{
 	0, // 0: dilocash.v1.IntentService.PullIntents:input_type -> dilocash.v1.PullIntentsRequest
 	1, // 1: dilocash.v1.IntentService.PushIntents:input_type -> dilocash.v1.PushIntentsRequest
 	2, // 2: dilocash.v1.IntentService.PullIntents:output_type -> dilocash.v1.PullIntentsResponse
@@ -51,26 +51,26 @@ var file_intent_service_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_intent_service_proto_init() }
-func file_intent_service_proto_init() {
-	if File_intent_service_proto != nil {
+func init() { file_dilocash_v1_intent_service_proto_init() }
+func file_dilocash_v1_intent_service_proto_init() {
+	if File_dilocash_v1_intent_service_proto != nil {
 		return
 	}
-	file_intent_types_proto_init()
+	file_dilocash_v1_intent_types_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_intent_service_proto_rawDesc), len(file_intent_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_intent_service_proto_rawDesc), len(file_dilocash_v1_intent_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_intent_service_proto_goTypes,
-		DependencyIndexes: file_intent_service_proto_depIdxs,
+		GoTypes:           file_dilocash_v1_intent_service_proto_goTypes,
+		DependencyIndexes: file_dilocash_v1_intent_service_proto_depIdxs,
 	}.Build()
-	File_intent_service_proto = out.File
-	file_intent_service_proto_goTypes = nil
-	file_intent_service_proto_depIdxs = nil
+	File_dilocash_v1_intent_service_proto = out.File
+	file_dilocash_v1_intent_service_proto_goTypes = nil
+	file_dilocash_v1_intent_service_proto_depIdxs = nil
 }

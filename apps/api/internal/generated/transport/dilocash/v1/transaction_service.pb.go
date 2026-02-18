@@ -6,7 +6,7 @@
 // versions:
 // 	protoc-gen-go v1.36.11
 // 	protoc        (unknown)
-// source: transaction_service.proto
+// source: dilocash/v1/transaction_service.proto
 
 package v1
 
@@ -24,17 +24,17 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-var File_transaction_service_proto protoreflect.FileDescriptor
+var File_dilocash_v1_transaction_service_proto protoreflect.FileDescriptor
 
-const file_transaction_service_proto_rawDesc = "" +
+const file_dilocash_v1_transaction_service_proto_rawDesc = "" +
 	"\n" +
-	"\x19transaction_service.proto\x12\vdilocash.v1\x1a\x17transaction_types.proto2\xb4\x02\n" +
+	"%dilocash/v1/transaction_service.proto\x12\vdilocash.v1\x1a#dilocash/v1/transaction_types.proto2\xb4\x02\n" +
 	"\x12TransactionService\x12b\n" +
 	"\x11CreateTransaction\x12%.dilocash.v1.CreateTransactionRequest\x1a&.dilocash.v1.CreateTransactionResponse\x12Y\n" +
 	"\x0eGetTransaction\x12\".dilocash.v1.GetTransactionRequest\x1a#.dilocash.v1.GetTransactionResponse\x12_\n" +
 	"\x10ListTransactions\x12$.dilocash.v1.ListTransactionsRequest\x1a%.dilocash.v1.ListTransactionsResponseBHZFgithub.com/dilocash/dilocash-oss/packages/gen/go/transport/dilocash/v1b\x06proto3"
 
-var file_transaction_service_proto_goTypes = []any{
+var file_dilocash_v1_transaction_service_proto_goTypes = []any{
 	(*CreateTransactionRequest)(nil),  // 0: dilocash.v1.CreateTransactionRequest
 	(*GetTransactionRequest)(nil),     // 1: dilocash.v1.GetTransactionRequest
 	(*ListTransactionsRequest)(nil),   // 2: dilocash.v1.ListTransactionsRequest
@@ -42,7 +42,7 @@ var file_transaction_service_proto_goTypes = []any{
 	(*GetTransactionResponse)(nil),    // 4: dilocash.v1.GetTransactionResponse
 	(*ListTransactionsResponse)(nil),  // 5: dilocash.v1.ListTransactionsResponse
 }
-var file_transaction_service_proto_depIdxs = []int32{
+var file_dilocash_v1_transaction_service_proto_depIdxs = []int32{
 	0, // 0: dilocash.v1.TransactionService.CreateTransaction:input_type -> dilocash.v1.CreateTransactionRequest
 	1, // 1: dilocash.v1.TransactionService.GetTransaction:input_type -> dilocash.v1.GetTransactionRequest
 	2, // 2: dilocash.v1.TransactionService.ListTransactions:input_type -> dilocash.v1.ListTransactionsRequest
@@ -56,26 +56,26 @@ var file_transaction_service_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_transaction_service_proto_init() }
-func file_transaction_service_proto_init() {
-	if File_transaction_service_proto != nil {
+func init() { file_dilocash_v1_transaction_service_proto_init() }
+func file_dilocash_v1_transaction_service_proto_init() {
+	if File_dilocash_v1_transaction_service_proto != nil {
 		return
 	}
-	file_transaction_types_proto_init()
+	file_dilocash_v1_transaction_types_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_transaction_service_proto_rawDesc), len(file_transaction_service_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_transaction_service_proto_rawDesc), len(file_dilocash_v1_transaction_service_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   0,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_transaction_service_proto_goTypes,
-		DependencyIndexes: file_transaction_service_proto_depIdxs,
+		GoTypes:           file_dilocash_v1_transaction_service_proto_goTypes,
+		DependencyIndexes: file_dilocash_v1_transaction_service_proto_depIdxs,
 	}.Build()
-	File_transaction_service_proto = out.File
-	file_transaction_service_proto_goTypes = nil
-	file_transaction_service_proto_depIdxs = nil
+	File_dilocash_v1_transaction_service_proto = out.File
+	file_dilocash_v1_transaction_service_proto_goTypes = nil
+	file_dilocash_v1_transaction_service_proto_depIdxs = nil
 }
