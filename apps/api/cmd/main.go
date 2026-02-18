@@ -20,7 +20,6 @@ import (
 	"connectrpc.com/connect"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/internal/generated/db/postgres"
-	v1 "github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1"
 	"github.com/dilocash/dilocash-oss/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/internal/infra/health"
 	"github.com/dilocash/dilocash-oss/internal/middleware"
@@ -41,7 +40,6 @@ func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *gr
 	log.Println("Registering gRPC services...")
 	// transaction server
 	transactionServer := transaction.NewTransactionServer(pool)
-	v1.RegisterTransactionServiceServer(grpcServer, transactionServer)
 	path, handler := v1connect.NewTransactionServiceHandler(
 		transactionServer,
 		connect.WithInterceptors(
