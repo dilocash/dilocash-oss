@@ -1,0 +1,71 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/Intent",
+    "definitions": {
+        "Intent": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "UUID generated in the client (RxDB primary key)"
+                },
+                "amount": {
+                    "type": "string",
+                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "recipient_id": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "INTENT_STATUS_UNSPECIFIED",
+                        0,
+                        "INTENT_STATUS_PROCESSING",
+                        1,
+                        "INTENT_STATUS_PENDING_REVIEW",
+                        2,
+                        "INTENT_STATUS_CONFIRMED",
+                        3,
+                        "INTENT_STATUS_FAILED",
+                        4
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Intent Status"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Flag for \"Soft Deletes\" (RxDB requires it)"
+                },
+                "requires_review": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intent",
+            "description": "represents the intent of a financial transaction"
+        }
+    }
+}

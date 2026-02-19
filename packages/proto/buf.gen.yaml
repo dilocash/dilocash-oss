@@ -27,6 +27,11 @@ plugins:
     opt:
       - target=ts
       - import_extension=none
+  - local: protoc-gen-jsonschema
+    out: ../../packages/gen/json/transport
+    opt:
+      - enctype=json
+      - indent=2
 # - name: doc
 #   out: docs/generated
 #   opt: mermaid,dilocash.mmd

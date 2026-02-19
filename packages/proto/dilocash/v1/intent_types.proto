@@ -13,15 +13,26 @@ import "google/protobuf/timestamp.proto";
 // represents the intent of a financial transaction
 message Intent {
   string id = 1;              // UUID generated in the client (RxDB primary key)
-  double amount = 2;
+  // we use string for the amount to maintain decimal precision in Go and JS
+  string amount = 2;
   string currency = 3;
   string recipient_id = 4;
   string note = 5;
   
   // critical fields for offline-first synchronization
-  string status = 6;          // "pending", "completed", "failed"
-  google.protobuf.Timestamp updated_at = 7;       // Timestamp in milliseconds (our Checkpoint)
-  bool deleted = 8;           // Flag for "Soft Deletes" (RxDB requires it)
+  IntentStatus status = 6;
+  google.protobuf.Timestamp created_at = 7;       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 8;       // Timestamp in milliseconds (our Checkpoint)
+  bool deleted = 9;           // Flag for "Soft Deletes" (RxDB requires it)
+  bool requires_review = 10;
+}
+
+enum IntentStatus {
+  INTENT_STATUS_UNSPECIFIED = 0;
+  INTENT_STATUS_PROCESSING = 1;
+  INTENT_STATUS_PENDING_REVIEW = 2;
+  INTENT_STATUS_CONFIRMED = 3;
+  INTENT_STATUS_FAILED = 4;
 }
 
 // request to pull changes from the server
