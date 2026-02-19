@@ -6,17 +6,26 @@
 import * as dependency_1 from "./../../google/protobuf/timestamp";
 import * as pb_1 from "google-protobuf";
 export namespace dilocash.v1 {
+    export enum IntentStatus {
+        INTENT_STATUS_UNSPECIFIED = 0,
+        INTENT_STATUS_PROCESSING = 1,
+        INTENT_STATUS_PENDING_REVIEW = 2,
+        INTENT_STATUS_CONFIRMED = 3,
+        INTENT_STATUS_FAILED = 4
+    }
     export class Intent extends pb_1.Message {
         #one_of_decls: number[][] = [];
         constructor(data?: any[] | {
             id?: string;
-            amount?: number;
+            amount?: string;
             currency?: string;
             recipient_id?: string;
             note?: string;
-            status?: string;
+            status?: IntentStatus;
+            created_at?: dependency_1.google.protobuf.Timestamp;
             updated_at?: dependency_1.google.protobuf.Timestamp;
             deleted?: boolean;
+            requires_review?: boolean;
         }) {
             super();
             pb_1.Message.initialize(this, Array.isArray(data) ? data : [], 0, -1, [], this.#one_of_decls);
@@ -39,11 +48,17 @@ export namespace dilocash.v1 {
                 if ("status" in data && data.status != undefined) {
                     this.status = data.status;
                 }
+                if ("created_at" in data && data.created_at != undefined) {
+                    this.created_at = data.created_at;
+                }
                 if ("updated_at" in data && data.updated_at != undefined) {
                     this.updated_at = data.updated_at;
                 }
                 if ("deleted" in data && data.deleted != undefined) {
                     this.deleted = data.deleted;
+                }
+                if ("requires_review" in data && data.requires_review != undefined) {
+                    this.requires_review = data.requires_review;
                 }
             }
         }
@@ -54,9 +69,9 @@ export namespace dilocash.v1 {
             pb_1.Message.setField(this, 1, value);
         }
         get amount() {
-            return pb_1.Message.getFieldWithDefault(this, 2, 0) as number;
+            return pb_1.Message.getFieldWithDefault(this, 2, "") as string;
         }
-        set amount(value: number) {
+        set amount(value: string) {
             pb_1.Message.setField(this, 2, value);
         }
         get currency() {
@@ -78,35 +93,52 @@ export namespace dilocash.v1 {
             pb_1.Message.setField(this, 5, value);
         }
         get status() {
-            return pb_1.Message.getFieldWithDefault(this, 6, "") as string;
+            return pb_1.Message.getFieldWithDefault(this, 6, IntentStatus.INTENT_STATUS_UNSPECIFIED) as IntentStatus;
         }
-        set status(value: string) {
+        set status(value: IntentStatus) {
             pb_1.Message.setField(this, 6, value);
         }
-        get updated_at() {
+        get created_at() {
             return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 7) as dependency_1.google.protobuf.Timestamp;
         }
-        set updated_at(value: dependency_1.google.protobuf.Timestamp) {
+        set created_at(value: dependency_1.google.protobuf.Timestamp) {
             pb_1.Message.setWrapperField(this, 7, value);
         }
-        get has_updated_at() {
+        get has_created_at() {
             return pb_1.Message.getField(this, 7) != null;
         }
+        get updated_at() {
+            return pb_1.Message.getWrapperField(this, dependency_1.google.protobuf.Timestamp, 8) as dependency_1.google.protobuf.Timestamp;
+        }
+        set updated_at(value: dependency_1.google.protobuf.Timestamp) {
+            pb_1.Message.setWrapperField(this, 8, value);
+        }
+        get has_updated_at() {
+            return pb_1.Message.getField(this, 8) != null;
+        }
         get deleted() {
-            return pb_1.Message.getFieldWithDefault(this, 8, false) as boolean;
+            return pb_1.Message.getFieldWithDefault(this, 9, false) as boolean;
         }
         set deleted(value: boolean) {
-            pb_1.Message.setField(this, 8, value);
+            pb_1.Message.setField(this, 9, value);
+        }
+        get requires_review() {
+            return pb_1.Message.getFieldWithDefault(this, 10, false) as boolean;
+        }
+        set requires_review(value: boolean) {
+            pb_1.Message.setField(this, 10, value);
         }
         static fromObject(data: {
             id?: string;
-            amount?: number;
+            amount?: string;
             currency?: string;
             recipient_id?: string;
             note?: string;
-            status?: string;
+            status?: IntentStatus;
+            created_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
             updated_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
             deleted?: boolean;
+            requires_review?: boolean;
         }): Intent {
             const message = new Intent({});
             if (data.id != null) {
@@ -127,24 +159,32 @@ export namespace dilocash.v1 {
             if (data.status != null) {
                 message.status = data.status;
             }
+            if (data.created_at != null) {
+                message.created_at = dependency_1.google.protobuf.Timestamp.fromObject(data.created_at);
+            }
             if (data.updated_at != null) {
                 message.updated_at = dependency_1.google.protobuf.Timestamp.fromObject(data.updated_at);
             }
             if (data.deleted != null) {
                 message.deleted = data.deleted;
             }
+            if (data.requires_review != null) {
+                message.requires_review = data.requires_review;
+            }
             return message;
         }
         toObject() {
             const data: {
                 id?: string;
-                amount?: number;
+                amount?: string;
                 currency?: string;
                 recipient_id?: string;
                 note?: string;
-                status?: string;
+                status?: IntentStatus;
+                created_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
                 updated_at?: ReturnType<typeof dependency_1.google.protobuf.Timestamp.prototype.toObject>;
                 deleted?: boolean;
+                requires_review?: boolean;
             } = {};
             if (this.id != null) {
                 data.id = this.id;
@@ -164,11 +204,17 @@ export namespace dilocash.v1 {
             if (this.status != null) {
                 data.status = this.status;
             }
+            if (this.created_at != null) {
+                data.created_at = this.created_at.toObject();
+            }
             if (this.updated_at != null) {
                 data.updated_at = this.updated_at.toObject();
             }
             if (this.deleted != null) {
                 data.deleted = this.deleted;
+            }
+            if (this.requires_review != null) {
+                data.requires_review = this.requires_review;
             }
             return data;
         }
@@ -178,20 +224,24 @@ export namespace dilocash.v1 {
             const writer = w || new pb_1.BinaryWriter();
             if (this.id.length)
                 writer.writeString(1, this.id);
-            if (this.amount != 0)
-                writer.writeDouble(2, this.amount);
+            if (this.amount.length)
+                writer.writeString(2, this.amount);
             if (this.currency.length)
                 writer.writeString(3, this.currency);
             if (this.recipient_id.length)
                 writer.writeString(4, this.recipient_id);
             if (this.note.length)
                 writer.writeString(5, this.note);
-            if (this.status.length)
-                writer.writeString(6, this.status);
+            if (this.status != IntentStatus.INTENT_STATUS_UNSPECIFIED)
+                writer.writeEnum(6, this.status);
+            if (this.has_created_at)
+                writer.writeMessage(7, this.created_at, () => this.created_at.serialize(writer));
             if (this.has_updated_at)
-                writer.writeMessage(7, this.updated_at, () => this.updated_at.serialize(writer));
+                writer.writeMessage(8, this.updated_at, () => this.updated_at.serialize(writer));
             if (this.deleted != false)
-                writer.writeBool(8, this.deleted);
+                writer.writeBool(9, this.deleted);
+            if (this.requires_review != false)
+                writer.writeBool(10, this.requires_review);
             if (!w)
                 return writer.getResultBuffer();
         }
@@ -205,7 +255,7 @@ export namespace dilocash.v1 {
                         message.id = reader.readString();
                         break;
                     case 2:
-                        message.amount = reader.readDouble();
+                        message.amount = reader.readString();
                         break;
                     case 3:
                         message.currency = reader.readString();
@@ -217,13 +267,19 @@ export namespace dilocash.v1 {
                         message.note = reader.readString();
                         break;
                     case 6:
-                        message.status = reader.readString();
+                        message.status = reader.readEnum();
                         break;
                     case 7:
-                        reader.readMessage(message.updated_at, () => message.updated_at = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        reader.readMessage(message.created_at, () => message.created_at = dependency_1.google.protobuf.Timestamp.deserialize(reader));
                         break;
                     case 8:
+                        reader.readMessage(message.updated_at, () => message.updated_at = dependency_1.google.protobuf.Timestamp.deserialize(reader));
+                        break;
+                    case 9:
                         message.deleted = reader.readBool();
+                        break;
+                    case 10:
+                        message.requires_review = reader.readBool();
                         break;
                     default: reader.skipField();
                 }

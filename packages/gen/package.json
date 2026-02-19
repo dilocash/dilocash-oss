@@ -3,13 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.28.2",
-  "scripts": {
-    "build": "turbo run build",
-    "dev": "turbo run dev",
-    "lint": "turbo run lint",
-    "start": "turbo run start",
-    "test": "turbo run test"
-  },
+  "scripts": {},
   "dependencies": {
     "@grpc/grpc-js": "^1.14.3",
     "google-protobuf": "^4.0.1"
