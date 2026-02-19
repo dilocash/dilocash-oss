@@ -1,0 +1,57 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/PushIntentsRequest",
+    "definitions": {
+        "PushIntentsRequest": {
+            "properties": {
+                "intents": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Push Intents Request",
+            "description": "request to push changes from the client"
+        },
+        "dilocash.v1.Intent": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "UUID generated in the client (RxDB primary key)"
+                },
+                "amount": {
+                    "type": "number"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "recipient_id": {
+                    "type": "string"
+                },
+                "note": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "critical fields for offline-first synchronization  \"pending\", \"completed\", \"failed\""
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Flag for \"Soft Deletes\" (RxDB requires it)"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intent",
+            "description": "represents the intent of a financial transaction"
+        }
+    }
+}

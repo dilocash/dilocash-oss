@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/CreateTransactionRequest",
+    "definitions": {
+        "CreateTransactionRequest": {
+            "properties": {
+                "user_id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Optional, defaults to now",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Create Transaction Request"
+        }
+    }
+}
