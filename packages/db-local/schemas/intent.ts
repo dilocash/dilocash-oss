@@ -1,5 +1,5 @@
 // packages/schema/intent.ts
-import generatedSchema from '../gen/json/transport/Intent.json';
+import generatedSchema from '../../gen/json/transport/Intent.json';
 
 // Extend the generated schema with RxDB specific configurations
 export const IntentSchema = {

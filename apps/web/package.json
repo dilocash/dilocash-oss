@@ -11,6 +11,8 @@
   "dependencies": {
     "@dilocash/ui": "workspace:*",
     "@dilocash/i18n": "workspace:*",
+    "@dilocash/db-local": "workspace:*",
+    "@connectrpc/connect-web": "^2.0.1",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
@@ -23,7 +25,9 @@
     "nativewind": "^4.1.23",
     "react-native-safe-area-context": "^5.6.1",
     "react-native-svg": "^15.12.0",
-    "react-native-web": "^0.20.0"
+    "react-native-web": "^0.20.0",
+    "rxdb": "^16.21.1",
+    "rxjs": "^7.8.2"
   },
   "devDependencies": {
     "@dilocash/ui": "workspace:*",

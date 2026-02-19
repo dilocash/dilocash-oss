@@ -6,6 +6,7 @@ import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-pro
 import i18n, { initI18n } from '@dilocash/i18n';
 import { useEffect, useState } from 'react';
 import { AppLoader } from '@dilocash/ui/components/app-loader';
+import { initDB } from "@/lib/db/initialize";
 
 export default function RootLayout({
   children,
@@ -18,8 +19,8 @@ export default function RootLayout({
     
   const setup = async () => {
     await initI18n(true);
-    //await initRxDB(); // init IndexedDB
-    var millisecondsToWait = 50000;
+    await initDB("session"); // init IndexedDB
+    var millisecondsToWait = 500;
     setTimeout(function() {
       // Whatever you want to do after the wait
       setIsReady(true);
