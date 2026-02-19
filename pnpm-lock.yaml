@@ -265,6 +265,8 @@ importers:
         specifier: ^0.8.7
         version: 0.8.7
 
+  packages/schema: {}
+
   packages/ui:
     dependencies:
       '@expo/html-elements':
