@@ -1,12 +1,12 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/PullIntentsRequest",
+    "$ref": "#/definitions/PullCommandsRequest",
     "definitions": {
-        "PullIntentsRequest": {
+        "PullCommandsRequest": {
             "properties": {
                 "last_updated_at": {
                     "type": "string",
-                    "description": "The checkpoint that RxDB will send",
+                    "description": "The checkpoint that localdb will send",
                     "format": "date-time"
                 },
                 "limit": {
@@ -16,7 +16,7 @@
             },
             "additionalProperties": true,
             "type": "object",
-            "title": "Pull Intents Request",
+            "title": "Pull Commands Request",
             "description": "request to pull changes from the server"
         }
     }

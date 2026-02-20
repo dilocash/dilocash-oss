@@ -8,9 +8,9 @@ package dilocash.v1;
 
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 
-import "dilocash/v1/intent_types.proto";
+import "dilocash/v1/command_types.proto";
 
-service IntentService {
-  rpc PullIntents(PullIntentsRequest) returns (PullIntentsResponse);
-  rpc PushIntents(PushIntentsRequest) returns (PushIntentsResponse);
+service CommandService {
+  rpc PullCommands(PullCommandsRequest) returns (PullCommandsResponse);
+  rpc PushCommands(PushCommandsRequest) returns (PushCommandsResponse);
 }

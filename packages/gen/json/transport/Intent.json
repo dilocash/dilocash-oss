@@ -6,19 +6,15 @@
             "properties": {
                 "id": {
                     "type": "string",
-                    "description": "UUID generated in the client (RxDB primary key)"
+                    "description": "UUID generated in the client (localdb primary key)"
                 },
-                "amount": {
-                    "type": "string",
-                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
-                },
-                "currency": {
+                "text_message": {
                     "type": "string"
                 },
-                "recipient_id": {
+                "voice_message": {
                     "type": "string"
                 },
-                "note": {
+                "image_message": {
                     "type": "string"
                 },
                 "status": {
@@ -43,20 +39,6 @@
                         }
                     ],
                     "title": "Intent Status"
-                },
-                "created_at": {
-                    "type": "string",
-                    "description": "Timestamp in milliseconds (our Checkpoint)",
-                    "format": "date-time"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "description": "Timestamp in milliseconds (our Checkpoint)",
-                    "format": "date-time"
-                },
-                "deleted": {
-                    "type": "boolean",
-                    "description": "Flag for \"Soft Deletes\" (RxDB requires it)"
                 },
                 "requires_review": {
                     "type": "boolean"

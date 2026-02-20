@@ -7,11 +7,9 @@
                 "id": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "string"
-                },
                 "amount": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
                 },
                 "currency": {
                     "type": "string"
@@ -21,13 +19,6 @@
                 },
                 "description": {
                     "type": "string"
-                },
-                "raw_input": {
-                    "type": "string"
-                },
-                "created_at": {
-                    "type": "string",
-                    "format": "date-time"
                 }
             },
             "additionalProperties": true,
