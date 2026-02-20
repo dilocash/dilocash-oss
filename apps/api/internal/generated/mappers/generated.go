@@ -6,7 +6,6 @@ package generated
 import (
 	domain "github.com/dilocash/dilocash-oss/apps/api/internal/domain"
 	postgres "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
-	v1 "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/mappers"
 )
 
@@ -14,24 +13,23 @@ type ConverterImpl struct{}
 
 func (c *ConverterImpl) ToDBCreateTransactionParams(source domain.Transaction) postgres.CreateTransactionParams {
 	var postgresCreateTransactionParams postgres.CreateTransactionParams
-	postgresCreateTransactionParams.UserID = mappers.CopyUUID(source.UserID)
 	postgresCreateTransactionParams.Amount = mappers.CopyDecimal(source.Amount)
 	postgresCreateTransactionParams.Currency = source.Currency
 	postgresCreateTransactionParams.Category = mappers.StringToPgText(source.Category)
 	postgresCreateTransactionParams.Description = mappers.StringToPgText(source.Description)
-	postgresCreateTransactionParams.RawInput = mappers.StringToPgText(source.RawInput)
 	return postgresCreateTransactionParams
 }
 func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) postgres.Transaction {
 	var postgresTransaction postgres.Transaction
 	postgresTransaction.ID = mappers.CopyUUID(source.ID)
-	postgresTransaction.UserID = mappers.CopyUUID(source.UserID)
 	postgresTransaction.Amount = mappers.CopyDecimal(source.Amount)
 	postgresTransaction.Currency = source.Currency
 	postgresTransaction.Category = mappers.StringToPgText(source.Category)
 	postgresTransaction.Description = mappers.StringToPgText(source.Description)
-	postgresTransaction.RawInput = mappers.StringToPgText(source.RawInput)
 	postgresTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	postgresTransaction.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	postgresTransaction.Deleted = source.Deleted
+	postgresTransaction.CommandID = mappers.CopyUUID(source.CommandID)
 	return postgresTransaction
 }
 func (c *ConverterImpl) ToDBUser(source domain.User) postgres.User {
@@ -54,38 +52,16 @@ func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
 	domainUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return domainUser
 }
-func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.Transaction {
-	var v1Transaction v1.Transaction
-	v1Transaction.Id = mappers.UUIDToString(source.ID)
-	v1Transaction.UserId = mappers.UUIDToString(source.UserID)
-	v1Transaction.Amount = mappers.DecimalToString(source.Amount)
-	v1Transaction.Currency = source.Currency
-	v1Transaction.Category = source.Category
-	v1Transaction.Description = source.Description
-	v1Transaction.RawInput = source.RawInput
-	v1Transaction.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
-	return &v1Transaction
-}
 func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) domain.Transaction {
 	var domainTransaction domain.Transaction
 	domainTransaction.ID = mappers.CopyUUID(source.ID)
-	domainTransaction.UserID = mappers.CopyUUID(source.UserID)
 	domainTransaction.Amount = mappers.CopyDecimal(source.Amount)
 	domainTransaction.Currency = source.Currency
 	domainTransaction.Category = mappers.PgTextToString(source.Category)
 	domainTransaction.Description = mappers.PgTextToString(source.Description)
-	domainTransaction.RawInput = mappers.PgTextToString(source.RawInput)
 	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return domainTransaction
-}
-func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.CreateTransactionRequest) domain.Transaction {
-	var domainTransaction domain.Transaction
-	if source != nil {
-		domainTransaction.Amount = mappers.StringToDecimal((*source).Amount)
-		domainTransaction.Currency = (*source).Currency
-		domainTransaction.Category = (*source).Category
-		domainTransaction.Description = (*source).Description
-		domainTransaction.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
-	}
+	domainTransaction.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	domainTransaction.Deleted = source.Deleted
+	domainTransaction.CommandID = mappers.CopyUUID(source.CommandID)
 	return domainTransaction
 }

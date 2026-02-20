@@ -12,15 +12,38 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+type Command struct {
+	ID          uuid.UUID   `json:"id"`
+	Status      string      `json:"status"`
+	Category    pgtype.Text `json:"category"`
+	Description pgtype.Text `json:"description"`
+	CreatedAt   time.Time   `json:"created_at"`
+	UpdatedAt   time.Time   `json:"updated_at"`
+	Deleted     bool        `json:"deleted"`
+	UserID      uuid.UUID   `json:"user_id"`
+}
+
+type Intent struct {
+	ID           uuid.UUID   `json:"id"`
+	TextMessage  pgtype.Text `json:"text_message"`
+	AudioMessage pgtype.Text `json:"audio_message"`
+	ImageMessage pgtype.Text `json:"image_message"`
+	CreatedAt    time.Time   `json:"created_at"`
+	UpdatedAt    time.Time   `json:"updated_at"`
+	Deleted      bool        `json:"deleted"`
+	CommandID    uuid.UUID   `json:"command_id"`
+}
+
 type Transaction struct {
 	ID          uuid.UUID       `json:"id"`
-	UserID      uuid.UUID       `json:"user_id"`
 	Amount      decimal.Decimal `json:"amount"`
 	Currency    string          `json:"currency"`
 	Category    pgtype.Text     `json:"category"`
 	Description pgtype.Text     `json:"description"`
-	RawInput    pgtype.Text     `json:"raw_input"`
 	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
+	Deleted     bool            `json:"deleted"`
+	CommandID   uuid.UUID       `json:"command_id"`
 }
 
 type User struct {

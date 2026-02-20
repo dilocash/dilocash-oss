@@ -17,7 +17,9 @@ type Querier interface {
 	// Use of this source code is governed by an MIT-style
 	// license that can be found in the LICENSE file.
 	GetUser(ctx context.Context, id uuid.UUID) (User, error)
-	ListTransactionsByUserId(ctx context.Context, arg ListTransactionsByUserIdParams) ([]Transaction, error)
+	ListCommandsByUserId(ctx context.Context, arg ListCommandsByUserIdParams) ([]Command, error)
+	ListIntentsByUserId(ctx context.Context, arg ListIntentsByUserIdParams) ([]ListIntentsByUserIdRow, error)
+	ListTransactionsByUserId(ctx context.Context, arg ListTransactionsByUserIdParams) ([]ListTransactionsByUserIdRow, error)
 }
 
 var _ Querier = (*Queries)(nil)
