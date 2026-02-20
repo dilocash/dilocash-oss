@@ -7,12 +7,15 @@ import { Intent } from '@dilocash/database/local/model/intent';
 import { Command } from '@dilocash/database/local/model/commmand';
 import { Transaction } from '@dilocash/database/local/model/transaction';
 import { DatabaseProvider } from '@nozbe/watermelondb/react';
+import { setGenerator } from "@nozbe/watermelondb/utils/common/randomId";
+import { v4 as uuidv4 } from "uuid";
 
 const CustomeDatabaseProvider = ({ children }: PropsWithChildren) => {
   const [database, setDatabase] = useState<Database | null>(null);
 
   useEffect(() => {
     (async () => {
+      setGenerator(() => uuidv4());
 
       const adapter = new LokiJSAdapter({
         useWebWorker: false,
