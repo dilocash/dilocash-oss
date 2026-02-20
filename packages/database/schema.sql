@@ -12,22 +12,44 @@ CREATE TABLE IF NOT EXISTS users (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
--- Transactions Table: The core ledger
+-- Commands Table: The actions requested by the user
+CREATE TABLE IF NOT EXISTS commands (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    status TEXT NOT NULL,
+    category TEXT DEFAULT 'uncategorized',
+    description TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN DEFAULT FALSE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Intents Table: The actions taken by the user
+CREATE TABLE IF NOT EXISTS intents (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    text_message TEXT,
+    audio_message TEXT,
+    image_message TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN DEFAULT FALSE,
+    command_id UUID NOT NULL REFERENCES commands(id) ON DELETE CASCADE
+);
+
+-- Transactions Table: The actions taken by the user
 CREATE TABLE IF NOT EXISTS transactions (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    
     -- Using NUMERIC for precision: 19 total digits, 4 after decimal
     amount NUMERIC(19, 4) NOT NULL,
     currency CHAR(3) NOT NULL, -- ISO 4217 (USD, EUR, etc.)
-    
     category TEXT DEFAULT 'uncategorized',
     description TEXT,
-    raw_input TEXT,            -- Stores the original transcript for auditing
-    
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    deleted BOOLEAN DEFAULT FALSE,
+    command_id UUID NOT NULL REFERENCES commands(id) ON DELETE CASCADE
 );
 
 -- Indexing for performance
-CREATE INDEX IF NOT EXISTS idx_transactions_user_id ON transactions(user_id);
-CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_commands_user_id ON commands(user_id);
+CREATE INDEX IF NOT EXISTS idx_commands_last_updated_at ON commands(updated_at);

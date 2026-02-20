@@ -19,14 +19,36 @@ sql:
         overrides:
           - db_type: "uuid"
             go_type: "github.com/google/uuid.UUID"
+
+          - column: "commands.created_at"
+            go_type: "time.Time"
+          - column: "commands.updated_at"
+            go_type: "time.Time"
+          - column: "commands.deleted"
+            go_type: "bool"
+
           - column: "transactions.amount"
             go_type: "github.com/shopspring/decimal.Decimal"
           - column: "transactions.created_at"
             go_type: "time.Time"
+          - column: "transactions.updated_at"
+            go_type: "time.Time"
+          - column: "transactions.deleted"
+            go_type: "bool"
+
+          - column: "intents.created_at"
+            go_type: "time.Time"
+          - column: "intents.updated_at"
+            go_type: "time.Time"
+          - column: "intents.deleted"
+            go_type: "bool"
+
           - column: "users.created_at"
             go_type: "time.Time"
           - column: "users.accepted_terms_at"
             go_type: "time.Time"
+          - column: "users.deleted"
+            go_type: "bool"
 overrides:
   go:
     rename:
