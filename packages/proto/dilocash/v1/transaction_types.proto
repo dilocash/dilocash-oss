@@ -9,6 +9,12 @@ package dilocash.v1;
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 import "google/protobuf/timestamp.proto";
 
+message TransactionsList {
+  repeated Transaction created = 1;
+  repeated Transaction updated = 2;
+  repeated string deleted = 3;
+}
+
 message Transaction {
   string id = 1;
   // we use string for the amount to maintain decimal precision in Go and JS

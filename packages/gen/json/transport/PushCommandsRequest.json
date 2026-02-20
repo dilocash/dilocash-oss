@@ -86,7 +86,7 @@
                 "text_message": {
                     "type": "string"
                 },
-                "voice_message": {
+                "audio_message": {
                     "type": "string"
                 },
                 "image_message": {

@@ -9,8 +9,12 @@ package dilocash.v1;
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 
 import "google/protobuf/timestamp.proto";
-import "dilocash/v1/intent_types.proto";
-import "dilocash/v1/transaction_types.proto";
+
+message CommandsList {
+  repeated Command created = 1;
+  repeated Command updated = 2;
+  repeated string deleted = 3;
+}
 
 // represents the command of a financial transaction
 message Command {
@@ -20,8 +24,6 @@ message Command {
   google.protobuf.Timestamp updated_at = 3;       // Timestamp in milliseconds (our Checkpoint)
   bool deleted = 4;           // Flag for "Soft Deletes" (localdb requires it)
   CommandStatus status = 5;
-  repeated Intent intents = 6;
-  repeated Transaction transactions = 7;
 }
 
 enum CommandStatus {
@@ -30,27 +32,4 @@ enum CommandStatus {
   COMMAND_STATUS_PROCESSING = 2;
   COMMAND_STATUS_FAILED = 3;
   COMMAND_STATUS_SYNCED = 4;
-}
-
-// request to pull changes from the server
-message PullCommandsRequest {
-  google.protobuf.Timestamp last_updated_at = 1;  // The checkpoint that localdb will send
-  int32 limit = 2;            // Batch size
-}
-
-// server response with the new data
-message PullCommandsResponse {
-  repeated Command commands = 1;
-  int64 checkpoint_updated_at = 2; // The new checkpoint for the next time
-}
-
-// request to push changes from the client
-message PushCommandsRequest {
-  repeated Command commands = 1;
-}
-
-// response with the new data
-message PushCommandsResponse {
-  // Here you could return conflicts if the server rejects a version
-  repeated string conflict_ids = 1; 
 }

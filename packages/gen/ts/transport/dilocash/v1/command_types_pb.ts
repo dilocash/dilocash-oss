@@ -10,17 +10,40 @@ import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2"
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
 import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
-import type { Intent } from "./intent_types_pb";
-import { file_dilocash_v1_intent_types } from "./intent_types_pb";
-import type { Transaction } from "./transaction_types_pb";
-import { file_dilocash_v1_transaction_types } from "./transaction_types_pb";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file dilocash/v1/command_types.proto.
  */
 export const file_dilocash_v1_command_types: GenFile = /*@__PURE__*/
-  fileDesc("Ch9kaWxvY2FzaC92MS9jb21tYW5kX3R5cGVzLnByb3RvEgtkaWxvY2FzaC52MSKIAgoHQ29tbWFuZBIKCgJpZBgBIAEoCRIuCgpjcmVhdGVkX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdkZWxldGVkGAQgASgIEioKBnN0YXR1cxgFIAEoDjIaLmRpbG9jYXNoLnYxLkNvbW1hbmRTdGF0dXMSJAoHaW50ZW50cxgGIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIuCgx0cmFuc2FjdGlvbnMYByADKAsyGC5kaWxvY2FzaC52MS5UcmFuc2FjdGlvbiJZChNQdWxsQ29tbWFuZHNSZXF1ZXN0EjMKD2xhc3RfdXBkYXRlZF9hdBgBIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASDQoFbGltaXQYAiABKAUiXQoUUHVsbENvbW1hbmRzUmVzcG9uc2USJgoIY29tbWFuZHMYASADKAsyFC5kaWxvY2FzaC52MS5Db21tYW5kEh0KFWNoZWNrcG9pbnRfdXBkYXRlZF9hdBgCIAEoAyI9ChNQdXNoQ29tbWFuZHNSZXF1ZXN0EiYKCGNvbW1hbmRzGAEgAygLMhQuZGlsb2Nhc2gudjEuQ29tbWFuZCIsChRQdXNoQ29tbWFuZHNSZXNwb25zZRIUCgxjb25mbGljdF9pZHMYASADKAkqoAEKDUNvbW1hbmRTdGF0dXMSHgoaQ09NTUFORF9TVEFUVVNfVU5TUEVDSUZJRUQQABIaChZDT01NQU5EX1NUQVRVU19QRU5ESU5HEAESHQoZQ09NTUFORF9TVEFUVVNfUFJPQ0VTU0lORxACEhkKFUNPTU1BTkRfU1RBVFVTX0ZBSUxFRBADEhkKFUNPTU1BTkRfU1RBVFVTX1NZTkNFRBAEQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_dilocash_v1_intent_types, file_dilocash_v1_transaction_types]);
+  fileDesc("Ch9kaWxvY2FzaC92MS9jb21tYW5kX3R5cGVzLnByb3RvEgtkaWxvY2FzaC52MSJtCgxDb21tYW5kc0xpc3QSJQoHY3JlYXRlZBgBIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSJQoHdXBkYXRlZBgCIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSDwoHZGVsZXRlZBgDIAMoCSKyAQoHQ29tbWFuZBIKCgJpZBgBIAEoCRIuCgpjcmVhdGVkX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdkZWxldGVkGAQgASgIEioKBnN0YXR1cxgFIAEoDjIaLmRpbG9jYXNoLnYxLkNvbW1hbmRTdGF0dXMqoAEKDUNvbW1hbmRTdGF0dXMSHgoaQ09NTUFORF9TVEFUVVNfVU5TUEVDSUZJRUQQABIaChZDT01NQU5EX1NUQVRVU19QRU5ESU5HEAESHQoZQ09NTUFORF9TVEFUVVNfUFJPQ0VTU0lORxACEhkKFUNPTU1BTkRfU1RBVFVTX0ZBSUxFRBADEhkKFUNPTU1BTkRfU1RBVFVTX1NZTkNFRBAEQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+
+/**
+ * @generated from message dilocash.v1.CommandsList
+ */
+export type CommandsList = Message<"dilocash.v1.CommandsList"> & {
+  /**
+   * @generated from field: repeated dilocash.v1.Command created = 1;
+   */
+  created: Command[];
+
+  /**
+   * @generated from field: repeated dilocash.v1.Command updated = 2;
+   */
+  updated: Command[];
+
+  /**
+   * @generated from field: repeated string deleted = 3;
+   */
+  deleted: string[];
+};
+
+/**
+ * Describes the message dilocash.v1.CommandsList.
+ * Use `create(CommandsListSchema)` to create a new message.
+ */
+export const CommandsListSchema: GenMessage<CommandsList> = /*@__PURE__*/
+  messageDesc(file_dilocash_v1_command_types, 0);
 
 /**
  * represents the command of a financial transaction
@@ -62,16 +85,6 @@ export type Command = Message<"dilocash.v1.Command"> & {
    * @generated from field: dilocash.v1.CommandStatus status = 5;
    */
   status: CommandStatus;
-
-  /**
-   * @generated from field: repeated dilocash.v1.Intent intents = 6;
-   */
-  intents: Intent[];
-
-  /**
-   * @generated from field: repeated dilocash.v1.Transaction transactions = 7;
-   */
-  transactions: Transaction[];
 };
 
 /**
@@ -79,101 +92,7 @@ export type Command = Message<"dilocash.v1.Command"> & {
  * Use `create(CommandSchema)` to create a new message.
  */
 export const CommandSchema: GenMessage<Command> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_command_types, 0);
-
-/**
- * request to pull changes from the server
- *
- * @generated from message dilocash.v1.PullCommandsRequest
- */
-export type PullCommandsRequest = Message<"dilocash.v1.PullCommandsRequest"> & {
-  /**
-   * The checkpoint that localdb will send
-   *
-   * @generated from field: google.protobuf.Timestamp last_updated_at = 1;
-   */
-  lastUpdatedAt?: Timestamp;
-
-  /**
-   * Batch size
-   *
-   * @generated from field: int32 limit = 2;
-   */
-  limit: number;
-};
-
-/**
- * Describes the message dilocash.v1.PullCommandsRequest.
- * Use `create(PullCommandsRequestSchema)` to create a new message.
- */
-export const PullCommandsRequestSchema: GenMessage<PullCommandsRequest> = /*@__PURE__*/
   messageDesc(file_dilocash_v1_command_types, 1);
-
-/**
- * server response with the new data
- *
- * @generated from message dilocash.v1.PullCommandsResponse
- */
-export type PullCommandsResponse = Message<"dilocash.v1.PullCommandsResponse"> & {
-  /**
-   * @generated from field: repeated dilocash.v1.Command commands = 1;
-   */
-  commands: Command[];
-
-  /**
-   * The new checkpoint for the next time
-   *
-   * @generated from field: int64 checkpoint_updated_at = 2;
-   */
-  checkpointUpdatedAt: bigint;
-};
-
-/**
- * Describes the message dilocash.v1.PullCommandsResponse.
- * Use `create(PullCommandsResponseSchema)` to create a new message.
- */
-export const PullCommandsResponseSchema: GenMessage<PullCommandsResponse> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_command_types, 2);
-
-/**
- * request to push changes from the client
- *
- * @generated from message dilocash.v1.PushCommandsRequest
- */
-export type PushCommandsRequest = Message<"dilocash.v1.PushCommandsRequest"> & {
-  /**
-   * @generated from field: repeated dilocash.v1.Command commands = 1;
-   */
-  commands: Command[];
-};
-
-/**
- * Describes the message dilocash.v1.PushCommandsRequest.
- * Use `create(PushCommandsRequestSchema)` to create a new message.
- */
-export const PushCommandsRequestSchema: GenMessage<PushCommandsRequest> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_command_types, 3);
-
-/**
- * response with the new data
- *
- * @generated from message dilocash.v1.PushCommandsResponse
- */
-export type PushCommandsResponse = Message<"dilocash.v1.PushCommandsResponse"> & {
-  /**
-   * Here you could return conflicts if the server rejects a version
-   *
-   * @generated from field: repeated string conflict_ids = 1;
-   */
-  conflictIds: string[];
-};
-
-/**
- * Describes the message dilocash.v1.PushCommandsResponse.
- * Use `create(PushCommandsResponseSchema)` to create a new message.
- */
-export const PushCommandsResponseSchema: GenMessage<PushCommandsResponse> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_command_types, 4);
 
 /**
  * @generated from enum dilocash.v1.CommandStatus

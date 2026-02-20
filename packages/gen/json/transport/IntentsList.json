@@ -1,8 +1,33 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/Intent",
+    "$ref": "#/definitions/IntentsList",
     "definitions": {
-        "Intent": {
+        "IntentsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intents List"
+        },
+        "dilocash.v1.Intent": {
             "properties": {
                 "id": {
                     "type": "string",

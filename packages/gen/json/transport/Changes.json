@@ -1,24 +1,26 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/PullCommandsResponse",
+    "$ref": "#/definitions/Changes",
     "definitions": {
-        "PullCommandsResponse": {
+        "Changes": {
             "properties": {
                 "commands": {
-                    "items": {
-                        "$ref": "#/definitions/dilocash.v1.Command"
-                    },
-                    "type": "array"
+                    "$ref": "#/definitions/dilocash.v1.CommandsList",
+                    "additionalProperties": true
                 },
-                "checkpoint_updated_at": {
-                    "type": "string",
-                    "description": "The new checkpoint for the next time"
+                "intents": {
+                    "$ref": "#/definitions/dilocash.v1.IntentsList",
+                    "additionalProperties": true
+                },
+                "transactions": {
+                    "$ref": "#/definitions/dilocash.v1.TransactionsList",
+                    "additionalProperties": true
                 }
             },
             "additionalProperties": true,
             "type": "object",
-            "title": "Pull Commands Response",
-            "description": "server response with the new data"
+            "title": "Changes",
+            "description": "represents the command of a financial transaction"
         },
         "dilocash.v1.Command": {
             "properties": {
@@ -62,24 +64,37 @@
                         }
                     ],
                     "title": "Command Status"
-                },
-                "intents": {
-                    "items": {
-                        "$ref": "#/definitions/dilocash.v1.Intent"
-                    },
-                    "type": "array"
-                },
-                "transactions": {
-                    "items": {
-                        "$ref": "#/definitions/dilocash.v1.Transaction"
-                    },
-                    "type": "array"
                 }
             },
             "additionalProperties": true,
             "type": "object",
             "title": "Command",
             "description": "represents the command of a financial transaction"
+        },
+        "dilocash.v1.CommandsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Command"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Command"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Commands List"
         },
         "dilocash.v1.Intent": {
             "properties": {
@@ -128,6 +143,31 @@
             "title": "Intent",
             "description": "represents the intent of a financial transaction"
         },
+        "dilocash.v1.IntentsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intents List"
+        },
         "dilocash.v1.Transaction": {
             "properties": {
                 "id": {
@@ -150,6 +190,31 @@
             "additionalProperties": true,
             "type": "object",
             "title": "Transaction"
+        },
+        "dilocash.v1.TransactionsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Transaction"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Transaction"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Transactions List"
         }
     }
 }

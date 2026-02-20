@@ -81,6 +81,66 @@ func (CommandStatus) EnumDescriptor() ([]byte, []int) {
 	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{0}
 }
 
+type CommandsList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Created       []*Command             `protobuf:"bytes,1,rep,name=created,proto3" json:"created,omitempty"`
+	Updated       []*Command             `protobuf:"bytes,2,rep,name=updated,proto3" json:"updated,omitempty"`
+	Deleted       []string               `protobuf:"bytes,3,rep,name=deleted,proto3" json:"deleted,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CommandsList) Reset() {
+	*x = CommandsList{}
+	mi := &file_dilocash_v1_command_types_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CommandsList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CommandsList) ProtoMessage() {}
+
+func (x *CommandsList) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_command_types_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CommandsList.ProtoReflect.Descriptor instead.
+func (*CommandsList) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CommandsList) GetCreated() []*Command {
+	if x != nil {
+		return x.Created
+	}
+	return nil
+}
+
+func (x *CommandsList) GetUpdated() []*Command {
+	if x != nil {
+		return x.Updated
+	}
+	return nil
+}
+
+func (x *CommandsList) GetDeleted() []string {
+	if x != nil {
+		return x.Deleted
+	}
+	return nil
+}
+
 // represents the command of a financial transaction
 type Command struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
@@ -90,15 +150,13 @@ type Command struct {
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
 	Deleted       bool                   `protobuf:"varint,4,opt,name=deleted,proto3" json:"deleted,omitempty"`                     // Flag for "Soft Deletes" (localdb requires it)
 	Status        CommandStatus          `protobuf:"varint,5,opt,name=status,proto3,enum=dilocash.v1.CommandStatus" json:"status,omitempty"`
-	Intents       []*Intent              `protobuf:"bytes,6,rep,name=intents,proto3" json:"intents,omitempty"`
-	Transactions  []*Transaction         `protobuf:"bytes,7,rep,name=transactions,proto3" json:"transactions,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Command) Reset() {
 	*x = Command{}
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_command_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -110,7 +168,7 @@ func (x *Command) String() string {
 func (*Command) ProtoMessage() {}
 
 func (x *Command) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_command_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -123,7 +181,7 @@ func (x *Command) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Command.ProtoReflect.Descriptor instead.
 func (*Command) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{0}
+	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Command) GetId() string {
@@ -161,222 +219,15 @@ func (x *Command) GetStatus() CommandStatus {
 	return CommandStatus_COMMAND_STATUS_UNSPECIFIED
 }
 
-func (x *Command) GetIntents() []*Intent {
-	if x != nil {
-		return x.Intents
-	}
-	return nil
-}
-
-func (x *Command) GetTransactions() []*Transaction {
-	if x != nil {
-		return x.Transactions
-	}
-	return nil
-}
-
-// request to pull changes from the server
-type PullCommandsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	LastUpdatedAt *timestamppb.Timestamp `protobuf:"bytes,1,opt,name=last_updated_at,json=lastUpdatedAt,proto3" json:"last_updated_at,omitempty"` // The checkpoint that localdb will send
-	Limit         int32                  `protobuf:"varint,2,opt,name=limit,proto3" json:"limit,omitempty"`                                       // Batch size
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PullCommandsRequest) Reset() {
-	*x = PullCommandsRequest{}
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PullCommandsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PullCommandsRequest) ProtoMessage() {}
-
-func (x *PullCommandsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[1]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PullCommandsRequest.ProtoReflect.Descriptor instead.
-func (*PullCommandsRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *PullCommandsRequest) GetLastUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.LastUpdatedAt
-	}
-	return nil
-}
-
-func (x *PullCommandsRequest) GetLimit() int32 {
-	if x != nil {
-		return x.Limit
-	}
-	return 0
-}
-
-// server response with the new data
-type PullCommandsResponse struct {
-	state               protoimpl.MessageState `protogen:"open.v1"`
-	Commands            []*Command             `protobuf:"bytes,1,rep,name=commands,proto3" json:"commands,omitempty"`
-	CheckpointUpdatedAt int64                  `protobuf:"varint,2,opt,name=checkpoint_updated_at,json=checkpointUpdatedAt,proto3" json:"checkpoint_updated_at,omitempty"` // The new checkpoint for the next time
-	unknownFields       protoimpl.UnknownFields
-	sizeCache           protoimpl.SizeCache
-}
-
-func (x *PullCommandsResponse) Reset() {
-	*x = PullCommandsResponse{}
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PullCommandsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PullCommandsResponse) ProtoMessage() {}
-
-func (x *PullCommandsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PullCommandsResponse.ProtoReflect.Descriptor instead.
-func (*PullCommandsResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *PullCommandsResponse) GetCommands() []*Command {
-	if x != nil {
-		return x.Commands
-	}
-	return nil
-}
-
-func (x *PullCommandsResponse) GetCheckpointUpdatedAt() int64 {
-	if x != nil {
-		return x.CheckpointUpdatedAt
-	}
-	return 0
-}
-
-// request to push changes from the client
-type PushCommandsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Commands      []*Command             `protobuf:"bytes,1,rep,name=commands,proto3" json:"commands,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PushCommandsRequest) Reset() {
-	*x = PushCommandsRequest{}
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PushCommandsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PushCommandsRequest) ProtoMessage() {}
-
-func (x *PushCommandsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PushCommandsRequest.ProtoReflect.Descriptor instead.
-func (*PushCommandsRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *PushCommandsRequest) GetCommands() []*Command {
-	if x != nil {
-		return x.Commands
-	}
-	return nil
-}
-
-// response with the new data
-type PushCommandsResponse struct {
-	state protoimpl.MessageState `protogen:"open.v1"`
-	// Here you could return conflicts if the server rejects a version
-	ConflictIds   []string `protobuf:"bytes,1,rep,name=conflict_ids,json=conflictIds,proto3" json:"conflict_ids,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *PushCommandsResponse) Reset() {
-	*x = PushCommandsResponse{}
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *PushCommandsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*PushCommandsResponse) ProtoMessage() {}
-
-func (x *PushCommandsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_command_types_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use PushCommandsResponse.ProtoReflect.Descriptor instead.
-func (*PushCommandsResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_command_types_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *PushCommandsResponse) GetConflictIds() []string {
-	if x != nil {
-		return x.ConflictIds
-	}
-	return nil
-}
-
 var File_dilocash_v1_command_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_command_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1fdilocash/v1/command_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1edilocash/v1/intent_types.proto\x1a#dilocash/v1/transaction_types.proto\"\xca\x02\n" +
+	"\x1fdilocash/v1/command_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\x01\n" +
+	"\fCommandsList\x12.\n" +
+	"\acreated\x18\x01 \x03(\v2\x14.dilocash.v1.CommandR\acreated\x12.\n" +
+	"\aupdated\x18\x02 \x03(\v2\x14.dilocash.v1.CommandR\aupdated\x12\x18\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xdd\x01\n" +
 	"\aCommand\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
@@ -384,19 +235,7 @@ const file_dilocash_v1_command_types_proto_rawDesc = "" +
 	"\n" +
 	"updated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x18\n" +
 	"\adeleted\x18\x04 \x01(\bR\adeleted\x122\n" +
-	"\x06status\x18\x05 \x01(\x0e2\x1a.dilocash.v1.CommandStatusR\x06status\x12-\n" +
-	"\aintents\x18\x06 \x03(\v2\x13.dilocash.v1.IntentR\aintents\x12<\n" +
-	"\ftransactions\x18\a \x03(\v2\x18.dilocash.v1.TransactionR\ftransactions\"o\n" +
-	"\x13PullCommandsRequest\x12B\n" +
-	"\x0flast_updated_at\x18\x01 \x01(\v2\x1a.google.protobuf.TimestampR\rlastUpdatedAt\x12\x14\n" +
-	"\x05limit\x18\x02 \x01(\x05R\x05limit\"|\n" +
-	"\x14PullCommandsResponse\x120\n" +
-	"\bcommands\x18\x01 \x03(\v2\x14.dilocash.v1.CommandR\bcommands\x122\n" +
-	"\x15checkpoint_updated_at\x18\x02 \x01(\x03R\x13checkpointUpdatedAt\"G\n" +
-	"\x13PushCommandsRequest\x120\n" +
-	"\bcommands\x18\x01 \x03(\v2\x14.dilocash.v1.CommandR\bcommands\"9\n" +
-	"\x14PushCommandsResponse\x12!\n" +
-	"\fconflict_ids\x18\x01 \x03(\tR\vconflictIds*\xa0\x01\n" +
+	"\x06status\x18\x05 \x01(\x0e2\x1a.dilocash.v1.CommandStatusR\x06status*\xa0\x01\n" +
 	"\rCommandStatus\x12\x1e\n" +
 	"\x1aCOMMAND_STATUS_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16COMMAND_STATUS_PENDING\x10\x01\x12\x1d\n" +
@@ -417,32 +256,24 @@ func file_dilocash_v1_command_types_proto_rawDescGZIP() []byte {
 }
 
 var file_dilocash_v1_command_types_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_dilocash_v1_command_types_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_dilocash_v1_command_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dilocash_v1_command_types_proto_goTypes = []any{
 	(CommandStatus)(0),            // 0: dilocash.v1.CommandStatus
-	(*Command)(nil),               // 1: dilocash.v1.Command
-	(*PullCommandsRequest)(nil),   // 2: dilocash.v1.PullCommandsRequest
-	(*PullCommandsResponse)(nil),  // 3: dilocash.v1.PullCommandsResponse
-	(*PushCommandsRequest)(nil),   // 4: dilocash.v1.PushCommandsRequest
-	(*PushCommandsResponse)(nil),  // 5: dilocash.v1.PushCommandsResponse
-	(*timestamppb.Timestamp)(nil), // 6: google.protobuf.Timestamp
-	(*Intent)(nil),                // 7: dilocash.v1.Intent
-	(*Transaction)(nil),           // 8: dilocash.v1.Transaction
+	(*CommandsList)(nil),          // 1: dilocash.v1.CommandsList
+	(*Command)(nil),               // 2: dilocash.v1.Command
+	(*timestamppb.Timestamp)(nil), // 3: google.protobuf.Timestamp
 }
 var file_dilocash_v1_command_types_proto_depIdxs = []int32{
-	6, // 0: dilocash.v1.Command.created_at:type_name -> google.protobuf.Timestamp
-	6, // 1: dilocash.v1.Command.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 2: dilocash.v1.Command.status:type_name -> dilocash.v1.CommandStatus
-	7, // 3: dilocash.v1.Command.intents:type_name -> dilocash.v1.Intent
-	8, // 4: dilocash.v1.Command.transactions:type_name -> dilocash.v1.Transaction
-	6, // 5: dilocash.v1.PullCommandsRequest.last_updated_at:type_name -> google.protobuf.Timestamp
-	1, // 6: dilocash.v1.PullCommandsResponse.commands:type_name -> dilocash.v1.Command
-	1, // 7: dilocash.v1.PushCommandsRequest.commands:type_name -> dilocash.v1.Command
-	8, // [8:8] is the sub-list for method output_type
-	8, // [8:8] is the sub-list for method input_type
-	8, // [8:8] is the sub-list for extension type_name
-	8, // [8:8] is the sub-list for extension extendee
-	0, // [0:8] is the sub-list for field type_name
+	2, // 0: dilocash.v1.CommandsList.created:type_name -> dilocash.v1.Command
+	2, // 1: dilocash.v1.CommandsList.updated:type_name -> dilocash.v1.Command
+	3, // 2: dilocash.v1.Command.created_at:type_name -> google.protobuf.Timestamp
+	3, // 3: dilocash.v1.Command.updated_at:type_name -> google.protobuf.Timestamp
+	0, // 4: dilocash.v1.Command.status:type_name -> dilocash.v1.CommandStatus
+	5, // [5:5] is the sub-list for method output_type
+	5, // [5:5] is the sub-list for method input_type
+	5, // [5:5] is the sub-list for extension type_name
+	5, // [5:5] is the sub-list for extension extendee
+	0, // [0:5] is the sub-list for field type_name
 }
 
 func init() { file_dilocash_v1_command_types_proto_init() }
@@ -450,15 +281,13 @@ func file_dilocash_v1_command_types_proto_init() {
 	if File_dilocash_v1_command_types_proto != nil {
 		return
 	}
-	file_dilocash_v1_intent_types_proto_init()
-	file_dilocash_v1_transaction_types_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_command_types_proto_rawDesc), len(file_dilocash_v1_command_types_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

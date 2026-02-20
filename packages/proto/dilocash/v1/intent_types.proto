@@ -10,11 +10,17 @@ option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generate
 
 import "google/protobuf/timestamp.proto";
 
+message IntentsList {
+  repeated Intent created = 1;
+  repeated Intent updated = 2;
+  repeated string deleted = 3;
+}
+
 // represents the intent of a financial transaction
 message Intent {
   string id = 1;              // UUID generated in the client (localdb primary key)
   string text_message = 2;
-  string voice_message = 3;
+  string audio_message = 3;
   string image_message = 4;
   
   // critical fields for offline-first synchronization

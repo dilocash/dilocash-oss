@@ -15,7 +15,34 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/transaction_types.proto.
  */
 export const file_dilocash_v1_transaction_types: GenFile = /*@__PURE__*/
-  fileDesc("CiNkaWxvY2FzaC92MS90cmFuc2FjdGlvbl90eXBlcy5wcm90bxILZGlsb2Nhc2gudjEiYgoLVHJhbnNhY3Rpb24SCgoCaWQYASABKAkSDgoGYW1vdW50GAIgASgJEhAKCGN1cnJlbmN5GAMgASgJEhAKCGNhdGVnb3J5GAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("CiNkaWxvY2FzaC92MS90cmFuc2FjdGlvbl90eXBlcy5wcm90bxILZGlsb2Nhc2gudjEieQoQVHJhbnNhY3Rpb25zTGlzdBIpCgdjcmVhdGVkGAEgAygLMhguZGlsb2Nhc2gudjEuVHJhbnNhY3Rpb24SKQoHdXBkYXRlZBgCIAMoCzIYLmRpbG9jYXNoLnYxLlRyYW5zYWN0aW9uEg8KB2RlbGV0ZWQYAyADKAkiYgoLVHJhbnNhY3Rpb24SCgoCaWQYASABKAkSDgoGYW1vdW50GAIgASgJEhAKCGN1cnJlbmN5GAMgASgJEhAKCGNhdGVnb3J5GAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+
+/**
+ * @generated from message dilocash.v1.TransactionsList
+ */
+export type TransactionsList = Message<"dilocash.v1.TransactionsList"> & {
+  /**
+   * @generated from field: repeated dilocash.v1.Transaction created = 1;
+   */
+  created: Transaction[];
+
+  /**
+   * @generated from field: repeated dilocash.v1.Transaction updated = 2;
+   */
+  updated: Transaction[];
+
+  /**
+   * @generated from field: repeated string deleted = 3;
+   */
+  deleted: string[];
+};
+
+/**
+ * Describes the message dilocash.v1.TransactionsList.
+ * Use `create(TransactionsListSchema)` to create a new message.
+ */
+export const TransactionsListSchema: GenMessage<TransactionsList> = /*@__PURE__*/
+  messageDesc(file_dilocash_v1_transaction_types, 0);
 
 /**
  * @generated from message dilocash.v1.Transaction
@@ -54,5 +81,5 @@ export type Transaction = Message<"dilocash.v1.Transaction"> & {
  * Use `create(TransactionSchema)` to create a new message.
  */
 export const TransactionSchema: GenMessage<Transaction> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_transaction_types, 0);
+  messageDesc(file_dilocash_v1_transaction_types, 1);
 

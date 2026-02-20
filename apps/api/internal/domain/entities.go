@@ -11,15 +11,41 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type Transaction struct {
+type Command struct {
 	ID          uuid.UUID
 	UserID      uuid.UUID
+	Status      string
+	Category    string
+	Description string
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Deleted     bool
+	Transaction Transaction
+	Intent      Intent
+}
+
+type Transaction struct {
+	ID          uuid.UUID
 	Amount      decimal.Decimal
 	Currency    string
 	Category    string
 	Description string
-	RawInput    string
 	CreatedAt   time.Time
+	UpdatedAt   time.Time
+	Deleted     bool
+	CommandID   uuid.UUID
+}
+
+type Intent struct {
+	ID           uuid.UUID
+	UserID       uuid.UUID
+	TextMessage  string
+	AudioMessage string
+	ImageMessage string
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+	Deleted      bool
+	CommandID    uuid.UUID
 }
 
 type User struct {

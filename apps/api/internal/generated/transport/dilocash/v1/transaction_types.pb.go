@@ -26,6 +26,66 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type TransactionsList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Created       []*Transaction         `protobuf:"bytes,1,rep,name=created,proto3" json:"created,omitempty"`
+	Updated       []*Transaction         `protobuf:"bytes,2,rep,name=updated,proto3" json:"updated,omitempty"`
+	Deleted       []string               `protobuf:"bytes,3,rep,name=deleted,proto3" json:"deleted,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TransactionsList) Reset() {
+	*x = TransactionsList{}
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TransactionsList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TransactionsList) ProtoMessage() {}
+
+func (x *TransactionsList) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TransactionsList.ProtoReflect.Descriptor instead.
+func (*TransactionsList) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *TransactionsList) GetCreated() []*Transaction {
+	if x != nil {
+		return x.Created
+	}
+	return nil
+}
+
+func (x *TransactionsList) GetUpdated() []*Transaction {
+	if x != nil {
+		return x.Updated
+	}
+	return nil
+}
+
+func (x *TransactionsList) GetDeleted() []string {
+	if x != nil {
+		return x.Deleted
+	}
+	return nil
+}
+
 type Transaction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -40,7 +100,7 @@ type Transaction struct {
 
 func (x *Transaction) Reset() {
 	*x = Transaction{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -52,7 +112,7 @@ func (x *Transaction) String() string {
 func (*Transaction) ProtoMessage() {}
 
 func (x *Transaction) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -65,7 +125,7 @@ func (x *Transaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Transaction.ProtoReflect.Descriptor instead.
 func (*Transaction) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{0}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Transaction) GetId() string {
@@ -107,7 +167,11 @@ var File_dilocash_v1_transaction_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\n" +
-	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x8f\x01\n" +
+	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x94\x01\n" +
+	"\x10TransactionsList\x122\n" +
+	"\acreated\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\acreated\x122\n" +
+	"\aupdated\x18\x02 \x03(\v2\x18.dilocash.v1.TransactionR\aupdated\x12\x18\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x8f\x01\n" +
 	"\vTransaction\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
@@ -127,16 +191,19 @@ func file_dilocash_v1_transaction_types_proto_rawDescGZIP() []byte {
 	return file_dilocash_v1_transaction_types_proto_rawDescData
 }
 
-var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dilocash_v1_transaction_types_proto_goTypes = []any{
-	(*Transaction)(nil), // 0: dilocash.v1.Transaction
+	(*TransactionsList)(nil), // 0: dilocash.v1.TransactionsList
+	(*Transaction)(nil),      // 1: dilocash.v1.Transaction
 }
 var file_dilocash_v1_transaction_types_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	1, // 0: dilocash.v1.TransactionsList.created:type_name -> dilocash.v1.Transaction
+	1, // 1: dilocash.v1.TransactionsList.updated:type_name -> dilocash.v1.Transaction
+	2, // [2:2] is the sub-list for method output_type
+	2, // [2:2] is the sub-list for method input_type
+	2, // [2:2] is the sub-list for extension type_name
+	2, // [2:2] is the sub-list for extension extendee
+	0, // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_dilocash_v1_transaction_types_proto_init() }
@@ -150,7 +217,7 @@ func file_dilocash_v1_transaction_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_transaction_types_proto_rawDesc), len(file_dilocash_v1_transaction_types_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

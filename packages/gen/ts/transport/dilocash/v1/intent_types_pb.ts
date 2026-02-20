@@ -15,7 +15,34 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/intent_types.proto.
  */
 export const file_dilocash_v1_intent_types: GenFile = /*@__PURE__*/
-  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxIpwBCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDXZvaWNlX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIpCgZzdGF0dXMYBSABKA4yGS5kaWxvY2FzaC52MS5JbnRlbnRTdGF0dXMSFwoPcmVxdWlyZXNfcmV2aWV3GAYgASgIKqQBCgxJbnRlbnRTdGF0dXMSHQoZSU5URU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEhwKGElOVEVOVF9TVEFUVVNfUFJPQ0VTU0lORxABEiAKHElOVEVOVF9TVEFUVVNfUEVORElOR19SRVZJRVcQAhIbChdJTlRFTlRfU1RBVFVTX0NPTkZJUk1FRBADEhgKFElOVEVOVF9TVEFUVVNfRkFJTEVEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxImoKC0ludGVudHNMaXN0EiQKB2NyZWF0ZWQYASADKAsyEy5kaWxvY2FzaC52MS5JbnRlbnQSJAoHdXBkYXRlZBgCIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIPCgdkZWxldGVkGAMgAygJIpwBCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDWF1ZGlvX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIpCgZzdGF0dXMYBSABKA4yGS5kaWxvY2FzaC52MS5JbnRlbnRTdGF0dXMSFwoPcmVxdWlyZXNfcmV2aWV3GAYgASgIKqQBCgxJbnRlbnRTdGF0dXMSHQoZSU5URU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEhwKGElOVEVOVF9TVEFUVVNfUFJPQ0VTU0lORxABEiAKHElOVEVOVF9TVEFUVVNfUEVORElOR19SRVZJRVcQAhIbChdJTlRFTlRfU1RBVFVTX0NPTkZJUk1FRBADEhgKFElOVEVOVF9TVEFUVVNfRkFJTEVEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+
+/**
+ * @generated from message dilocash.v1.IntentsList
+ */
+export type IntentsList = Message<"dilocash.v1.IntentsList"> & {
+  /**
+   * @generated from field: repeated dilocash.v1.Intent created = 1;
+   */
+  created: Intent[];
+
+  /**
+   * @generated from field: repeated dilocash.v1.Intent updated = 2;
+   */
+  updated: Intent[];
+
+  /**
+   * @generated from field: repeated string deleted = 3;
+   */
+  deleted: string[];
+};
+
+/**
+ * Describes the message dilocash.v1.IntentsList.
+ * Use `create(IntentsListSchema)` to create a new message.
+ */
+export const IntentsListSchema: GenMessage<IntentsList> = /*@__PURE__*/
+  messageDesc(file_dilocash_v1_intent_types, 0);
 
 /**
  * represents the intent of a financial transaction
@@ -36,9 +63,9 @@ export type Intent = Message<"dilocash.v1.Intent"> & {
   textMessage: string;
 
   /**
-   * @generated from field: string voice_message = 3;
+   * @generated from field: string audio_message = 3;
    */
-  voiceMessage: string;
+  audioMessage: string;
 
   /**
    * @generated from field: string image_message = 4;
@@ -63,7 +90,7 @@ export type Intent = Message<"dilocash.v1.Intent"> & {
  * Use `create(IntentSchema)` to create a new message.
  */
 export const IntentSchema: GenMessage<Intent> = /*@__PURE__*/
-  messageDesc(file_dilocash_v1_intent_types, 0);
+  messageDesc(file_dilocash_v1_intent_types, 1);
 
 /**
  * @generated from enum dilocash.v1.IntentStatus
