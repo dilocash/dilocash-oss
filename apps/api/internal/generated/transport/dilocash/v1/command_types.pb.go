@@ -149,7 +149,7 @@ type Command struct {
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,2,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,3,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
 	Deleted       bool                   `protobuf:"varint,4,opt,name=deleted,proto3" json:"deleted,omitempty"`                     // Flag for "Soft Deletes" (localdb requires it)
-	Status        CommandStatus          `protobuf:"varint,5,opt,name=status,proto3,enum=dilocash.v1.CommandStatus" json:"status,omitempty"`
+	CommandStatus CommandStatus          `protobuf:"varint,5,opt,name=command_status,json=commandStatus,proto3,enum=dilocash.v1.CommandStatus" json:"command_status,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -212,9 +212,9 @@ func (x *Command) GetDeleted() bool {
 	return false
 }
 
-func (x *Command) GetStatus() CommandStatus {
+func (x *Command) GetCommandStatus() CommandStatus {
 	if x != nil {
-		return x.Status
+		return x.CommandStatus
 	}
 	return CommandStatus_COMMAND_STATUS_UNSPECIFIED
 }
@@ -227,15 +227,15 @@ const file_dilocash_v1_command_types_proto_rawDesc = "" +
 	"\fCommandsList\x12.\n" +
 	"\acreated\x18\x01 \x03(\v2\x14.dilocash.v1.CommandR\acreated\x12.\n" +
 	"\aupdated\x18\x02 \x03(\v2\x14.dilocash.v1.CommandR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xdd\x01\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xec\x01\n" +
 	"\aCommand\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x129\n" +
 	"\n" +
 	"created_at\x18\x02 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
 	"updated_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\x12\x18\n" +
-	"\adeleted\x18\x04 \x01(\bR\adeleted\x122\n" +
-	"\x06status\x18\x05 \x01(\x0e2\x1a.dilocash.v1.CommandStatusR\x06status*\xa0\x01\n" +
+	"\adeleted\x18\x04 \x01(\bR\adeleted\x12A\n" +
+	"\x0ecommand_status\x18\x05 \x01(\x0e2\x1a.dilocash.v1.CommandStatusR\rcommandStatus*\xa0\x01\n" +
 	"\rCommandStatus\x12\x1e\n" +
 	"\x1aCOMMAND_STATUS_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16COMMAND_STATUS_PENDING\x10\x01\x12\x1d\n" +
@@ -268,7 +268,7 @@ var file_dilocash_v1_command_types_proto_depIdxs = []int32{
 	2, // 1: dilocash.v1.CommandsList.updated:type_name -> dilocash.v1.Command
 	3, // 2: dilocash.v1.Command.created_at:type_name -> google.protobuf.Timestamp
 	3, // 3: dilocash.v1.Command.updated_at:type_name -> google.protobuf.Timestamp
-	0, // 4: dilocash.v1.Command.status:type_name -> dilocash.v1.CommandStatus
+	0, // 4: dilocash.v1.Command.command_status:type_name -> dilocash.v1.CommandStatus
 	5, // [5:5] is the sub-list for method output_type
 	5, // [5:5] is the sub-list for method input_type
 	5, // [5:5] is the sub-list for extension type_name

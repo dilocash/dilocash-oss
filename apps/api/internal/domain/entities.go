@@ -12,16 +12,12 @@ import (
 )
 
 type Command struct {
-	ID          uuid.UUID
-	UserID      uuid.UUID
-	Status      string
-	Category    string
-	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	Deleted     bool
-	Transaction Transaction
-	Intent      Intent
+	ID            uuid.UUID
+	UserID        uuid.UUID
+	CommandStatus int32
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
+	Deleted       bool
 }
 
 type Transaction struct {
@@ -37,15 +33,16 @@ type Transaction struct {
 }
 
 type Intent struct {
-	ID           uuid.UUID
-	UserID       uuid.UUID
-	TextMessage  string
-	AudioMessage string
-	ImageMessage string
-	CreatedAt    time.Time
-	UpdatedAt    time.Time
-	Deleted      bool
-	CommandID    uuid.UUID
+	ID             uuid.UUID
+	TextMessage    string
+	AudioMessage   string
+	ImageMessage   string
+	IntentStatus   int32
+	RequiresReview bool
+	CreatedAt      time.Time
+	UpdatedAt      time.Time
+	Deleted        bool
+	CommandID      uuid.UUID
 }
 
 type User struct {

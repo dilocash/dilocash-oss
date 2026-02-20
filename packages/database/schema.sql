@@ -15,9 +15,7 @@ CREATE TABLE IF NOT EXISTS users (
 -- Commands Table: The actions requested by the user
 CREATE TABLE IF NOT EXISTS commands (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    status TEXT NOT NULL,
-    category TEXT DEFAULT 'uncategorized',
-    description TEXT,
+    command_status INTEGER NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE,
@@ -30,6 +28,8 @@ CREATE TABLE IF NOT EXISTS intents (
     text_message TEXT,
     audio_message TEXT,
     image_message TEXT,
+    intent_status INTEGER NOT NULL,
+    requires_review BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE,

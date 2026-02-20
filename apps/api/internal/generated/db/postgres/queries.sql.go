@@ -14,16 +14,88 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+const createCommand = `-- name: CreateCommand :one
+INSERT INTO commands (
+    user_id, command_status
+) VALUES (
+    $1, $2
+)
+RETURNING id, command_status, created_at, updated_at, deleted, user_id
+`
+
+type CreateCommandParams struct {
+	UserID        uuid.UUID `json:"user_id"`
+	CommandStatus int32     `json:"command_status"`
+}
+
+func (q *Queries) CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error) {
+	row := q.db.QueryRow(ctx, createCommand, arg.UserID, arg.CommandStatus)
+	var i Command
+	err := row.Scan(
+		&i.ID,
+		&i.CommandStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Deleted,
+		&i.UserID,
+	)
+	return i, err
+}
+
+const createIntent = `-- name: CreateIntent :one
+INSERT INTO intents (
+    command_id, text_message, audio_message, image_message, intent_status, requires_review
+) VALUES (
+    $1, $2, $3, $4, $5, $6
+)
+RETURNING id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted, command_id
+`
+
+type CreateIntentParams struct {
+	CommandID      uuid.UUID   `json:"command_id"`
+	TextMessage    pgtype.Text `json:"text_message"`
+	AudioMessage   pgtype.Text `json:"audio_message"`
+	ImageMessage   pgtype.Text `json:"image_message"`
+	IntentStatus   int32       `json:"intent_status"`
+	RequiresReview pgtype.Bool `json:"requires_review"`
+}
+
+func (q *Queries) CreateIntent(ctx context.Context, arg CreateIntentParams) (Intent, error) {
+	row := q.db.QueryRow(ctx, createIntent,
+		arg.CommandID,
+		arg.TextMessage,
+		arg.AudioMessage,
+		arg.ImageMessage,
+		arg.IntentStatus,
+		arg.RequiresReview,
+	)
+	var i Intent
+	err := row.Scan(
+		&i.ID,
+		&i.TextMessage,
+		&i.AudioMessage,
+		&i.ImageMessage,
+		&i.IntentStatus,
+		&i.RequiresReview,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Deleted,
+		&i.CommandID,
+	)
+	return i, err
+}
+
 const createTransaction = `-- name: CreateTransaction :one
 INSERT INTO transactions (
-    amount, currency, category, description
+    command_id, amount, currency, category, description
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
 )
 RETURNING id, amount, currency, category, description, created_at, updated_at, deleted, command_id
 `
 
 type CreateTransactionParams struct {
+	CommandID   uuid.UUID       `json:"command_id"`
 	Amount      decimal.Decimal `json:"amount"`
 	Currency    string          `json:"currency"`
 	Category    pgtype.Text     `json:"category"`
@@ -32,6 +104,7 @@ type CreateTransactionParams struct {
 
 func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error) {
 	row := q.db.QueryRow(ctx, createTransaction,
+		arg.CommandID,
 		arg.Amount,
 		arg.Currency,
 		arg.Category,
@@ -113,7 +186,7 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 }
 
 const listCommandsByUserId = `-- name: ListCommandsByUserId :many
-SELECT id, status, category, description, created_at, updated_at, deleted, user_id FROM commands c
+SELECT id, command_status, created_at, updated_at, deleted, user_id FROM commands c
 WHERE c.user_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
@@ -136,9 +209,7 @@ func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUs
 		var i Command
 		if err := rows.Scan(
 			&i.ID,
-			&i.Status,
-			&i.Category,
-			&i.Description,
+			&i.CommandStatus,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Deleted,
@@ -155,7 +226,7 @@ func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUs
 }
 
 const listIntentsByUserId = `-- name: ListIntentsByUserId :many
-SELECT i.id, text_message, audio_message, image_message, i.created_at, i.updated_at, i.deleted, command_id, c.id, status, category, description, c.created_at, c.updated_at, c.deleted, user_id FROM intents i, commands c
+SELECT i.id, text_message, audio_message, image_message, intent_status, requires_review, i.created_at, i.updated_at, i.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, user_id FROM intents i, commands c
 WHERE c.id = i.command_id AND c.user_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
@@ -168,22 +239,22 @@ type ListIntentsByUserIdParams struct {
 }
 
 type ListIntentsByUserIdRow struct {
-	ID           uuid.UUID   `json:"id"`
-	TextMessage  pgtype.Text `json:"text_message"`
-	AudioMessage pgtype.Text `json:"audio_message"`
-	ImageMessage pgtype.Text `json:"image_message"`
-	CreatedAt    time.Time   `json:"created_at"`
-	UpdatedAt    time.Time   `json:"updated_at"`
-	Deleted      bool        `json:"deleted"`
-	CommandID    uuid.UUID   `json:"command_id"`
-	ID_2         uuid.UUID   `json:"id_2"`
-	Status       string      `json:"status"`
-	Category     pgtype.Text `json:"category"`
-	Description  pgtype.Text `json:"description"`
-	CreatedAt_2  time.Time   `json:"created_at_2"`
-	UpdatedAt_2  time.Time   `json:"updated_at_2"`
-	Deleted_2    bool        `json:"deleted_2"`
-	UserID       uuid.UUID   `json:"user_id"`
+	ID             uuid.UUID   `json:"id"`
+	TextMessage    pgtype.Text `json:"text_message"`
+	AudioMessage   pgtype.Text `json:"audio_message"`
+	ImageMessage   pgtype.Text `json:"image_message"`
+	IntentStatus   int32       `json:"intent_status"`
+	RequiresReview pgtype.Bool `json:"requires_review"`
+	CreatedAt      time.Time   `json:"created_at"`
+	UpdatedAt      time.Time   `json:"updated_at"`
+	Deleted        bool        `json:"deleted"`
+	CommandID      uuid.UUID   `json:"command_id"`
+	ID_2           uuid.UUID   `json:"id_2"`
+	CommandStatus  int32       `json:"command_status"`
+	CreatedAt_2    time.Time   `json:"created_at_2"`
+	UpdatedAt_2    time.Time   `json:"updated_at_2"`
+	Deleted_2      bool        `json:"deleted_2"`
+	UserID         uuid.UUID   `json:"user_id"`
 }
 
 func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUserIdParams) ([]ListIntentsByUserIdRow, error) {
@@ -200,14 +271,14 @@ func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUser
 			&i.TextMessage,
 			&i.AudioMessage,
 			&i.ImageMessage,
+			&i.IntentStatus,
+			&i.RequiresReview,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Deleted,
 			&i.CommandID,
 			&i.ID_2,
-			&i.Status,
-			&i.Category,
-			&i.Description,
+			&i.CommandStatus,
 			&i.CreatedAt_2,
 			&i.UpdatedAt_2,
 			&i.Deleted_2,
@@ -224,7 +295,7 @@ func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUser
 }
 
 const listTransactionsByUserId = `-- name: ListTransactionsByUserId :many
-SELECT t.id, amount, currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, command_id, c.id, status, c.category, c.description, c.created_at, c.updated_at, c.deleted, user_id FROM transactions t, commands c
+SELECT t.id, amount, currency, category, description, t.created_at, t.updated_at, t.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, user_id FROM transactions t, commands c
 WHERE c.id = t.command_id AND c.user_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
@@ -247,9 +318,7 @@ type ListTransactionsByUserIdRow struct {
 	Deleted       bool            `json:"deleted"`
 	CommandID     uuid.UUID       `json:"command_id"`
 	ID_2          uuid.UUID       `json:"id_2"`
-	Status        string          `json:"status"`
-	Category_2    pgtype.Text     `json:"category_2"`
-	Description_2 pgtype.Text     `json:"description_2"`
+	CommandStatus int32           `json:"command_status"`
 	CreatedAt_2   time.Time       `json:"created_at_2"`
 	UpdatedAt_2   time.Time       `json:"updated_at_2"`
 	Deleted_2     bool            `json:"deleted_2"`
@@ -276,9 +345,7 @@ func (q *Queries) ListTransactionsByUserId(ctx context.Context, arg ListTransact
 			&i.Deleted,
 			&i.CommandID,
 			&i.ID_2,
-			&i.Status,
-			&i.Category_2,
-			&i.Description_2,
+			&i.CommandStatus,
 			&i.CreatedAt_2,
 			&i.UpdatedAt_2,
 			&i.Deleted_2,

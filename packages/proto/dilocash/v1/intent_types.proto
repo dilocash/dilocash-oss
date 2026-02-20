@@ -24,7 +24,7 @@ message Intent {
   string image_message = 4;
   
   // critical fields for offline-first synchronization
-  IntentStatus status = 5;
+  IntentStatus intent_status = 5;
   bool requires_review = 6;
 }
 

@@ -11,6 +11,8 @@ import (
 )
 
 type Querier interface {
+	CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error)
+	CreateIntent(ctx context.Context, arg CreateIntentParams) (Intent, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
 	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	// Copyright (c) 2026 dilocash

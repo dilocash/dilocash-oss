@@ -42,7 +42,7 @@
                 "image_message": {
                     "type": "string"
                 },
-                "status": {
+                "intent_status": {
                     "enum": [
                         "INTENT_STATUS_UNSPECIFIED",
                         0,

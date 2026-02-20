@@ -23,7 +23,7 @@ message Command {
   google.protobuf.Timestamp created_at = 2;       // Timestamp in milliseconds (our Checkpoint)
   google.protobuf.Timestamp updated_at = 3;       // Timestamp in milliseconds (our Checkpoint)
   bool deleted = 4;           // Flag for "Soft Deletes" (localdb requires it)
-  CommandStatus status = 5;
+  CommandStatus command_status = 5;
 }
 
 enum CommandStatus {

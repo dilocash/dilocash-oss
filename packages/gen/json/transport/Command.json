@@ -22,7 +22,7 @@
                     "type": "boolean",
                     "description": "Flag for \"Soft Deletes\" (localdb requires it)"
                 },
-                "status": {
+                "command_status": {
                     "enum": [
                         "COMMAND_STATUS_UNSPECIFIED",
                         0,

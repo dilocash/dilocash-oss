@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/intent_types.proto.
  */
 export const file_dilocash_v1_intent_types: GenFile = /*@__PURE__*/
-  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxImoKC0ludGVudHNMaXN0EiQKB2NyZWF0ZWQYASADKAsyEy5kaWxvY2FzaC52MS5JbnRlbnQSJAoHdXBkYXRlZBgCIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIPCgdkZWxldGVkGAMgAygJIpwBCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDWF1ZGlvX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIpCgZzdGF0dXMYBSABKA4yGS5kaWxvY2FzaC52MS5JbnRlbnRTdGF0dXMSFwoPcmVxdWlyZXNfcmV2aWV3GAYgASgIKqQBCgxJbnRlbnRTdGF0dXMSHQoZSU5URU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEhwKGElOVEVOVF9TVEFUVVNfUFJPQ0VTU0lORxABEiAKHElOVEVOVF9TVEFUVVNfUEVORElOR19SRVZJRVcQAhIbChdJTlRFTlRfU1RBVFVTX0NPTkZJUk1FRBADEhgKFElOVEVOVF9TVEFUVVNfRkFJTEVEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxImoKC0ludGVudHNMaXN0EiQKB2NyZWF0ZWQYASADKAsyEy5kaWxvY2FzaC52MS5JbnRlbnQSJAoHdXBkYXRlZBgCIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIPCgdkZWxldGVkGAMgAygJIqMBCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDWF1ZGlvX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIwCg1pbnRlbnRfc3RhdHVzGAUgASgOMhkuZGlsb2Nhc2gudjEuSW50ZW50U3RhdHVzEhcKD3JlcXVpcmVzX3JldmlldxgGIAEoCCqkAQoMSW50ZW50U3RhdHVzEh0KGUlOVEVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIcChhJTlRFTlRfU1RBVFVTX1BST0NFU1NJTkcQARIgChxJTlRFTlRfU1RBVFVTX1BFTkRJTkdfUkVWSUVXEAISGwoXSU5URU5UX1NUQVRVU19DT05GSVJNRUQQAxIYChRJTlRFTlRfU1RBVFVTX0ZBSUxFRBAEQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message dilocash.v1.IntentsList
@@ -75,9 +75,9 @@ export type Intent = Message<"dilocash.v1.Intent"> & {
   /**
    * critical fields for offline-first synchronization
    *
-   * @generated from field: dilocash.v1.IntentStatus status = 5;
+   * @generated from field: dilocash.v1.IntentStatus intent_status = 5;
    */
-  status: IntentStatus;
+  intentStatus: IntentStatus;
 
   /**
    * @generated from field: bool requires_review = 6;

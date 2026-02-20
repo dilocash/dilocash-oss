@@ -149,7 +149,7 @@ type Intent struct {
 	AudioMessage string                 `protobuf:"bytes,3,opt,name=audio_message,json=audioMessage,proto3" json:"audio_message,omitempty"`
 	ImageMessage string                 `protobuf:"bytes,4,opt,name=image_message,json=imageMessage,proto3" json:"image_message,omitempty"`
 	// critical fields for offline-first synchronization
-	Status         IntentStatus `protobuf:"varint,5,opt,name=status,proto3,enum=dilocash.v1.IntentStatus" json:"status,omitempty"`
+	IntentStatus   IntentStatus `protobuf:"varint,5,opt,name=intent_status,json=intentStatus,proto3,enum=dilocash.v1.IntentStatus" json:"intent_status,omitempty"`
 	RequiresReview bool         `protobuf:"varint,6,opt,name=requires_review,json=requiresReview,proto3" json:"requires_review,omitempty"`
 	unknownFields  protoimpl.UnknownFields
 	sizeCache      protoimpl.SizeCache
@@ -213,9 +213,9 @@ func (x *Intent) GetImageMessage() string {
 	return ""
 }
 
-func (x *Intent) GetStatus() IntentStatus {
+func (x *Intent) GetIntentStatus() IntentStatus {
 	if x != nil {
-		return x.Status
+		return x.IntentStatus
 	}
 	return IntentStatus_INTENT_STATUS_UNSPECIFIED
 }
@@ -235,13 +235,13 @@ const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\vIntentsList\x12-\n" +
 	"\acreated\x18\x01 \x03(\v2\x13.dilocash.v1.IntentR\acreated\x12-\n" +
 	"\aupdated\x18\x02 \x03(\v2\x13.dilocash.v1.IntentR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xe1\x01\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xee\x01\n" +
 	"\x06Intent\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
 	"\ftext_message\x18\x02 \x01(\tR\vtextMessage\x12#\n" +
 	"\raudio_message\x18\x03 \x01(\tR\faudioMessage\x12#\n" +
-	"\rimage_message\x18\x04 \x01(\tR\fimageMessage\x121\n" +
-	"\x06status\x18\x05 \x01(\x0e2\x19.dilocash.v1.IntentStatusR\x06status\x12'\n" +
+	"\rimage_message\x18\x04 \x01(\tR\fimageMessage\x12>\n" +
+	"\rintent_status\x18\x05 \x01(\x0e2\x19.dilocash.v1.IntentStatusR\fintentStatus\x12'\n" +
 	"\x0frequires_review\x18\x06 \x01(\bR\x0erequiresReview*\xa4\x01\n" +
 	"\fIntentStatus\x12\x1d\n" +
 	"\x19INTENT_STATUS_UNSPECIFIED\x10\x00\x12\x1c\n" +
@@ -272,7 +272,7 @@ var file_dilocash_v1_intent_types_proto_goTypes = []any{
 var file_dilocash_v1_intent_types_proto_depIdxs = []int32{
 	2, // 0: dilocash.v1.IntentsList.created:type_name -> dilocash.v1.Intent
 	2, // 1: dilocash.v1.IntentsList.updated:type_name -> dilocash.v1.Intent
-	0, // 2: dilocash.v1.Intent.status:type_name -> dilocash.v1.IntentStatus
+	0, // 2: dilocash.v1.Intent.intent_status:type_name -> dilocash.v1.IntentStatus
 	3, // [3:3] is the sub-list for method output_type
 	3, // [3:3] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name

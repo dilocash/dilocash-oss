@@ -13,25 +13,25 @@ import (
 )
 
 type Command struct {
-	ID          uuid.UUID   `json:"id"`
-	Status      string      `json:"status"`
-	Category    pgtype.Text `json:"category"`
-	Description pgtype.Text `json:"description"`
-	CreatedAt   time.Time   `json:"created_at"`
-	UpdatedAt   time.Time   `json:"updated_at"`
-	Deleted     bool        `json:"deleted"`
-	UserID      uuid.UUID   `json:"user_id"`
+	ID            uuid.UUID `json:"id"`
+	CommandStatus int32     `json:"command_status"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	Deleted       bool      `json:"deleted"`
+	UserID        uuid.UUID `json:"user_id"`
 }
 
 type Intent struct {
-	ID           uuid.UUID   `json:"id"`
-	TextMessage  pgtype.Text `json:"text_message"`
-	AudioMessage pgtype.Text `json:"audio_message"`
-	ImageMessage pgtype.Text `json:"image_message"`
-	CreatedAt    time.Time   `json:"created_at"`
-	UpdatedAt    time.Time   `json:"updated_at"`
-	Deleted      bool        `json:"deleted"`
-	CommandID    uuid.UUID   `json:"command_id"`
+	ID             uuid.UUID   `json:"id"`
+	TextMessage    pgtype.Text `json:"text_message"`
+	AudioMessage   pgtype.Text `json:"audio_message"`
+	ImageMessage   pgtype.Text `json:"image_message"`
+	IntentStatus   int32       `json:"intent_status"`
+	RequiresReview pgtype.Bool `json:"requires_review"`
+	CreatedAt      time.Time   `json:"created_at"`
+	UpdatedAt      time.Time   `json:"updated_at"`
+	Deleted        bool        `json:"deleted"`
+	CommandID      uuid.UUID   `json:"command_id"`
 }
 
 type Transaction struct {

@@ -27,21 +27,39 @@ import (
 type Converter interface {
 	// Database -> Domain
 	TransactionFromDBToDomain(db database.Transaction) domain.Transaction
-	ToDomainUser(db database.User) domain.User
+	CommandFromDBToDomain(db database.Command) domain.Command
+	IntentFromDBToDomain(db database.Intent) domain.Intent
+	UserFromDBToDomain(db database.User) domain.User
 
 	// Domain -> Database
 	ToDBTransaction(d domain.Transaction) database.Transaction
+
+	// Domain -> Database params
 	ToDBCreateTransactionParams(d domain.Transaction) database.CreateTransactionParams
-	ToDBUser(d domain.User) database.User
+	ToDBCreateUserParams(d domain.User) database.CreateUserParams
+	ToDBCreateCommandParams(d domain.Command) database.CreateCommandParams
+	ToDBCreateIntentParams(d domain.Intent) database.CreateIntentParams
 
 	// Domain -> Transport
 	// goverter:ignore state sizeCache unknownFields
 	// goverter:map ID Id
-	// goverter:map UserID UserId
 	ToTransportTransaction(d domain.Transaction) *transport.Transaction
+	// goverter:map ID Id
+	// goverter:ignore state sizeCache unknownFields
+	// goverter:enum no
+	ToTransportCommand(d domain.Command) *transport.Command
+	// goverter:map ID Id
+	// goverter:ignore state sizeCache unknownFields
+	ToTransportIntent(d domain.Intent) *transport.Intent
 
 	// Transport -> Domain
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
-	TransactionFromTransportToDomain(t *transport.CreateTransactionRequest) domain.Transaction
+	CommandFromTransportToDomain(t *transport.Command) domain.Command
+	// goverter:ignoreMissing
+	// goverter:useZeroValueOnPointerInconsistency
+	IntentFromTransportToDomain(t *transport.Intent) domain.Intent
+	// goverter:ignoreMissing
+	// goverter:useZeroValueOnPointerInconsistency
+	TransactionFromTransportToDomain(t *transport.Transaction) domain.Transaction
 }

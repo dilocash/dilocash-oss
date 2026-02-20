@@ -14,11 +14,27 @@ INSERT INTO users (
 )
 RETURNING *;
 
+-- name: CreateCommand :one
+INSERT INTO commands (
+    user_id, command_status
+) VALUES (
+    $1, $2
+)
+RETURNING *;
+
 -- name: CreateTransaction :one
 INSERT INTO transactions (
-    amount, currency, category, description
+    command_id, amount, currency, category, description
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $5
+)
+RETURNING *;
+
+-- name: CreateIntent :one
+INSERT INTO intents (
+    command_id, text_message, audio_message, image_message, intent_status, requires_review
+) VALUES (
+    $1, $2, $3, $4, $5, $6
 )
 RETURNING *;
 
