@@ -17,16 +17,12 @@ plugins:
       - paths=source_relative
       - simple
 
-  - local: "node_modules/.bin/protoc-gen-ts"
+  - local: node_modules/.bin/protoc-gen-es
     out: ../../packages/gen/ts/transport
+    include_imports: true
     opt:
       - target=ts
-      - import_extension=none
-  - local: "node_modules/.bin/protoc-gen-connect-es"
-    out: ../../packages/gen/ts/transport
-    opt:
-      - target=ts
-      - import_extension=none
+
   - local: protoc-gen-jsonschema
     out: ../../packages/gen/json/transport
     opt:

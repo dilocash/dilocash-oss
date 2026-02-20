@@ -3,6 +3,7 @@ import "../styles/global.css";
 import "../styles/styles.css";
 
 import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
+import DatabaseProvider from '../lib/database-provider';
 import i18n, { initI18n } from '@dilocash/i18n';
 import { useEffect, useState } from 'react';
 import { AppLoader } from '@dilocash/ui/components/app-loader';
@@ -18,8 +19,7 @@ export default function RootLayout({
     
   const setup = async () => {
     await initI18n(true);
-    //await initRxDB(); // init IndexedDB
-    var millisecondsToWait = 50000;
+    var millisecondsToWait = 50;
     setTimeout(function() {
       // Whatever you want to do after the wait
       setIsReady(true);
@@ -31,9 +31,11 @@ export default function RootLayout({
   return (
     <html lang={i18n.language}>
       <body>
-        <GluestackUIProvider mode="light">
-          {!isReady ? <AppLoader subMessage="..." isWeb={true} /> : children}
-        </GluestackUIProvider>
+        <DatabaseProvider>
+          <GluestackUIProvider mode="light">
+            {!isReady ? <AppLoader subMessage="..." isWeb={true} /> : children}
+          </GluestackUIProvider>
+        </DatabaseProvider>
       </body>
     </html>
   );
