@@ -12,13 +12,19 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+type AuthUser struct {
+	ID              uuid.UUID   `json:"id"`
+	Email           pgtype.Text `json:"email"`
+	RawUserMetaData []byte      `json:"raw_user_meta_data"`
+}
+
 type Command struct {
 	ID            uuid.UUID `json:"id"`
 	CommandStatus int32     `json:"command_status"`
 	CreatedAt     time.Time `json:"created_at"`
 	UpdatedAt     time.Time `json:"updated_at"`
 	Deleted       bool      `json:"deleted"`
-	UserID        uuid.UUID `json:"user_id"`
+	ProfileID     uuid.UUID `json:"profile_id"`
 }
 
 type Intent struct {
@@ -34,6 +40,16 @@ type Intent struct {
 	CommandID      uuid.UUID   `json:"command_id"`
 }
 
+type Profile struct {
+	ID                   uuid.UUID   `json:"id"`
+	DisplayName          pgtype.Text `json:"display_name"`
+	Email                pgtype.Text `json:"email"`
+	AcceptedTermsVersion pgtype.Text `json:"accepted_terms_version"`
+	AcceptedTermsAt      time.Time   `json:"accepted_terms_at"`
+	AllowDataAnalysis    bool        `json:"allow_data_analysis"`
+	CreatedAt            time.Time   `json:"created_at"`
+}
+
 type Transaction struct {
 	ID          uuid.UUID       `json:"id"`
 	Amount      decimal.Decimal `json:"amount"`
@@ -44,13 +60,4 @@ type Transaction struct {
 	UpdatedAt   time.Time       `json:"updated_at"`
 	Deleted     bool            `json:"deleted"`
 	CommandID   uuid.UUID       `json:"command_id"`
-}
-
-type User struct {
-	ID                   uuid.UUID   `json:"id"`
-	Email                string      `json:"email"`
-	AcceptedTermsVersion pgtype.Text `json:"accepted_terms_version"`
-	AcceptedTermsAt      time.Time   `json:"accepted_terms_at"`
-	AllowDataAnalysis    pgtype.Bool `json:"allow_data_analysis"`
-	CreatedAt            time.Time   `json:"created_at"`
 }

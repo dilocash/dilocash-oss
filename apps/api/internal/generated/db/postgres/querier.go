@@ -14,14 +14,13 @@ type Querier interface {
 	CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error)
 	CreateIntent(ctx context.Context, arg CreateIntentParams) (Intent, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
-	CreateUser(ctx context.Context, arg CreateUserParams) (User, error)
 	// Copyright (c) 2026 dilocash
 	// Use of this source code is governed by an MIT-style
 	// license that can be found in the LICENSE file.
-	GetUser(ctx context.Context, id uuid.UUID) (User, error)
-	ListCommandsByUserId(ctx context.Context, arg ListCommandsByUserIdParams) ([]Command, error)
-	ListIntentsByUserId(ctx context.Context, arg ListIntentsByUserIdParams) ([]ListIntentsByUserIdRow, error)
-	ListTransactionsByUserId(ctx context.Context, arg ListTransactionsByUserIdParams) ([]ListTransactionsByUserIdRow, error)
+	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
+	ListCommandsByProfileId(ctx context.Context, arg ListCommandsByProfileIdParams) ([]Command, error)
+	ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]ListIntentsByProfileIdRow, error)
+	ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]ListTransactionsByProfileIdRow, error)
 }
 
 var _ Querier = (*Queries)(nil)

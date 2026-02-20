@@ -15,7 +15,7 @@ type ConverterImpl struct{}
 func (c *ConverterImpl) CommandFromDBToDomain(source postgres.Command) domain.Command {
 	var domainCommand domain.Command
 	domainCommand.ID = mappers.CopyUUID(source.ID)
-	domainCommand.UserID = mappers.CopyUUID(source.UserID)
+	domainCommand.ProfileID = mappers.CopyUUID(source.ProfileID)
 	domainCommand.CommandStatus = source.CommandStatus
 	domainCommand.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	domainCommand.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
@@ -57,9 +57,20 @@ func (c *ConverterImpl) IntentFromTransportToDomain(source *v1.Intent) domain.In
 	}
 	return domainIntent
 }
+func (c *ConverterImpl) ProfileFromDBToDomain(source postgres.Profile) domain.Profile {
+	var domainProfile domain.Profile
+	domainProfile.ID = mappers.CopyUUID(source.ID)
+	domainProfile.Email = mappers.PgTextToString(source.Email)
+	domainProfile.AcceptedTermsVersion = mappers.PgTextToString(source.AcceptedTermsVersion)
+	domainProfile.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
+	domainProfile.AllowDataAnalysis = source.AllowDataAnalysis
+	domainProfile.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return domainProfile
+}
 func (c *ConverterImpl) ToDBCreateCommandParams(source domain.Command) postgres.CreateCommandParams {
 	var postgresCreateCommandParams postgres.CreateCommandParams
-	postgresCreateCommandParams.UserID = mappers.CopyUUID(source.UserID)
+	postgresCreateCommandParams.ID = mappers.CopyUUID(source.ID)
+	postgresCreateCommandParams.ProfileID = mappers.CopyUUID(source.ProfileID)
 	postgresCreateCommandParams.CommandStatus = source.CommandStatus
 	return postgresCreateCommandParams
 }
@@ -81,15 +92,6 @@ func (c *ConverterImpl) ToDBCreateTransactionParams(source domain.Transaction) p
 	postgresCreateTransactionParams.Category = mappers.StringToPgText(source.Category)
 	postgresCreateTransactionParams.Description = mappers.StringToPgText(source.Description)
 	return postgresCreateTransactionParams
-}
-func (c *ConverterImpl) ToDBCreateUserParams(source domain.User) postgres.CreateUserParams {
-	var postgresCreateUserParams postgres.CreateUserParams
-	postgresCreateUserParams.ID = mappers.CopyUUID(source.ID)
-	postgresCreateUserParams.Email = source.Email
-	postgresCreateUserParams.AcceptedTermsVersion = mappers.StringToPgText(source.AcceptedTermsVersion)
-	postgresCreateUserParams.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
-	postgresCreateUserParams.AllowDataAnalysis = mappers.BoolToPgBool(source.AllowDataAnalysis)
-	return postgresCreateUserParams
 }
 func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) postgres.Transaction {
 	var postgresTransaction postgres.Transaction
@@ -154,14 +156,4 @@ func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.Transaction)
 		domainTransaction.Description = (*source).Description
 	}
 	return domainTransaction
-}
-func (c *ConverterImpl) UserFromDBToDomain(source postgres.User) domain.User {
-	var domainUser domain.User
-	domainUser.ID = mappers.CopyUUID(source.ID)
-	domainUser.Email = source.Email
-	domainUser.AcceptedTermsVersion = mappers.PgTextToString(source.AcceptedTermsVersion)
-	domainUser.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
-	domainUser.AllowDataAnalysis = mappers.PgBoolToBool(source.AllowDataAnalysis)
-	domainUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return domainUser
 }

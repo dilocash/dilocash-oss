@@ -16,20 +16,21 @@ import (
 
 const createCommand = `-- name: CreateCommand :one
 INSERT INTO commands (
-    user_id, command_status
+    id, profile_id, command_status
 ) VALUES (
-    $1, $2
+    $1, $2, $3
 )
-RETURNING id, command_status, created_at, updated_at, deleted, user_id
+RETURNING id, command_status, created_at, updated_at, deleted, profile_id
 `
 
 type CreateCommandParams struct {
-	UserID        uuid.UUID `json:"user_id"`
+	ID            uuid.UUID `json:"id"`
+	ProfileID     uuid.UUID `json:"profile_id"`
 	CommandStatus int32     `json:"command_status"`
 }
 
 func (q *Queries) CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error) {
-	row := q.db.QueryRow(ctx, createCommand, arg.UserID, arg.CommandStatus)
+	row := q.db.QueryRow(ctx, createCommand, arg.ID, arg.ProfileID, arg.CommandStatus)
 	var i Command
 	err := row.Scan(
 		&i.ID,
@@ -37,7 +38,7 @@ func (q *Queries) CreateCommand(ctx context.Context, arg CreateCommandParams) (C
 		&i.CreatedAt,
 		&i.UpdatedAt,
 		&i.Deleted,
-		&i.UserID,
+		&i.ProfileID,
 	)
 	return i, err
 }
@@ -125,57 +126,21 @@ func (q *Queries) CreateTransaction(ctx context.Context, arg CreateTransactionPa
 	return i, err
 }
 
-const createUser = `-- name: CreateUser :one
-INSERT INTO users (
-    id, email, accepted_terms_version, accepted_terms_at, allow_data_analysis
-) VALUES (
-    $1, $2, $3, $4, $5
-)
-RETURNING id, email, accepted_terms_version, accepted_terms_at, allow_data_analysis, created_at
-`
+const getProfile = `-- name: GetProfile :one
 
-type CreateUserParams struct {
-	ID                   uuid.UUID   `json:"id"`
-	Email                string      `json:"email"`
-	AcceptedTermsVersion pgtype.Text `json:"accepted_terms_version"`
-	AcceptedTermsAt      time.Time   `json:"accepted_terms_at"`
-	AllowDataAnalysis    pgtype.Bool `json:"allow_data_analysis"`
-}
-
-func (q *Queries) CreateUser(ctx context.Context, arg CreateUserParams) (User, error) {
-	row := q.db.QueryRow(ctx, createUser,
-		arg.ID,
-		arg.Email,
-		arg.AcceptedTermsVersion,
-		arg.AcceptedTermsAt,
-		arg.AllowDataAnalysis,
-	)
-	var i User
-	err := row.Scan(
-		&i.ID,
-		&i.Email,
-		&i.AcceptedTermsVersion,
-		&i.AcceptedTermsAt,
-		&i.AllowDataAnalysis,
-		&i.CreatedAt,
-	)
-	return i, err
-}
-
-const getUser = `-- name: GetUser :one
-
-SELECT id, email, accepted_terms_version, accepted_terms_at, allow_data_analysis, created_at FROM users
+SELECT id, display_name, email, accepted_terms_version, accepted_terms_at, allow_data_analysis, created_at FROM profiles
 WHERE id = $1 LIMIT 1
 `
 
 // Copyright (c) 2026 dilocash
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file.
-func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
-	row := q.db.QueryRow(ctx, getUser, id)
-	var i User
+func (q *Queries) GetProfile(ctx context.Context, id uuid.UUID) (Profile, error) {
+	row := q.db.QueryRow(ctx, getProfile, id)
+	var i Profile
 	err := row.Scan(
 		&i.ID,
+		&i.DisplayName,
 		&i.Email,
 		&i.AcceptedTermsVersion,
 		&i.AcceptedTermsAt,
@@ -185,24 +150,24 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 	return i, err
 }
 
-const listCommandsByUserId = `-- name: ListCommandsByUserId :many
-SELECT id, command_status, created_at, updated_at, deleted, user_id FROM commands c
-WHERE c.user_id = $1
+const listCommandsByProfileId = `-- name: ListCommandsByProfileId :many
+SELECT id, command_status, created_at, updated_at, deleted, profile_id FROM commands c
+WHERE c.profile_id = $1
 AND updated_at > $2
 ORDER BY c.created_at DESC
 LIMIT $3 OFFSET $4
 `
 
-type ListCommandsByUserIdParams struct {
-	UserID    uuid.UUID `json:"user_id"`
+type ListCommandsByProfileIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
 	UpdatedAt time.Time `json:"updated_at"`
 	Limit     int32     `json:"limit"`
 	Offset    int32     `json:"offset"`
 }
 
-func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUserIdParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByUserId,
-		arg.UserID,
+func (q *Queries) ListCommandsByProfileId(ctx context.Context, arg ListCommandsByProfileIdParams) ([]Command, error) {
+	rows, err := q.db.Query(ctx, listCommandsByProfileId,
+		arg.ProfileID,
 		arg.UpdatedAt,
 		arg.Limit,
 		arg.Offset,
@@ -220,7 +185,7 @@ func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUs
 			&i.CreatedAt,
 			&i.UpdatedAt,
 			&i.Deleted,
-			&i.UserID,
+			&i.ProfileID,
 		); err != nil {
 			return nil, err
 		}
@@ -232,20 +197,20 @@ func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUs
 	return items, nil
 }
 
-const listIntentsByUserId = `-- name: ListIntentsByUserId :many
-SELECT i.id, text_message, audio_message, image_message, intent_status, requires_review, i.created_at, i.updated_at, i.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, user_id FROM intents i, commands c
-WHERE c.id = i.command_id AND c.user_id = $1
+const listIntentsByProfileId = `-- name: ListIntentsByProfileId :many
+SELECT i.id, text_message, audio_message, image_message, intent_status, requires_review, i.created_at, i.updated_at, i.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, profile_id FROM intents i, commands c
+WHERE c.id = i.command_id AND c.profile_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListIntentsByUserIdParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
+type ListIntentsByProfileIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
 }
 
-type ListIntentsByUserIdRow struct {
+type ListIntentsByProfileIdRow struct {
 	ID             uuid.UUID   `json:"id"`
 	TextMessage    pgtype.Text `json:"text_message"`
 	AudioMessage   pgtype.Text `json:"audio_message"`
@@ -261,18 +226,18 @@ type ListIntentsByUserIdRow struct {
 	CreatedAt_2    time.Time   `json:"created_at_2"`
 	UpdatedAt_2    time.Time   `json:"updated_at_2"`
 	Deleted_2      bool        `json:"deleted_2"`
-	UserID         uuid.UUID   `json:"user_id"`
+	ProfileID      uuid.UUID   `json:"profile_id"`
 }
 
-func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUserIdParams) ([]ListIntentsByUserIdRow, error) {
-	rows, err := q.db.Query(ctx, listIntentsByUserId, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]ListIntentsByProfileIdRow, error) {
+	rows, err := q.db.Query(ctx, listIntentsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListIntentsByUserIdRow
+	var items []ListIntentsByProfileIdRow
 	for rows.Next() {
-		var i ListIntentsByUserIdRow
+		var i ListIntentsByProfileIdRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.TextMessage,
@@ -289,7 +254,7 @@ func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUser
 			&i.CreatedAt_2,
 			&i.UpdatedAt_2,
 			&i.Deleted_2,
-			&i.UserID,
+			&i.ProfileID,
 		); err != nil {
 			return nil, err
 		}
@@ -301,20 +266,20 @@ func (q *Queries) ListIntentsByUserId(ctx context.Context, arg ListIntentsByUser
 	return items, nil
 }
 
-const listTransactionsByUserId = `-- name: ListTransactionsByUserId :many
-SELECT t.id, amount, currency, category, description, t.created_at, t.updated_at, t.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, user_id FROM transactions t, commands c
-WHERE c.id = t.command_id AND c.user_id = $1
+const listTransactionsByProfileId = `-- name: ListTransactionsByProfileId :many
+SELECT t.id, amount, currency, category, description, t.created_at, t.updated_at, t.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, profile_id FROM transactions t, commands c
+WHERE c.id = t.command_id AND c.profile_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
 `
 
-type ListTransactionsByUserIdParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
+type ListTransactionsByProfileIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
 }
 
-type ListTransactionsByUserIdRow struct {
+type ListTransactionsByProfileIdRow struct {
 	ID            uuid.UUID       `json:"id"`
 	Amount        decimal.Decimal `json:"amount"`
 	Currency      string          `json:"currency"`
@@ -329,18 +294,18 @@ type ListTransactionsByUserIdRow struct {
 	CreatedAt_2   time.Time       `json:"created_at_2"`
 	UpdatedAt_2   time.Time       `json:"updated_at_2"`
 	Deleted_2     bool            `json:"deleted_2"`
-	UserID        uuid.UUID       `json:"user_id"`
+	ProfileID     uuid.UUID       `json:"profile_id"`
 }
 
-func (q *Queries) ListTransactionsByUserId(ctx context.Context, arg ListTransactionsByUserIdParams) ([]ListTransactionsByUserIdRow, error) {
-	rows, err := q.db.Query(ctx, listTransactionsByUserId, arg.UserID, arg.Limit, arg.Offset)
+func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]ListTransactionsByProfileIdRow, error) {
+	rows, err := q.db.Query(ctx, listTransactionsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListTransactionsByUserIdRow
+	var items []ListTransactionsByProfileIdRow
 	for rows.Next() {
-		var i ListTransactionsByUserIdRow
+		var i ListTransactionsByProfileIdRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Amount,
@@ -356,7 +321,7 @@ func (q *Queries) ListTransactionsByUserId(ctx context.Context, arg ListTransact
 			&i.CreatedAt_2,
 			&i.UpdatedAt_2,
 			&i.Deleted_2,
-			&i.UserID,
+			&i.ProfileID,
 		); err != nil {
 			return nil, err
 		}

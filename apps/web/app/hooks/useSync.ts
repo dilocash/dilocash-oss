@@ -1,7 +1,7 @@
 import { synchronize } from "@nozbe/watermelondb/sync";
 import { create } from "@bufbuild/protobuf";
 import { TimestampSchema } from "@bufbuild/protobuf/wkt";
-import { PullChangesRequest, PullChangesResponse } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
+import { PullChangesRequest, PullChangesResponse, PushChangesRequest, PushChangesRequestSchema, PushChangesResponse } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { useState } from "react";
 
@@ -48,7 +48,6 @@ const useSync = () => {
       await synchronize({
         database,
         pullChanges: async ({ lastPulledAt, schemaVersion, migration }) => {
-          // 1. Llamada a Go vía gRPC
           const lastPulledAtTimestamp = lastPulledAt
             ? create(TimestampSchema, {
                 seconds: BigInt(Math.floor(lastPulledAt / 1000)),
@@ -63,7 +62,7 @@ const useSync = () => {
             limit: 100,
           });
 
-          const response = await client.pullChanges(
+          const response: PullChangesResponse = await client.pullChanges(
             pullRequest
           );
 
@@ -85,20 +84,30 @@ const useSync = () => {
           };
         },
         pushChanges: async ({ changes, lastPulledAt }) => {
-          // const response = await fetch(
-          //   `${BASE_URL}?last_pulled_at=${lastPulledAt}`,
-          //   {
-          //     method: "POST",
-          //     body: JSON.stringify(changes),
-          //   }
-          // );
-          // if (!response.ok) {
-          //   throw new Error(await response.text());
-          // }
+
+          const lastPulledAtTimestamp = lastPulledAt
+            ? create(TimestampSchema, {
+                seconds: BigInt(Math.floor(lastPulledAt / 1000)),
+                nanos: (lastPulledAt % 1000) * 1_000_000,
+              })
+            : undefined;
+
+          const pushRequest: PushChangesRequest = create(PushChangesRequestSchema, {
+            lastPulledAt: lastPulledAtTimestamp,
+            changes: changes,
+          });
+
+          const response: PushChangesResponse = await client.pushChanges(
+            pushRequest
+          );
+          if (!response.ok) {
+            throw new Error(response.conflictIds.join(", "));
+          }
+          
         },
       });
     } catch (e) {
-      console.log(e);
+      console.error(e);
     }
 
     setIsSyncing(false);

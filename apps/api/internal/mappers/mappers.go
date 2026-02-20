@@ -29,14 +29,13 @@ type Converter interface {
 	TransactionFromDBToDomain(db database.Transaction) domain.Transaction
 	CommandFromDBToDomain(db database.Command) domain.Command
 	IntentFromDBToDomain(db database.Intent) domain.Intent
-	UserFromDBToDomain(db database.User) domain.User
+	ProfileFromDBToDomain(db database.Profile) domain.Profile
 
 	// Domain -> Database
 	ToDBTransaction(d domain.Transaction) database.Transaction
 
 	// Domain -> Database params
 	ToDBCreateTransactionParams(d domain.Transaction) database.CreateTransactionParams
-	ToDBCreateUserParams(d domain.User) database.CreateUserParams
 	ToDBCreateCommandParams(d domain.Command) database.CreateCommandParams
 	ToDBCreateIntentParams(d domain.Intent) database.CreateIntentParams
 

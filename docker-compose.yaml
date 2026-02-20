@@ -5,18 +5,6 @@
 version: "3.8"
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: dilocash-db
-    environment:
-      POSTGRES_USER: dilocash_user
-      POSTGRES_PASSWORD: local_secret_pass
-      POSTGRES_DB: dilocash_core
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-
   redis:
     image: redis:7-alpine
     container_name: dilocash-cache
@@ -31,11 +19,12 @@ services:
       PGADMIN_DEFAULT_PASSWORD: admin
     ports:
       - "5050:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
 
     volumes:
       - pgadmin_data:/var/lib/pgadmin
       - ./scripts/pgadmin/servers.json:/pgadmin4/servers.json
 
 volumes:
-  postgres_data:
   pgadmin_data:

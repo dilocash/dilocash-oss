@@ -1,16 +1,37 @@
 -- Copyright (c) 2026 dilocash
 -- Use of this source code is governed by an MIT-style
 -- license that can be found in the LICENSE file.
+CREATE SCHEMA IF NOT EXISTS auth;
+CREATE TABLE IF NOT EXISTS auth.users (id UUID PRIMARY KEY, email TEXT, raw_user_meta_data JSONB);
 
 -- Users Table: Handles the "Consent Gate" and Training Opt-in
-CREATE TABLE IF NOT EXISTS users (
-    id UUID PRIMARY KEY,
-    email TEXT UNIQUE NOT NULL,
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID REFERENCES auth.users NOT NULL PRIMARY KEY,
+    display_name TEXT NULL,
+    email TEXT NULL,
     accepted_terms_version TEXT,
     accepted_terms_at TIMESTAMP WITH TIME ZONE,
-    allow_data_analysis BOOLEAN DEFAULT FALSE, -- ADR-026: Opt-in only
+    allow_data_analysis BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- function to create a user when a new user is created via supabase signup
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, display_name, email)
+  VALUES (NEW.id, NEW.raw_user_meta_data ->> 'display_name', NEW.email);
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger to create a profile when a new user is created via supabase signup
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE PROCEDURE public.handle_new_user();
 
 -- Commands Table: The actions requested by the user
 CREATE TABLE IF NOT EXISTS commands (
@@ -19,7 +40,7 @@ CREATE TABLE IF NOT EXISTS commands (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     deleted BOOLEAN DEFAULT FALSE,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE
+    profile_id UUID NOT NULL REFERENCES public.profiles(id) ON DELETE CASCADE
 );
 
 -- Intents Table: The actions taken by the user
@@ -51,5 +72,5 @@ CREATE TABLE IF NOT EXISTS transactions (
 );
 
 -- Indexing for performance
-CREATE INDEX IF NOT EXISTS idx_commands_user_id ON commands(user_id);
-CREATE INDEX IF NOT EXISTS idx_commands_last_updated_at ON commands(updated_at);
+CREATE INDEX IF NOT EXISTS idx_commands_profile_id ON commands(profile_id);
+CREATE INDEX IF NOT EXISTS idx_commands_updated_at ON commands(updated_at);

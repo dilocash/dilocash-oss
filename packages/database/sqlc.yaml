@@ -43,11 +43,11 @@ sql:
           - column: "intents.deleted"
             go_type: "bool"
 
-          - column: "users.created_at"
+          - column: "profiles.created_at"
             go_type: "time.Time"
-          - column: "users.accepted_terms_at"
+          - column: "profiles.accepted_terms_at"
             go_type: "time.Time"
-          - column: "users.deleted"
+          - column: "profiles.allow_data_analysis"
             go_type: "bool"
 overrides:
   go:

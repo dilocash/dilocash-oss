@@ -2,23 +2,15 @@
 -- Use of this source code is governed by an MIT-style
 -- license that can be found in the LICENSE file.
 
--- name: GetUser :one
-SELECT * FROM users
+-- name: GetProfile :one
+SELECT * FROM profiles
 WHERE id = $1 LIMIT 1;
-
--- name: CreateUser :one
-INSERT INTO users (
-    id, email, accepted_terms_version, accepted_terms_at, allow_data_analysis
-) VALUES (
-    $1, $2, $3, $4, $5
-)
-RETURNING *;
 
 -- name: CreateCommand :one
 INSERT INTO commands (
-    user_id, command_status
+    id, profile_id, command_status
 ) VALUES (
-    $1, $2
+    $1, $2, $3
 )
 RETURNING *;
 
@@ -38,22 +30,22 @@ INSERT INTO intents (
 )
 RETURNING *;
 
--- name: ListTransactionsByUserId :many
+-- name: ListTransactionsByProfileId :many
 SELECT * FROM transactions t, commands c
-WHERE c.id = t.command_id AND c.user_id = $1
+WHERE c.id = t.command_id AND c.profile_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3;
 
--- name: ListIntentsByUserId :many
+-- name: ListIntentsByProfileId :many
 SELECT * FROM intents i, commands c
-WHERE c.id = i.command_id AND c.user_id = $1
+WHERE c.id = i.command_id AND c.profile_id = $1
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3;
 
 
--- name: ListCommandsByUserId :many
+-- name: ListCommandsByProfileId :many
 SELECT * FROM commands c
-WHERE c.user_id = $1
+WHERE c.profile_id = $1
 AND updated_at > $2
 ORDER BY c.created_at DESC
 LIMIT $3 OFFSET $4;

@@ -13,7 +13,7 @@ import (
 
 type Command struct {
 	ID            uuid.UUID
-	UserID        uuid.UUID
+	ProfileID     uuid.UUID
 	CommandStatus int32
 	CreatedAt     time.Time
 	UpdatedAt     time.Time
@@ -45,8 +45,9 @@ type Intent struct {
 	CommandID      uuid.UUID
 }
 
-type User struct {
+type Profile struct {
 	ID                   uuid.UUID
+	DisplayName          string
 	Email                string
 	AcceptedTermsVersion string
 	AcceptedTermsAt      time.Time
