@@ -54,5 +54,6 @@ LIMIT $2 OFFSET $3;
 -- name: ListCommandsByUserId :many
 SELECT * FROM commands c
 WHERE c.user_id = $1
+AND updated_at > $2
 ORDER BY c.created_at DESC
-LIMIT $2 OFFSET $3;
+LIMIT $3 OFFSET $4;

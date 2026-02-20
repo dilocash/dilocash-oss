@@ -188,18 +188,25 @@ func (q *Queries) GetUser(ctx context.Context, id uuid.UUID) (User, error) {
 const listCommandsByUserId = `-- name: ListCommandsByUserId :many
 SELECT id, command_status, created_at, updated_at, deleted, user_id FROM commands c
 WHERE c.user_id = $1
+AND updated_at > $2
 ORDER BY c.created_at DESC
-LIMIT $2 OFFSET $3
+LIMIT $3 OFFSET $4
 `
 
 type ListCommandsByUserIdParams struct {
-	UserID uuid.UUID `json:"user_id"`
-	Limit  int32     `json:"limit"`
-	Offset int32     `json:"offset"`
+	UserID    uuid.UUID `json:"user_id"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
 }
 
 func (q *Queries) ListCommandsByUserId(ctx context.Context, arg ListCommandsByUserIdParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByUserId, arg.UserID, arg.Limit, arg.Offset)
+	rows, err := q.db.Query(ctx, listCommandsByUserId,
+		arg.UserID,
+		arg.UpdatedAt,
+		arg.Limit,
+		arg.Offset,
+	)
 	if err != nil {
 		return nil, err
 	}
