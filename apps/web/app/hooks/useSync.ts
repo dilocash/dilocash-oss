@@ -1,22 +1,37 @@
 import { synchronize } from "@nozbe/watermelondb/sync";
 import { create } from "@bufbuild/protobuf";
 import { TimestampSchema } from "@bufbuild/protobuf/wkt";
-import { PullCommandsRequestSchema, PullCommandsResponse } from "@dilocash/gen/ts/transport/dilocash/v1/command_types_pb";
+import { PullChangesRequest, PullChangesResponse } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { useState } from "react";
 
 import { createClient } from "@connectrpc/connect";
-import { CommandService } from '@dilocash/gen/ts/transport/dilocash/v1/command_service_pb';
-
+import { SyncService } from '@dilocash/gen/ts/transport/dilocash/v1/sync_service_pb';
+import { getSupabaseClient } from '@dilocash/ui/auth/client';
 import { createConnectTransport } from "@connectrpc/connect-web";
+import { PullChangesRequestSchema } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
 
-const BASE_URL = "http://localhost:8000/sync";
+const BASE_URL = "http://localhost:8080";
 
 const useSync = () => {
   const transport = createConnectTransport({
     baseUrl: BASE_URL,
+    interceptors: [
+    (next) => async (req) => {
+      const supabase = getSupabaseClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!, 
+        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+        localStorage);
+      const { data } = await supabase.auth.getSession();
+      
+      if (data.session?.access_token) {
+        req.header.set("Authorization", `Bearer ${data.session.access_token}`);
+      }
+      return await next(req);
+    },
+  ],
   });
-  const client = createClient(CommandService, transport);
+  const client = createClient(SyncService, transport);
   const [isSyncing, setIsSyncing] = useState(false);
   const database = useDatabase();
 
@@ -32,27 +47,41 @@ const useSync = () => {
     try {
       await synchronize({
         database,
-        pullChanges: async ({ lastPulledAt }) => {
+        pullChanges: async ({ lastPulledAt, schemaVersion, migration }) => {
           // 1. Llamada a Go vía gRPC
-          const lastUpdatedAt = lastPulledAt
+          const lastPulledAtTimestamp = lastPulledAt
             ? create(TimestampSchema, {
                 seconds: BigInt(Math.floor(lastPulledAt / 1000)),
                 nanos: (lastPulledAt % 1000) * 1_000_000,
               })
             : undefined;
 
-          const response = await client.pullCommands(
-            create(PullCommandsRequestSchema, {
-              lastUpdatedAt,
-              limit: 100,
-            })
-          ) as PullCommandsResponse;
-          // Watermelon espera un objeto con: { changes, timestamp }
-          // response.commands contains the synced commands from the server
-          // response.checkpointUpdatedAt is the new checkpoint (milliseconds)
+          const pullRequest: PullChangesRequest = create(PullChangesRequestSchema, {
+            lastPulledAt: lastPulledAtTimestamp,
+            schemaVersion: schemaVersion,
+            migration: JSON.stringify(migration),
+            limit: 100,
+          });
+
+          const response = await client.pullChanges(
+            pullRequest
+          );
+
+          // WatermelonDB expects an object with { changes, timestamp }
+          // We must ensure 'changes' is not undefined and map the proto timestamp to a number (ms)
+          const changes = {
+            commands: response.changes?.commands ?? { created: [], updated: [], deleted: [] },
+            intents: response.changes?.intents ?? { created: [], updated: [], deleted: [] },
+            transactions: response.changes?.transactions ?? { created: [], updated: [], deleted: [] },
+          };
+
+          const timestamp = response.timestamp
+            ? Number(response.timestamp.seconds) * 1000 + Math.floor(response.timestamp.nanos / 1_000_000)
+            : Date.now();
+
           return {
-            changes: { commands: { created: response.commands, updated: [], deleted: [] } },
-            timestamp: Number(response.checkpointUpdatedAt),
+            changes: changes as any, // Cast to any to bypass strict proto vs watermelondb type comparison
+            timestamp,
           };
         },
         pushChanges: async ({ changes, lastPulledAt }) => {

@@ -18,18 +18,32 @@ import (
 	"net/http"
 
 	"connectrpc.com/connect"
+	connectcors "connectrpc.com/cors"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/health"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/middleware"
-	"github.com/dilocash/dilocash-oss/apps/api/internal/services/transaction"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/services/sync"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"github.com/rs/cors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/reflection"
 )
+
+// withCORS adds CORS support to a Connect HTTP handler.
+func withCORS(h http.Handler) http.Handler {
+	middleware := cors.New(cors.Options{
+		AllowedOrigins:   []string{"http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:8080"},
+		AllowedMethods:   connectcors.AllowedMethods(),
+		AllowedHeaders:   append(connectcors.AllowedHeaders(), "Authorization"),
+		ExposedHeaders:   connectcors.ExposedHeaders(),
+		AllowCredentials: true,
+	})
+	return middleware.Handler(h)
+}
 
 // registerAllServices registers all gRPC services from v1
 func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *grpc.Server, pool *pgxpool.Pool) {
@@ -38,18 +52,16 @@ func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *gr
 	supabaseAuth := configureAuthServer(ctx)
 
 	log.Println("Registering gRPC services...")
-	// transaction server
-	transactionServer := transaction.NewTransactionServer(pool)
-	path, handler := v1connect.NewTransactionServiceHandler(
-		transactionServer,
+	// sync server
+	syncServer := sync.NewSyncServer(pool)
+	path, handler := v1connect.NewSyncServiceHandler(
+		syncServer,
 		connect.WithInterceptors(
 			middleware.NewAuthInterceptor(&supabaseAuth),
 			validate.NewInterceptor()),
 	)
 	// Apply the middleware to protected routes
-	mux.Handle(path, handler)
-
-	// v1.RegisterIntentServiceServer(grpcServer, &v1connect.IntentService{})
+	mux.Handle(path, withCORS(handler))
 }
 
 func main() {
@@ -104,7 +116,7 @@ func main() {
 		// Use h2c to allow both HTTP and gRPC on the same port
 		h2cServer := http.Server{
 			Addr:      ":" + port,
-			Handler:   mux,
+			Handler:   withCORS(mux),
 			Protocols: p,
 		}
 

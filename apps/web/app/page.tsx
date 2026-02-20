@@ -10,13 +10,13 @@ import { Box } from "@dilocash/ui/components/ui/box";
 
 import { VStack } from "@dilocash/ui/components/ui/vstack";
 import Commands from "./commands";
-
+import { supabase } from "@/lib/supabase/client";
 
 export default function Home() {
   return (
       <Box className="w-full h-screen items-center justify-center">
         <Center>
-          <AuthForm/>
+          <AuthForm supabase={supabase} onSuccess={() => console.log('Login success')} />
           <VStack>
             <Commands />
           </VStack>
