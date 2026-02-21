@@ -22,4 +22,7 @@ message Transaction {
   string currency = 3;
   string category = 4;
   string description = 5;
+  string command_id = 6;
+  google.protobuf.Timestamp created_at = 7;       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 8;       // Timestamp in milliseconds (our Checkpoint)
 }

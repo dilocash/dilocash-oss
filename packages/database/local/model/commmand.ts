@@ -3,7 +3,7 @@ import type { Associations } from "@nozbe/watermelondb/Model";
 import { Intent } from "./intent";
 import { Transaction } from "./transaction";
 import {
-  text,
+  field,
   date,
   readonly,
   children,
@@ -17,16 +17,16 @@ export class Command extends Model {
     transactions: { type: "has_many", foreignKey: "command_id" },
   };
 
-  @text("status") status!: string;
+  @field("command_status") commandStatus!: number;
   @readonly @date("created_at") createdAt?: Date;
   @readonly @date("updated_at") updatedAt?: Date;
 
-  @children("intent") intents!: Query<Intent>;
-  @children("transaction") transactions!: Query<Transaction>;
+  @children("intents") intents!: Query<Intent>;
+  @children("transactions") transactions!: Query<Transaction>;
 
-  @writer async markAsDone() {
+  @writer async markAsSynced() {
     await this.update((command) => {
-      command.status = "done";
+      command.commandStatus = 4;
     });
   }
 

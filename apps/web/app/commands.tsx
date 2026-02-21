@@ -43,9 +43,9 @@ const CommandItem = ({ command }: { command: Command }) => {
 
   return (
     <div>
-      <h1 style={{ fontSize: 20, margin: 15 }}>{command.status}</h1>
+      <h1 style={{ fontSize: 20, margin: 15 }}>{command.commandStatus}</h1>
       <button style={{ color: "red" }} onClick={() => command.delete()}>
-        <p>{command.status}</p>
+        <p>{command.commandStatus}</p>
       </button>
       <div>
         <CreateIntentButton command={command} />

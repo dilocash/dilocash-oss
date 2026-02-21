@@ -8,6 +8,7 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -15,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/transaction_types.proto.
  */
 export const file_dilocash_v1_transaction_types: GenFile = /*@__PURE__*/
-  fileDesc("CiNkaWxvY2FzaC92MS90cmFuc2FjdGlvbl90eXBlcy5wcm90bxILZGlsb2Nhc2gudjEieQoQVHJhbnNhY3Rpb25zTGlzdBIpCgdjcmVhdGVkGAEgAygLMhguZGlsb2Nhc2gudjEuVHJhbnNhY3Rpb24SKQoHdXBkYXRlZBgCIAMoCzIYLmRpbG9jYXNoLnYxLlRyYW5zYWN0aW9uEg8KB2RlbGV0ZWQYAyADKAkiYgoLVHJhbnNhY3Rpb24SCgoCaWQYASABKAkSDgoGYW1vdW50GAIgASgJEhAKCGN1cnJlbmN5GAMgASgJEhAKCGNhdGVnb3J5GAQgASgJEhMKC2Rlc2NyaXB0aW9uGAUgASgJQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("CiNkaWxvY2FzaC92MS90cmFuc2FjdGlvbl90eXBlcy5wcm90bxILZGlsb2Nhc2gudjEieQoQVHJhbnNhY3Rpb25zTGlzdBIpCgdjcmVhdGVkGAEgAygLMhguZGlsb2Nhc2gudjEuVHJhbnNhY3Rpb24SKQoHdXBkYXRlZBgCIAMoCzIYLmRpbG9jYXNoLnYxLlRyYW5zYWN0aW9uEg8KB2RlbGV0ZWQYAyADKAki1gEKC1RyYW5zYWN0aW9uEgoKAmlkGAEgASgJEg4KBmFtb3VudBgCIAEoCRIQCghjdXJyZW5jeRgDIAEoCRIQCghjYXRlZ29yeRgEIAEoCRITCgtkZXNjcmlwdGlvbhgFIAEoCRISCgpjb21tYW5kX2lkGAYgASgJEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message dilocash.v1.TransactionsList
@@ -74,6 +75,25 @@ export type Transaction = Message<"dilocash.v1.Transaction"> & {
    * @generated from field: string description = 5;
    */
   description: string;
+
+  /**
+   * @generated from field: string command_id = 6;
+   */
+  commandId: string;
+
+  /**
+   * Timestamp in milliseconds (our Checkpoint)
+   *
+   * @generated from field: google.protobuf.Timestamp created_at = 7;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * Timestamp in milliseconds (our Checkpoint)
+   *
+   * @generated from field: google.protobuf.Timestamp updated_at = 8;
+   */
+  updatedAt?: Timestamp;
 };
 
 /**

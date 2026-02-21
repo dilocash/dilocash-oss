@@ -16,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/command_types.proto.
  */
 export const file_dilocash_v1_command_types: GenFile = /*@__PURE__*/
-  fileDesc("Ch9kaWxvY2FzaC92MS9jb21tYW5kX3R5cGVzLnByb3RvEgtkaWxvY2FzaC52MSJtCgxDb21tYW5kc0xpc3QSJQoHY3JlYXRlZBgBIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSJQoHdXBkYXRlZBgCIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSDwoHZGVsZXRlZBgDIAMoCSK6AQoHQ29tbWFuZBIKCgJpZBgBIAEoCRIuCgpjcmVhdGVkX2F0GAIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIPCgdkZWxldGVkGAQgASgIEjIKDmNvbW1hbmRfc3RhdHVzGAUgASgOMhouZGlsb2Nhc2gudjEuQ29tbWFuZFN0YXR1cyqgAQoNQ29tbWFuZFN0YXR1cxIeChpDT01NQU5EX1NUQVRVU19VTlNQRUNJRklFRBAAEhoKFkNPTU1BTkRfU1RBVFVTX1BFTkRJTkcQARIdChlDT01NQU5EX1NUQVRVU19QUk9DRVNTSU5HEAISGQoVQ09NTUFORF9TVEFUVVNfRkFJTEVEEAMSGQoVQ09NTUFORF9TVEFUVVNfU1lOQ0VEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
+  fileDesc("Ch9kaWxvY2FzaC92MS9jb21tYW5kX3R5cGVzLnByb3RvEgtkaWxvY2FzaC52MSJtCgxDb21tYW5kc0xpc3QSJQoHY3JlYXRlZBgBIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSJQoHdXBkYXRlZBgCIAMoCzIULmRpbG9jYXNoLnYxLkNvbW1hbmQSDwoHZGVsZXRlZBgDIAMoCSK6AQoHQ29tbWFuZBIKCgJpZBgBIAEoCRIyCg5jb21tYW5kX3N0YXR1cxgCIAEoDjIaLmRpbG9jYXNoLnYxLkNvbW1hbmRTdGF0dXMSDwoHZGVsZXRlZBgDIAEoCBIuCgpjcmVhdGVkX2F0GAQgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GAUgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCqgAQoNQ29tbWFuZFN0YXR1cxIeChpDT01NQU5EX1NUQVRVU19VTlNQRUNJRklFRBAAEhoKFkNPTU1BTkRfU1RBVFVTX1BFTkRJTkcQARIdChlDT01NQU5EX1NUQVRVU19QUk9DRVNTSU5HEAISGQoVQ09NTUFORF9TVEFUVVNfRkFJTEVEEAMSGQoVQ09NTUFORF9TVEFUVVNfU1lOQ0VEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message dilocash.v1.CommandsList
@@ -61,30 +61,30 @@ export type Command = Message<"dilocash.v1.Command"> & {
   /**
    * critical fields for offline-first synchronization
    *
+   * @generated from field: dilocash.v1.CommandStatus command_status = 2;
+   */
+  commandStatus: CommandStatus;
+
+  /**
+   * Flag for "Soft Deletes" (localdb requires it)
+   *
+   * @generated from field: bool deleted = 3;
+   */
+  deleted: boolean;
+
+  /**
    * Timestamp in milliseconds (our Checkpoint)
    *
-   * @generated from field: google.protobuf.Timestamp created_at = 2;
+   * @generated from field: google.protobuf.Timestamp created_at = 4;
    */
   createdAt?: Timestamp;
 
   /**
    * Timestamp in milliseconds (our Checkpoint)
    *
-   * @generated from field: google.protobuf.Timestamp updated_at = 3;
+   * @generated from field: google.protobuf.Timestamp updated_at = 5;
    */
   updatedAt?: Timestamp;
-
-  /**
-   * Flag for "Soft Deletes" (localdb requires it)
-   *
-   * @generated from field: bool deleted = 4;
-   */
-  deleted: boolean;
-
-  /**
-   * @generated from field: dilocash.v1.CommandStatus command_status = 5;
-   */
-  commandStatus: CommandStatus;
 };
 
 /**

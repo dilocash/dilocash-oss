@@ -1,5 +1,4 @@
 import { Model } from "@nozbe/watermelondb";
-import type { Associations } from "@nozbe/watermelondb/Model";
 import {
   field,
   text,
@@ -8,21 +7,23 @@ import {
   writer,
   relation,
 } from "@nozbe/watermelondb/decorators";
+import { Associations } from "@nozbe/watermelondb/Model";
 
 export class Transaction extends Model {
   static table = "transactions";
   static associations: Associations = {
-    command: { type: "belongs_to", key: "command_id" },
+    commands: { type: "belongs_to", key: "command_id" },
   };
 
-  @text("amount") amount!: string;
-  @text("currency") currency!: string;
+  @field("amount") amount!: string;
+  @field("currency") currency!: string;
+  @field("category") category!: number;
   @text("description") description!: string;
 
   @readonly @date("created_at") createdAt?: Date;
   @readonly @date("updated_at") updatedAt?: Date;
 
-  @relation("command", "command_id") command!: any;
+  @relation("commands", "command_id") command!: any;
 
   @writer async delete() {
     await this.markAsDeleted();

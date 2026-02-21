@@ -13,7 +13,7 @@ package v1
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	_ "google.golang.org/protobuf/types/known/timestamppb"
+	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -90,10 +90,13 @@ type Transaction struct {
 	state protoimpl.MessageState `protogen:"open.v1"`
 	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	// we use string for the amount to maintain decimal precision in Go and JS
-	Amount        string `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Currency      string `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
-	Category      string `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	Amount        string                 `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Currency      string                 `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
+	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
+	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	CommandId     string                 `protobuf:"bytes,6,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -163,6 +166,27 @@ func (x *Transaction) GetDescription() string {
 	return ""
 }
 
+func (x *Transaction) GetCommandId() string {
+	if x != nil {
+		return x.CommandId
+	}
+	return ""
+}
+
+func (x *Transaction) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Transaction) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
 var File_dilocash_v1_transaction_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
@@ -171,13 +195,19 @@ const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\x10TransactionsList\x122\n" +
 	"\acreated\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\acreated\x122\n" +
 	"\aupdated\x18\x02 \x03(\v2\x18.dilocash.v1.TransactionR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x8f\x01\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xa4\x02\n" +
 	"\vTransaction\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
 	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12\x1a\n" +
 	"\bcategory\x18\x04 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescriptionBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x1d\n" +
+	"\n" +
+	"command_id\x18\x06 \x01(\tR\tcommandId\x129\n" +
+	"\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_transaction_types_proto_rawDescOnce sync.Once
@@ -193,17 +223,20 @@ func file_dilocash_v1_transaction_types_proto_rawDescGZIP() []byte {
 
 var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dilocash_v1_transaction_types_proto_goTypes = []any{
-	(*TransactionsList)(nil), // 0: dilocash.v1.TransactionsList
-	(*Transaction)(nil),      // 1: dilocash.v1.Transaction
+	(*TransactionsList)(nil),      // 0: dilocash.v1.TransactionsList
+	(*Transaction)(nil),           // 1: dilocash.v1.Transaction
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
 }
 var file_dilocash_v1_transaction_types_proto_depIdxs = []int32{
 	1, // 0: dilocash.v1.TransactionsList.created:type_name -> dilocash.v1.Transaction
 	1, // 1: dilocash.v1.TransactionsList.updated:type_name -> dilocash.v1.Transaction
-	2, // [2:2] is the sub-list for method output_type
-	2, // [2:2] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	2, // 2: dilocash.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
+	2, // 3: dilocash.v1.Transaction.updated_at:type_name -> google.protobuf.Timestamp
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_dilocash_v1_transaction_types_proto_init() }

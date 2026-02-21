@@ -26,6 +26,9 @@ message Intent {
   // critical fields for offline-first synchronization
   IntentStatus intent_status = 5;
   bool requires_review = 6;
+  string command_id = 7;
+  google.protobuf.Timestamp created_at = 8;       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 9;       // Timestamp in milliseconds (our Checkpoint)
 }
 
 enum IntentStatus {

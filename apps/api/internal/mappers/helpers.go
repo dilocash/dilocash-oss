@@ -61,8 +61,11 @@ func PgTextToString(t pgtype.Text) string {
 	return t.String
 }
 
-func StringToPgText(s string) pgtype.Text {
-	return pgtype.Text{String: s, Valid: s != ""}
+func StringToPgText(s *string) pgtype.Text {
+	if s == nil {
+		return pgtype.Text{}
+	}
+	return pgtype.Text{String: *s, Valid: *s != ""}
 }
 
 func PgBoolToBool(b pgtype.Bool) bool {
@@ -71,4 +74,8 @@ func PgBoolToBool(b pgtype.Bool) bool {
 
 func BoolToPgBool(b bool) pgtype.Bool {
 	return pgtype.Bool{Bool: b, Valid: true}
+}
+
+func Ptr[T any](v T) *T {
+	return &v
 }

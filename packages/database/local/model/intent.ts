@@ -12,20 +12,23 @@ import {
 export class Intent extends Model {
   static table = "intents";
   static associations: Associations = {
-    command: { type: "belongs_to", key: "command_id" },
+    commands: { type: "belongs_to", key: "command_id" },
   };
 
   @text("text_message") textMessage!: string;
-  @field("status") status!: string;
+  @text("audio_message") audioMessage!: string;
+  @text("image_message") imageMessage!: string;
+  @field("intent_status") intentStatus!: number;
+  @field("requires_review") requiresReview!: boolean;
 
   @readonly @date("created_at") createdAt?: Date;
   @readonly @date("updated_at") updatedAt?: Date;
+  
+  @relation("commands", "command_id") command!: any;
 
-  @relation("command", "command_id") command!: any;
-
-  @writer async markAsDone() {
+  @writer async markAsConfirmed() {
     await this.update((intent) => {
-      intent.status = "done";
+      intent.intentStatus = 3;
     });
   }
 

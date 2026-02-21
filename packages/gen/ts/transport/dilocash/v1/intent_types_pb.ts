@@ -8,6 +8,7 @@
 
 import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { Timestamp } from "@bufbuild/protobuf/wkt";
 import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -15,7 +16,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file dilocash/v1/intent_types.proto.
  */
 export const file_dilocash_v1_intent_types: GenFile = /*@__PURE__*/
-  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxImoKC0ludGVudHNMaXN0EiQKB2NyZWF0ZWQYASADKAsyEy5kaWxvY2FzaC52MS5JbnRlbnQSJAoHdXBkYXRlZBgCIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIPCgdkZWxldGVkGAMgAygJIqMBCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDWF1ZGlvX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIwCg1pbnRlbnRfc3RhdHVzGAUgASgOMhkuZGlsb2Nhc2gudjEuSW50ZW50U3RhdHVzEhcKD3JlcXVpcmVzX3JldmlldxgGIAEoCCqkAQoMSW50ZW50U3RhdHVzEh0KGUlOVEVOVF9TVEFUVVNfVU5TUEVDSUZJRUQQABIcChhJTlRFTlRfU1RBVFVTX1BST0NFU1NJTkcQARIgChxJTlRFTlRfU1RBVFVTX1BFTkRJTkdfUkVWSUVXEAISGwoXSU5URU5UX1NUQVRVU19DT05GSVJNRUQQAxIYChRJTlRFTlRfU1RBVFVTX0ZBSUxFRBAEQlRaUmdpdGh1Yi5jb20vZGlsb2Nhc2gvZGlsb2Nhc2gtb3NzL2FwcHMvYXBpL2ludGVybmFsL2dlbmVyYXRlZC90cmFuc3BvcnQvZGlsb2Nhc2gvdjFiBnByb3RvMw", [file_google_protobuf_timestamp]);
+  fileDesc("Ch5kaWxvY2FzaC92MS9pbnRlbnRfdHlwZXMucHJvdG8SC2RpbG9jYXNoLnYxImoKC0ludGVudHNMaXN0EiQKB2NyZWF0ZWQYASADKAsyEy5kaWxvY2FzaC52MS5JbnRlbnQSJAoHdXBkYXRlZBgCIAMoCzITLmRpbG9jYXNoLnYxLkludGVudBIPCgdkZWxldGVkGAMgAygJIpcCCgZJbnRlbnQSCgoCaWQYASABKAkSFAoMdGV4dF9tZXNzYWdlGAIgASgJEhUKDWF1ZGlvX21lc3NhZ2UYAyABKAkSFQoNaW1hZ2VfbWVzc2FnZRgEIAEoCRIwCg1pbnRlbnRfc3RhdHVzGAUgASgOMhkuZGlsb2Nhc2gudjEuSW50ZW50U3RhdHVzEhcKD3JlcXVpcmVzX3JldmlldxgGIAEoCBISCgpjb21tYW5kX2lkGAcgASgJEi4KCmNyZWF0ZWRfYXQYCCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCSABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wKqQBCgxJbnRlbnRTdGF0dXMSHQoZSU5URU5UX1NUQVRVU19VTlNQRUNJRklFRBAAEhwKGElOVEVOVF9TVEFUVVNfUFJPQ0VTU0lORxABEiAKHElOVEVOVF9TVEFUVVNfUEVORElOR19SRVZJRVcQAhIbChdJTlRFTlRfU1RBVFVTX0NPTkZJUk1FRBADEhgKFElOVEVOVF9TVEFUVVNfRkFJTEVEEARCVFpSZ2l0aHViLmNvbS9kaWxvY2FzaC9kaWxvY2FzaC1vc3MvYXBwcy9hcGkvaW50ZXJuYWwvZ2VuZXJhdGVkL3RyYW5zcG9ydC9kaWxvY2FzaC92MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message dilocash.v1.IntentsList
@@ -83,6 +84,25 @@ export type Intent = Message<"dilocash.v1.Intent"> & {
    * @generated from field: bool requires_review = 6;
    */
   requiresReview: boolean;
+
+  /**
+   * @generated from field: string command_id = 7;
+   */
+  commandId: string;
+
+  /**
+   * Timestamp in milliseconds (our Checkpoint)
+   *
+   * @generated from field: google.protobuf.Timestamp created_at = 8;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * Timestamp in milliseconds (our Checkpoint)
+   *
+   * @generated from field: google.protobuf.Timestamp updated_at = 9;
+   */
+  updatedAt?: Timestamp;
 };
 
 /**

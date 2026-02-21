@@ -19,6 +19,19 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "command_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
                 }
             },
             "additionalProperties": true,

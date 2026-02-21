@@ -8,14 +8,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/shopspring/decimal"
 )
 
 type AuthUser struct {
-	ID              uuid.UUID   `json:"id"`
-	Email           pgtype.Text `json:"email"`
-	RawUserMetaData []byte      `json:"raw_user_meta_data"`
+	ID              uuid.UUID `json:"id"`
+	Email           *string   `json:"email"`
+	RawUserMetaData []byte    `json:"raw_user_meta_data"`
 }
 
 type Command struct {
@@ -28,34 +27,34 @@ type Command struct {
 }
 
 type Intent struct {
-	ID             uuid.UUID   `json:"id"`
-	TextMessage    pgtype.Text `json:"text_message"`
-	AudioMessage   pgtype.Text `json:"audio_message"`
-	ImageMessage   pgtype.Text `json:"image_message"`
-	IntentStatus   int32       `json:"intent_status"`
-	RequiresReview pgtype.Bool `json:"requires_review"`
-	CreatedAt      time.Time   `json:"created_at"`
-	UpdatedAt      time.Time   `json:"updated_at"`
-	Deleted        bool        `json:"deleted"`
-	CommandID      uuid.UUID   `json:"command_id"`
+	ID             uuid.UUID `json:"id"`
+	TextMessage    *string   `json:"text_message"`
+	AudioMessage   *string   `json:"audio_message"`
+	ImageMessage   *string   `json:"image_message"`
+	IntentStatus   int32     `json:"intent_status"`
+	RequiresReview *bool     `json:"requires_review"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	Deleted        bool      `json:"deleted"`
+	CommandID      uuid.UUID `json:"command_id"`
 }
 
 type Profile struct {
-	ID                   uuid.UUID   `json:"id"`
-	DisplayName          pgtype.Text `json:"display_name"`
-	Email                pgtype.Text `json:"email"`
-	AcceptedTermsVersion pgtype.Text `json:"accepted_terms_version"`
-	AcceptedTermsAt      time.Time   `json:"accepted_terms_at"`
-	AllowDataAnalysis    bool        `json:"allow_data_analysis"`
-	CreatedAt            time.Time   `json:"created_at"`
+	ID                   uuid.UUID `json:"id"`
+	DisplayName          *string   `json:"display_name"`
+	Email                *string   `json:"email"`
+	AcceptedTermsVersion *string   `json:"accepted_terms_version"`
+	AcceptedTermsAt      time.Time `json:"accepted_terms_at"`
+	AllowDataAnalysis    bool      `json:"allow_data_analysis"`
+	CreatedAt            time.Time `json:"created_at"`
 }
 
 type Transaction struct {
 	ID          uuid.UUID       `json:"id"`
 	Amount      decimal.Decimal `json:"amount"`
 	Currency    string          `json:"currency"`
-	Category    pgtype.Text     `json:"category"`
-	Description pgtype.Text     `json:"description"`
+	Category    *string         `json:"category"`
+	Description *string         `json:"description"`
 	CreatedAt   time.Time       `json:"created_at"`
 	UpdatedAt   time.Time       `json:"updated_at"`
 	Deleted     bool            `json:"deleted"`

@@ -45,20 +45,6 @@
                     "type": "string",
                     "description": "UUID generated in the client (localdb primary key)"
                 },
-                "created_at": {
-                    "type": "string",
-                    "description": "critical fields for offline-first synchronization  Timestamp in milliseconds (our Checkpoint)",
-                    "format": "date-time"
-                },
-                "updated_at": {
-                    "type": "string",
-                    "description": "Timestamp in milliseconds (our Checkpoint)",
-                    "format": "date-time"
-                },
-                "deleted": {
-                    "type": "boolean",
-                    "description": "Flag for \"Soft Deletes\" (localdb requires it)"
-                },
                 "command_status": {
                     "enum": [
                         "COMMAND_STATUS_UNSPECIFIED",
@@ -81,6 +67,20 @@
                         }
                     ],
                     "title": "Command Status"
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Flag for \"Soft Deletes\" (localdb requires it)"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
                 }
             },
             "additionalProperties": true,
@@ -153,6 +153,19 @@
                 },
                 "requires_review": {
                     "type": "boolean"
+                },
+                "command_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
                 }
             },
             "additionalProperties": true,
@@ -202,6 +215,19 @@
                 },
                 "description": {
                     "type": "string"
+                },
+                "command_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
                 }
             },
             "additionalProperties": true,

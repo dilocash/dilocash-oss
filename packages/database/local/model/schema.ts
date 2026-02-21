@@ -8,7 +8,7 @@ export default appSchema({
     tableSchema({
       name: "commands",
       columns: [
-        { name: "status", type: "string" },
+        { name: "command_status", type: "number" },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
       ],
@@ -17,10 +17,13 @@ export default appSchema({
       name: "intents",
       columns: [
         { name: "text_message", type: "string" },
-        { name: "status", type: "string" },
-        { name: "command_id", type: "string", isIndexed: true },
+        { name: "audio_message", type: "string" },
+        { name: "image_message", type: "string" },
+        { name: "intent_status", type: "number" },
+        { name: "requires_review", type: "boolean" },
         { name: "created_at", type: "number" },
         { name: "updated_at", type: "number" },
+        { name: "command_id", type: "string", isIndexed: true },
       ],
     }),
     tableSchema({
@@ -28,6 +31,7 @@ export default appSchema({
       columns: [
         { name: "amount", type: "string" },
         { name: "currency", type: "string" },
+        { name: "category", type: "string" },
         { name: "description", type: "string" },
         { name: "command_id", type: "string", isIndexed: true },
         { name: "created_at", type: "number" },

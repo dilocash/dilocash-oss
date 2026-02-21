@@ -12,22 +12,31 @@ import { Button, ButtonText } from "@dilocash/ui/components/ui/button";
 const CreateCommandButton = () => {
   const database = useDatabase();
   const handleClick = async () => {
+
     await database.write(async () => {
-      let newCommand = await database.get<Command>(Command.table).create((command) => {
-        command.status = "pending";
+      let newCommand = database.get<Command>(Command.table).prepareCreate(command => {
+        command.commandStatus = 0;
       });
-      await database.get<Intent>(Intent.table).create((intent) => {
-          intent.textMessage = "A intent";
-          intent.status = "pending";
-          intent.command.set(newCommand);
-        });
-      await database.get<Transaction>(Transaction.table).create((transaction) => {
-          transaction.amount = "100";
-          transaction.currency = "USD";
-          transaction.description = "A transaction";
-          transaction.command.set(newCommand);
-        });
-    });
+
+      let newIntent = database.get<Intent>(Intent.table).prepareCreate(intent => {
+        intent.textMessage = "A intent";
+        intent.intentStatus = 0;
+        intent.command.set(newCommand);
+      })
+
+      let newTransaction = database.get<Transaction>(Transaction.table).prepareCreate(transaction => {
+        transaction.amount = "100";
+        transaction.currency = "USD";
+        transaction.description = "A transaction";
+        transaction.command.set(newCommand);
+      })
+
+      await database.batch(
+        newCommand,
+        newIntent,
+        newTransaction
+      );
+    })
   };
 
   return (
@@ -44,7 +53,7 @@ const CreateIntentButton = withDatabase(
       await database.write(async () => {
         await database.get<Intent>(Intent.table).create((intent) => {
           intent.textMessage = "A intent";
-          intent.status = "pending";
+          intent.intentStatus = 0;
           intent.command.set(command);
         });
       });
