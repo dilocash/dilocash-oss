@@ -7,7 +7,7 @@ import CommandsListView from "./commands-list";
 
 const CommandsView = ({ transport }: { transport: Transport }) => {
   return (
-    <Box className="flex flex-col h-full py-10 bg-gray-100">
+    <Box className="flex flex-col h-screen py-10 bg-gray-100">
       <CommandsListView />
       <CommandsBar transport={transport} />
     </Box>

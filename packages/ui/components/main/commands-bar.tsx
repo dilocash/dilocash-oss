@@ -64,7 +64,7 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
 
       return (
         <Button onPress={handleClick}>
-          <ButtonIcon size="md" as={AddIcon} />
+          <ButtonIcon size="xs" as={AddIcon} />
         </Button>
       );
     },
@@ -72,7 +72,7 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
 
   return (
     <HStack
-      space="md"
+      space="sm"
       className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg p-2"
     >
       <Input variant="rounded" className="grow">
@@ -85,13 +85,13 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
       </Input>
       <AddCommandButton />
       <Button>
-        <ButtonIcon size="md" as={MessageCircleIcon} />
+        <ButtonIcon size="xs" as={MessageCircleIcon} />
       </Button>
       <Button onPress={sync}>
         {isSyncing ? (
           <ButtonSpinner color="orange" />
         ) : (
-          <ButtonIcon size="md" as={RepeatIcon} />
+          <ButtonIcon size="xs" as={RepeatIcon} />
         )}
       </Button>
     </HStack>

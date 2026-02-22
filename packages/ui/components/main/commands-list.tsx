@@ -26,21 +26,40 @@ import {
   AccordionTrigger,
 } from "../ui/accordion";
 import { ChevronDownIcon, ChevronUpIcon, Icon, TrashIcon } from "../ui/icon";
+import { useEffect, useRef } from "react";
 
 const CommandsListView = () => {
   const commands = useGetCommands();
-  return <EnhancedCommandsList commands={commands}></EnhancedCommandsList>;
+
+  return (
+    <EnhancedCommandsList
+      className=""
+      commands={commands}
+    ></EnhancedCommandsList>
+  );
 };
 
 export default CommandsListView;
 
-const CommandsList = ({ commands }: { commands: Command[] }) => (
-  <VStack>
-    {commands.map((command, i) => (
-      <CommandItem key={i} command={command} />
-    ))}
-  </VStack>
-);
+const CommandsList = ({ commands }: { commands: Command[] }) => {
+  // Create a ref for the bottom-most element
+  const bottomOfPanelRef = useRef<HTMLDivElement>(null);
+
+  // Use useEffect to scroll to the ref whenever messages change
+  useEffect(() => {
+    // The scrollIntoView method handles the actual scrolling
+    bottomOfPanelRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [commands]); // Dependency array includes messages to trigger on update
+
+  return (
+    <VStack className="h-full overflow-y-scroll pb-5">
+      {commands.map((command, i) => (
+        <CommandItem key={i} command={command} />
+      ))}
+      <div ref={bottomOfPanelRef} />
+    </VStack>
+  );
+};
 
 const EnhancedCommandsList = withObservables(["commands"], ({ commands }) => ({
   commands,
