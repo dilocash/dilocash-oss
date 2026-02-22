@@ -13,6 +13,7 @@ import { VStack } from "../ui/vstack";
 import { Button, ButtonText } from "../ui/button";
 import { Box } from "../ui/box";
 import { HStack } from "../ui/hstack";
+import { Card } from "../ui/card";
 import { Text } from "../ui/text";
 import {
   Accordion,
@@ -58,7 +59,10 @@ const CommandItem = ({ command }: { command: Command }) => {
   };
 
   return (
-    <Box className="p-4 m-2 border border-gray-200 rounded-lg border-b-4 bg-white">
+    <Card
+      className="p-4 m-2 border-b-4  bg-white border-b-orange-300"
+      variant="outline"
+    >
       <HStack className="flex w-full items-center">
         <IntentsList intents={intents} className="grow" />
         <Button className="m-2" onPress={handleDelete}>
@@ -66,6 +70,6 @@ const CommandItem = ({ command }: { command: Command }) => {
         </Button>
       </HStack>
       <TransactionsList className="w-full" transactions={transactions} />
-    </Box>
+    </Card>
   );
 };
