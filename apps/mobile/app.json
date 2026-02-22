@@ -4,7 +4,7 @@
     "slug": "dilocash",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/dilocash.svg",
+    "icon": "./assets/images/dilocash.png",
     "scheme": "dilocash",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -19,7 +19,8 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.dilocash"
     },
     "web": {
       "bundler": "metro",
@@ -28,10 +29,22 @@
     },
     "plugins": [
       "expo-router",
+      "@morrowdigital/watermelondb-expo-plugin",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.24",
+            "packagingOptions": {
+              "pickFirst": ["**/libc++_shared.so"]
+            }
+          }
+        }
+      ],
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/dilocash.svg",
+          "image": "./assets/images/dilocash.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff",
