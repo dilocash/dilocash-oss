@@ -20,9 +20,7 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
   const AddCommandButton = withDatabase(
     ({ database }: { database: Database }) => {
       const handleClick = async () => {
-        console.log("before write");
         await database.write(async () => {
-          console.log("inside write");
           let newCommand = database
             .get<Command>(Command.table)
             .prepareCreate((command) => {
@@ -49,13 +47,9 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
             });
 
           await database.batch(newCommand, newIntent, newTransaction);
-          console.log("after batch");
         });
-        console.log("after write");
         setCommandText("");
-        console.log("before sync");
         await sync();
-        console.log("after sync");
       };
 
       return (

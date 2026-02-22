@@ -1,17 +1,18 @@
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
 import "../global.css";
 import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
+import DatabaseProvider from "./lib/database-provider";
 import { Center } from "@dilocash/ui/components/ui/center";
-import * as Localization from 'expo-localization';
-import { initI18n } from '@dilocash/i18n';
+import * as Localization from "expo-localization";
+import { initI18n } from "@dilocash/i18n";
 import { Slot } from "expo-router";
 
 // we get the mobile language (ej. 'en', 'es')
-const deviceLanguage = Localization.getLocales()[0].languageCode ?? 'en';
+const deviceLanguage = Localization.getLocales()[0].languageCode ?? "en";
 initI18n(false, deviceLanguage);
 
 export {
@@ -53,10 +54,12 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   return (
-    <GluestackUIProvider mode="light">
-      <Center className="flex-1 w-full h-full">
-        <Slot/>
-      </Center>
-    </GluestackUIProvider>
+    <DatabaseProvider>
+      <GluestackUIProvider mode="light">
+        <Center className="flex-1 w-full h-full">
+          <Slot />
+        </Center>
+      </GluestackUIProvider>
+    </DatabaseProvider>
   );
 }

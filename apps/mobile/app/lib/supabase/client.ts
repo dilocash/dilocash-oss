@@ -1,5 +1,5 @@
-import { getSupabaseClient } from '@dilocash/ui/auth/client';
-import * as SecureStore from 'expo-secure-store';
+import { getSupabaseClient } from "@dilocash/ui/auth/client";
+import * as SecureStore from "expo-secure-store";
 // TODO test this
 const ExpoSecureStoreAdapter = {
   getItem: (key: string) => SecureStore.getItemAsync(key),
@@ -7,8 +7,17 @@ const ExpoSecureStoreAdapter = {
   removeItem: (key: string) => SecureStore.deleteItemAsync(key),
 };
 
-export const supabase = getSupabaseClient(
-  process.env.EXPO_PUBLIC_SUPABASE_URL!,
-  process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
-  ExpoSecureStoreAdapter
+const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error("Missing Supabase URL or Anon Key");
+}
+
+const supabase = getSupabaseClient(
+  supabaseUrl,
+  supabaseAnonKey,
+  ExpoSecureStoreAdapter,
 );
+
+export default supabase;
