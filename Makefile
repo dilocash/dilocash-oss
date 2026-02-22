@@ -56,7 +56,7 @@ dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
 dev-mobile: install ## Start Mobile Android app via Turborepo
-	pnpm android --filter @dilocash/mobile -- --android --clear
+	pnpm dev --filter @dilocash/mobile -- --android --clear
 
 dev-web: install ## Start Web app via Turborepo
 	pnpm dev --filter @dilocash/web
@@ -163,7 +163,7 @@ clean-full: clean ## Remove generated binaries and code
 
 clean-ui: ## Remove generated ui code
 	rm -rf apps/web/node_modules apps/web/.next
-	rm -rf apps/mobile/node_modules apps/mobile/.expo
+	rm -rf apps/mobile/node_modules apps/mobile/.expo apps/mobile/android
 	rm -rf packages/ui/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
 
