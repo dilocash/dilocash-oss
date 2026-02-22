@@ -12,6 +12,13 @@
     "sign_up": "¿No tienes cuenta?",
     "sign_up_link": "Regístrate"
   },
+  "commands": {
+    "command_placeholder": "Dilo y regístralo...",
+    "add": "Agregar",
+    "record": "Grabar",
+    "sync": "Sincronizar",
+    "syncing": "Sincronizando..."
+  },
   "intents": {
     "types": {
       "transaction": "Transacción",

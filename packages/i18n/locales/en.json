@@ -12,6 +12,13 @@
     "sign_up": "Don't have an account?",
     "sign_up_link": "Sign up"
   },
+  "commands": {
+    "command_placeholder": "Say it and track it...",
+    "add": "Add",
+    "record": "Record",
+    "sync": "Sync",
+    "syncing": "Syncing..."
+  },
   "intents": {
     "types": {
       "transaction": "Transaction",

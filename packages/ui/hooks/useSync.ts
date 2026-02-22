@@ -5,41 +5,23 @@ import { Changes, ChangesSchema, PullChangesRequest, PullChangesResponse, PushCh
 import { useDatabase } from "@nozbe/watermelondb/react";
 import { useState } from "react";
 
-import { createClient } from "@connectrpc/connect";
+import { createClient, Transport } from "@connectrpc/connect";
 import { SyncService } from '@dilocash/gen/ts/transport/dilocash/v1/sync_service_pb';
-import { getSupabaseClient } from '@dilocash/ui/auth/client';
-import { createConnectTransport } from "@connectrpc/connect-web";
 import { PullChangesRequestSchema } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
 
-const BASE_URL = "http://localhost:8080";
 
-const useSync = () => {
-  const transport = createConnectTransport({
-    baseUrl: BASE_URL,
-    interceptors: [
-    (next) => async (req) => {
-      const supabase = getSupabaseClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!, 
-        process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-        localStorage);
-      const { data } = await supabase.auth.getSession();
-      
-      if (data.session?.access_token) {
-        req.header.set("Authorization", `Bearer ${data.session.access_token}`);
-      }
-      return await next(req);
-    },
-  ],
-  });
+const useSync = (transport: Transport) => {
   const client = createClient(SyncService, transport);
   const [isSyncing, setIsSyncing] = useState(false);
   const database = useDatabase();
 
   const sync = async () => {
+    console.log("before sync");
     if (isSyncing) {
       console.info("Sync already in progress");
       return;
     }
+    console.log("after sync");
 
     console.info("Syncing...");
 

@@ -197,27 +197,21 @@ func (q *Queries) GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 }
 
 const listCommandsByProfileId = `-- name: ListCommandsByProfileId :many
-SELECT id, command_status, created_at, updated_at, deleted, profile_id FROM commands c
-WHERE c.profile_id = $1
-AND updated_at > $2
+SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id FROM commands c
+WHERE c.profile_id = $1 AND c.deleted = false
 ORDER BY c.created_at DESC
-LIMIT $3 OFFSET $4
+LIMIT $2 OFFSET $3
 `
 
 type ListCommandsByProfileIdParams struct {
 	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
 	Limit     int32     `json:"limit"`
 	Offset    int32     `json:"offset"`
 }
 
+// initial sync
 func (q *Queries) ListCommandsByProfileId(ctx context.Context, arg ListCommandsByProfileIdParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByProfileId,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
+	rows, err := q.db.Query(ctx, listCommandsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
@@ -248,7 +242,7 @@ SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_
 FROM commands c
 WHERE c.profile_id = $1
   AND c.deleted = false
-  AND c.created_at > $2
+  AND c.created_at > $2 and c.updated_at <= $2 -- only new records
 ORDER BY c.created_at DESC
 LIMIT $3 OFFSET $4
 `
@@ -384,7 +378,7 @@ func (q *Queries) ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx context.Cont
 const listDeletedIntentsByProfileIdAndUpdatedAfter = `-- name: ListDeletedIntentsByProfileIdAndUpdatedAfter :many
 SELECT i.id as intent_id
 FROM intents i
-WHERE i.command_id = (select id from commands where profile_id = $1)
+WHERE i.command_id IN (select id from commands where profile_id = $1)
   AND i.updated_at > i.created_at AND i.updated_at > $2 AND i.deleted = true
 ORDER BY i.created_at DESC
 LIMIT $3 OFFSET $4
@@ -425,7 +419,7 @@ func (q *Queries) ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx context.Conte
 const listDeletedTransactionsByProfileIdAndUpdatedAfter = `-- name: ListDeletedTransactionsByProfileIdAndUpdatedAfter :many
 SELECT t.id as transaction_id
 FROM transactions t
-WHERE t.command_id = (select id from commands where profile_id = $1)
+WHERE t.command_id IN (select id from commands where profile_id = $1)
   AND t.updated_at > t.created_at AND t.updated_at > $2 AND t.deleted = true
 ORDER BY t.created_at DESC
 LIMIT $3 OFFSET $4
@@ -464,8 +458,8 @@ func (q *Queries) ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx context.
 }
 
 const listIntentsByProfileId = `-- name: ListIntentsByProfileId :many
-SELECT i.id, text_message, audio_message, image_message, intent_status, requires_review, i.created_at, i.updated_at, i.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, profile_id FROM intents i, commands c
-WHERE c.id = i.command_id AND c.profile_id = $1
+SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id FROM intents i, commands c
+WHERE c.id = i.command_id AND c.profile_id = $1 AND i.deleted = false
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
 `
@@ -476,34 +470,16 @@ type ListIntentsByProfileIdParams struct {
 	Offset    int32     `json:"offset"`
 }
 
-type ListIntentsByProfileIdRow struct {
-	ID             uuid.UUID `json:"id"`
-	TextMessage    *string   `json:"text_message"`
-	AudioMessage   *string   `json:"audio_message"`
-	ImageMessage   *string   `json:"image_message"`
-	IntentStatus   int32     `json:"intent_status"`
-	RequiresReview *bool     `json:"requires_review"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	Deleted        bool      `json:"deleted"`
-	CommandID      uuid.UUID `json:"command_id"`
-	ID_2           uuid.UUID `json:"id_2"`
-	CommandStatus  int32     `json:"command_status"`
-	CreatedAt_2    time.Time `json:"created_at_2"`
-	UpdatedAt_2    time.Time `json:"updated_at_2"`
-	Deleted_2      bool      `json:"deleted_2"`
-	ProfileID      uuid.UUID `json:"profile_id"`
-}
-
-func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]ListIntentsByProfileIdRow, error) {
+// initial sync
+func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]Intent, error) {
 	rows, err := q.db.Query(ctx, listIntentsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListIntentsByProfileIdRow
+	var items []Intent
 	for rows.Next() {
-		var i ListIntentsByProfileIdRow
+		var i Intent
 		if err := rows.Scan(
 			&i.ID,
 			&i.TextMessage,
@@ -515,12 +491,6 @@ func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByP
 			&i.UpdatedAt,
 			&i.Deleted,
 			&i.CommandID,
-			&i.ID_2,
-			&i.CommandStatus,
-			&i.CreatedAt_2,
-			&i.UpdatedAt_2,
-			&i.Deleted_2,
-			&i.ProfileID,
 		); err != nil {
 			return nil, err
 		}
@@ -535,9 +505,9 @@ func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByP
 const listIntentsByProfileIdAndCreatedAfter = `-- name: ListIntentsByProfileIdAndCreatedAfter :many
 SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id
 FROM intents i
-WHERE i.command_id = (select id from commands where profile_id = $1)
+WHERE i.command_id IN (select id from commands where profile_id = $1)
   AND i.deleted = false
-  AND i.created_at > $2
+  AND i.created_at > $2 and i.updated_at <= $2 -- only new records
 ORDER BY i.created_at DESC
 LIMIT $3 OFFSET $4
 `
@@ -588,7 +558,7 @@ func (q *Queries) ListIntentsByProfileIdAndCreatedAfter(ctx context.Context, arg
 const listIntentsByProfileIdAndUpdatedAfter = `-- name: ListIntentsByProfileIdAndUpdatedAfter :many
 SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id
 FROM intents i
-WHERE i.command_id = (select id from commands where profile_id = $1)
+WHERE i.command_id IN (select id from commands where profile_id = $1)
   AND i.updated_at > i.created_at AND i.updated_at > $2 AND i.deleted = false
 ORDER BY i.created_at DESC
 LIMIT $3 OFFSET $4
@@ -638,8 +608,8 @@ func (q *Queries) ListIntentsByProfileIdAndUpdatedAfter(ctx context.Context, arg
 }
 
 const listTransactionsByProfileId = `-- name: ListTransactionsByProfileId :many
-SELECT t.id, amount, currency, category, description, t.created_at, t.updated_at, t.deleted, command_id, c.id, command_status, c.created_at, c.updated_at, c.deleted, profile_id FROM transactions t, commands c
-WHERE c.id = t.command_id AND c.profile_id = $1
+SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id FROM transactions t, commands c
+WHERE c.id = t.command_id AND c.profile_id = $1 AND t.deleted = false
 ORDER BY c.created_at DESC
 LIMIT $2 OFFSET $3
 `
@@ -650,33 +620,16 @@ type ListTransactionsByProfileIdParams struct {
 	Offset    int32     `json:"offset"`
 }
 
-type ListTransactionsByProfileIdRow struct {
-	ID            uuid.UUID       `json:"id"`
-	Amount        decimal.Decimal `json:"amount"`
-	Currency      string          `json:"currency"`
-	Category      *string         `json:"category"`
-	Description   *string         `json:"description"`
-	CreatedAt     time.Time       `json:"created_at"`
-	UpdatedAt     time.Time       `json:"updated_at"`
-	Deleted       bool            `json:"deleted"`
-	CommandID     uuid.UUID       `json:"command_id"`
-	ID_2          uuid.UUID       `json:"id_2"`
-	CommandStatus int32           `json:"command_status"`
-	CreatedAt_2   time.Time       `json:"created_at_2"`
-	UpdatedAt_2   time.Time       `json:"updated_at_2"`
-	Deleted_2     bool            `json:"deleted_2"`
-	ProfileID     uuid.UUID       `json:"profile_id"`
-}
-
-func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]ListTransactionsByProfileIdRow, error) {
+// initial sync
+func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]Transaction, error) {
 	rows, err := q.db.Query(ctx, listTransactionsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []ListTransactionsByProfileIdRow
+	var items []Transaction
 	for rows.Next() {
-		var i ListTransactionsByProfileIdRow
+		var i Transaction
 		if err := rows.Scan(
 			&i.ID,
 			&i.Amount,
@@ -687,12 +640,6 @@ func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTrans
 			&i.UpdatedAt,
 			&i.Deleted,
 			&i.CommandID,
-			&i.ID_2,
-			&i.CommandStatus,
-			&i.CreatedAt_2,
-			&i.UpdatedAt_2,
-			&i.Deleted_2,
-			&i.ProfileID,
 		); err != nil {
 			return nil, err
 		}
@@ -707,9 +654,9 @@ func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTrans
 const listTransactionsByProfileIdAndCreatedAfter = `-- name: ListTransactionsByProfileIdAndCreatedAfter :many
 SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id
 FROM transactions t
-WHERE t.command_id = (select id from commands where profile_id = $1)
+WHERE t.command_id IN (select id from commands where profile_id = $1)
   AND t.deleted = false
-  AND t.created_at > $2
+  AND t.created_at > $2 and t.updated_at <= $2 -- only new records
 ORDER BY t.created_at DESC
 LIMIT $3 OFFSET $4
 `
@@ -759,7 +706,7 @@ func (q *Queries) ListTransactionsByProfileIdAndCreatedAfter(ctx context.Context
 const listTransactionsByProfileIdAndUpdatedAfter = `-- name: ListTransactionsByProfileIdAndUpdatedAfter :many
 SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id
 FROM transactions t
-WHERE t.command_id = (select id from commands where profile_id = $1)
+WHERE t.command_id IN (select id from commands where profile_id = $1)
   AND t.updated_at > t.created_at AND t.updated_at > $2 AND t.deleted = false
 ORDER BY t.created_at DESC
 LIMIT $3 OFFSET $4

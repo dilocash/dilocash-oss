@@ -7,7 +7,7 @@ package sync
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log/slog"
 
 	"connectrpc.com/connect"
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
@@ -40,8 +40,23 @@ func (s *SyncServer) PullChanges(
 	profileId := ctx.Value("user_id").(string)
 	lastPulledAt := req.GetLastPulledAt()
 
-	fmt.Println("profileId", profileId)
-	fmt.Println("lastPulledAt", lastPulledAt)
+	commandsList := &v1.CommandsList{
+		Created: []*v1.Command{},
+		Updated: []*v1.Command{},
+		Deleted: []string{},
+	}
+	intentsList := &v1.IntentsList{
+		Created: []*v1.Intent{},
+		Updated: []*v1.Intent{},
+		Deleted: []string{},
+	}
+	transactionsList := &v1.TransactionsList{
+		Created: []*v1.Transaction{},
+		Updated: []*v1.Transaction{},
+		Deleted: []string{},
+	}
+
+	slog.Info("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
 	// execute query to get transactions since lastPulledAt
 	createdCommandsResult, err := s.store.ListCommandsByProfileIdAndCreatedAfter(ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
@@ -49,21 +64,30 @@ func (s *SyncServer) PullChanges(
 		Limit:     100,
 		Offset:    0,
 	})
+	if err != nil {
+		slog.Error("failed to pull created commands", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created commands"))
+	}
 	createdIntentsResult, err := s.store.ListIntentsByProfileIdAndCreatedAfter(ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		CreatedAt: lastPulledAt.AsTime(),
 		Limit:     100,
 		Offset:    0,
 	})
+	if err != nil {
+		slog.Error("failed to pull created intents", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created intents"))
+	}
 	createdTransactionsResult, err := s.store.ListTransactionsByProfileIdAndCreatedAfter(ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		CreatedAt: lastPulledAt.AsTime(),
 		Limit:     100,
 		Offset:    0,
 	})
-	fmt.Println("createdCommandsResult", createdCommandsResult)
-	fmt.Println("createdIntentsResult", createdIntentsResult)
-	fmt.Println("createdTransactionsResult", createdTransactionsResult)
+	if err != nil {
+		slog.Error("failed to pull created transactions", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created transactions"))
+	}
 	// Fetch changes created after lastPulledAt
 	var createdCommands []*v1.Command
 	var createdIntents []*v1.Intent
@@ -83,22 +107,31 @@ func (s *SyncServer) PullChanges(
 		domainTransaction := converter.TransactionFromDBToDomain(dbTransaction)
 		createdTransactions = append(createdTransactions, converter.ToTransportTransaction(domainTransaction))
 	}
-	updatedChanges, err := s.store.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
+
+	commandsList.Created = createdCommands
+	intentsList.Created = createdIntents
+	transactionsList.Created = createdTransactions
+
+	if lastPulledAt == nil {
+		slog.Info("lastPulledAt is nil (initial sync), only created items will be fetched")
+		return pullInitialSync(ctx, s)
+	}
+
+	updatedChangesCommandsResult, err := s.store.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt.AsTime(),
 		Limit:     100,
 		Offset:    0,
 	})
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull updated commands", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated commands"))
 	}
-
-	fmt.Println("updatedChanges", updatedChanges)
 	// Fetch changes created after lastPulledAt
 	var updatedCommands []*v1.Command
 	var updatedIntents []*v1.Intent
 	var updatedTransactions []*v1.Transaction
-	for _, dbCommandResult := range updatedChanges {
+	for _, dbCommandResult := range updatedChangesCommandsResult {
 		dbCommand := dbCommandResult
 		domainCommand := converter.CommandFromDBToDomain(dbCommand)
 		updatedCommands = append(updatedCommands, converter.ToTransportCommand(domainCommand))
@@ -110,7 +143,8 @@ func (s *SyncServer) PullChanges(
 		Offset:    0,
 	})
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull updated intents", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated intents"))
 	}
 	for _, dbIntent := range dbIntentResult {
 		domainIntent := converter.IntentFromDBToDomain(dbIntent)
@@ -123,12 +157,17 @@ func (s *SyncServer) PullChanges(
 		Offset:    0,
 	})
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull updated transactions", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated transactions"))
 	}
 	for _, dbTransaction := range dbTransactionResult {
 		domainTransaction := converter.TransactionFromDBToDomain(dbTransaction)
 		updatedTransactions = append(updatedTransactions, converter.ToTransportTransaction(domainTransaction))
 	}
+
+	commandsList.Updated = updatedCommands
+	intentsList.Updated = updatedIntents
+	transactionsList.Updated = updatedTransactions
 
 	deletedCommandsParams := db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
@@ -136,12 +175,12 @@ func (s *SyncServer) PullChanges(
 		Limit:     100,
 		Offset:    0,
 	}
-	fmt.Println("deletedCommandsParams", deletedCommandsParams)
+
 	deletedCommandsResult, err := s.store.ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx, deletedCommandsParams)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull deleted commands", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted commands"))
 	}
-	fmt.Println("deletedCommandsResult", deletedCommandsResult)
 	// Fetch changes created after lastPulledAt
 	var deletedCommands []string
 	for _, deletedCommand := range deletedCommandsResult {
@@ -154,12 +193,11 @@ func (s *SyncServer) PullChanges(
 		Limit:     100,
 		Offset:    0,
 	}
-	fmt.Println("deletedIntentsParams", deletedIntentsParams)
 	deletedIntentsResult, err := s.store.ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx, deletedIntentsParams)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull deleted intents", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted intents"))
 	}
-	fmt.Println("deletedIntentsResult", deletedIntentsResult)
 	// Fetch changes created after lastPulledAt
 	var deletedIntents []string
 	for _, deletedIntent := range deletedIntentsResult {
@@ -172,36 +210,110 @@ func (s *SyncServer) PullChanges(
 		Limit:     100,
 		Offset:    0,
 	}
-	fmt.Println("deletedTransactionsParams", deletedTransactionsParams)
 	deletedTransactionsResult, err := s.store.ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx, deletedTransactionsParams)
 	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull changes"))
+		slog.Error("failed to pull deleted transactions", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted transactions"))
 	}
-	fmt.Println("deletedTransactionsResult", deletedTransactionsResult)
 	// Fetch changes created after lastPulledAt
 	var deletedTransactions []string
 	for _, deletedTransaction := range deletedTransactionsResult {
 		deletedTransactions = append(deletedTransactions, deletedTransaction.String())
 	}
 
+	commandsList.Deleted = deletedCommands
+	intentsList.Deleted = deletedIntents
+	transactionsList.Deleted = deletedTransactions
+
+	slog.Info("changes pulled successfully", "createdCommands", len(createdCommands), "updatedCommands", len(updatedCommands), "deletedCommands", len(deletedCommands), "createdIntents", len(createdIntents), "updatedIntents", len(updatedIntents), "deletedIntents", len(deletedIntents), "createdTransactions", len(createdTransactions), "updatedTransactions", len(updatedTransactions), "deletedTransactions", len(deletedTransactions))
+
+	return buildPullChangesResponse(commandsList, intentsList, transactionsList)
+}
+
+func pullInitialSync(ctx context.Context, s *SyncServer) (*v1.PullChangesResponse, error) {
+	converter := &mappers.ConverterImpl{}
+	profileId := ctx.Value("user_id").(string)
+	slog.Info("initial sync", "profileId", profileId)
+
+	commandsList := &v1.CommandsList{
+		Created: []*v1.Command{},
+		Updated: []*v1.Command{},
+		Deleted: []string{},
+	}
+	intentsList := &v1.IntentsList{
+		Created: []*v1.Intent{},
+		Updated: []*v1.Intent{},
+		Deleted: []string{},
+	}
+	transactionsList := &v1.TransactionsList{
+		Created: []*v1.Transaction{},
+		Updated: []*v1.Transaction{},
+		Deleted: []string{},
+	}
+
+	slog.Info("pulling changes", "profileId", profileId)
+	// execute query to get transactions since lastPulledAt
+	createdCommandsResult, err := s.store.ListCommandsByProfileId(ctx, db.ListCommandsByProfileIdParams{
+		ProfileID: uuid.MustParse(profileId),
+		Limit:     100,
+		Offset:    0,
+	})
+	if err != nil {
+		slog.Error("failed to pull created commands", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created commands"))
+	}
+	createdIntentsResult, err := s.store.ListIntentsByProfileId(ctx, db.ListIntentsByProfileIdParams{
+		ProfileID: uuid.MustParse(profileId),
+		Limit:     100,
+		Offset:    0,
+	})
+	if err != nil {
+		slog.Error("failed to pull created intents", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created intents"))
+	}
+	createdTransactionsResult, err := s.store.ListTransactionsByProfileId(ctx, db.ListTransactionsByProfileIdParams{
+		ProfileID: uuid.MustParse(profileId),
+		Limit:     100,
+		Offset:    0,
+	})
+	if err != nil {
+		slog.Error("failed to pull created transactions", "error", err)
+		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created transactions"))
+	}
+
+	var createdCommands []*v1.Command
+	var createdIntents []*v1.Intent
+	var createdTransactions []*v1.Transaction
+	for _, dbCommandResult := range createdCommandsResult {
+		dbCommand := dbCommandResult
+		domainCommand := converter.CommandFromDBToDomain(dbCommand)
+		createdCommands = append(createdCommands, converter.ToTransportCommand(domainCommand))
+	}
+	for _, dbIntentResult := range createdIntentsResult {
+		dbIntent := dbIntentResult
+		domainIntent := converter.IntentFromDBToDomain(dbIntent)
+		createdIntents = append(createdIntents, converter.ToTransportIntent(domainIntent))
+	}
+	for _, dbTransactionResult := range createdTransactionsResult {
+		dbTransaction := dbTransactionResult
+		domainTransaction := converter.TransactionFromDBToDomain(dbTransaction)
+		createdTransactions = append(createdTransactions, converter.ToTransportTransaction(domainTransaction))
+	}
+
+	commandsList.Created = createdCommands
+	intentsList.Created = createdIntents
+	transactionsList.Created = createdTransactions
+
+	return buildPullChangesResponse(commandsList, intentsList, transactionsList)
+}
+
+func buildPullChangesResponse(commandsList *v1.CommandsList, intentsList *v1.IntentsList, transactionsList *v1.TransactionsList) (*v1.PullChangesResponse, error) {
 	return &v1.PullChangesResponse{
 		Timestamp: timestamppb.Now(),
 		Changes: &v1.Changes{
-			Commands: &v1.CommandsList{
-				Created: createdCommands,
-				Updated: updatedCommands,
-				Deleted: deletedCommands,
-			},
-			Intents: &v1.IntentsList{
-				Created: createdIntents,
-				Updated: updatedIntents,
-				Deleted: deletedIntents,
-			},
-			Transactions: &v1.TransactionsList{
-				Created: createdTransactions,
-				Updated: updatedTransactions,
-				Deleted: deletedTransactions,
-			},
+			Commands:     commandsList,
+			Intents:      intentsList,
+			Transactions: transactionsList,
 		},
 	}, nil
 }
@@ -212,6 +324,7 @@ func (s *SyncServer) PushChanges(
 ) (*v1.PushChangesResponse, error) {
 	profileId := ctx.Value("user_id").(string)
 
+	slog.Info("pushing changes", "profileId", profileId, "changes", req.GetChanges(), "lastPulledAt", req.GetLastPulledAt())
 	tx, err := s.pool.Begin(ctx)
 	if err != nil {
 		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to begin transaction"))
@@ -230,7 +343,7 @@ func (s *SyncServer) PushChanges(
 
 		_, err := qtx.CreateCommand(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to store command", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store command"))
 		}
 	}
@@ -249,7 +362,7 @@ func (s *SyncServer) PushChanges(
 		}
 		_, err := qtx.CreateTransaction(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to store transaction", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
 		}
 	}
@@ -272,7 +385,7 @@ func (s *SyncServer) PushChanges(
 		}
 		_, err := qtx.CreateIntent(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to store intent", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
 		}
 	}
@@ -285,8 +398,8 @@ func (s *SyncServer) PushChanges(
 
 		_, err := qtx.UpdateCommand(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
-			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store command"))
+			slog.Error("failed to update command", "error", err)
+			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to update command"))
 		}
 	}
 
@@ -302,8 +415,8 @@ func (s *SyncServer) PushChanges(
 		}
 		_, err := qtx.UpdateTransaction(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
-			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
+			slog.Error("failed to update transaction", "error", err)
+			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to update transaction"))
 		}
 	}
 
@@ -323,15 +436,15 @@ func (s *SyncServer) PushChanges(
 		}
 		_, err := qtx.UpdateIntent(ctx, params)
 		if err != nil {
-			fmt.Println("error", err)
-			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
+			slog.Error("failed to update intent", "error", err)
+			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to update intent"))
 		}
 	}
 
 	for _, command := range req.GetChanges().GetCommands().GetDeleted() {
 		err := qtx.DeleteCommand(ctx, uuid.MustParse(command))
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to delete command", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to delete command"))
 		}
 	}
@@ -339,7 +452,7 @@ func (s *SyncServer) PushChanges(
 	for _, transaction := range req.GetChanges().GetTransactions().GetDeleted() {
 		err := qtx.DeleteTransaction(ctx, uuid.MustParse(transaction))
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to delete transaction", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to delete transaction"))
 		}
 	}
@@ -347,16 +460,18 @@ func (s *SyncServer) PushChanges(
 	for _, intent := range req.GetChanges().GetIntents().GetDeleted() {
 		err := qtx.DeleteIntent(ctx, uuid.MustParse(intent))
 		if err != nil {
-			fmt.Println("error", err)
+			slog.Error("failed to delete intent", "error", err)
 			return nil, connect.NewError(connect.CodeInternal, errors.New("failed to delete intent"))
 		}
 	}
 
 	res := tx.Commit(ctx)
 	if res != nil {
-		fmt.Println("error", res)
+		slog.Error("failed to commit transaction", "error", res)
 		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to commit transaction"))
 	}
+
+	slog.Info("changes pushed successfully", "profileId", profileId)
 
 	return &v1.PushChangesResponse{
 		Ok:          true,

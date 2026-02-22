@@ -13,7 +13,8 @@ const defaultObservable = <T>(): Observable<T[]> =>
 
 export const useGetCommands = () => {
   const database = useDatabase();
-  const [commands, setCommands] = useState<Observable<Command[]>>(defaultObservable);
+  const [commands, setCommands] =
+    useState<Observable<Command[]>>(defaultObservable);
 
   useEffect(() => {
     setCommands(database.get<Command>(Command.table).query().observe());
@@ -31,9 +32,25 @@ export const useGetIntents = (commandId: string) => {
       database
         .get<Intent>(Intent.table)
         .query(Q.where("command_id", commandId))
-        .observe()
+        .observe(),
     );
   }, [database, commandId]);
 
   return intents;
+};
+export const useGetTransactions = (commandId: string) => {
+  const database = useDatabase();
+  const [transactions, setTransactions] =
+    useState<Observable<Transaction[]>>(defaultObservable);
+
+  useEffect(() => {
+    setTransactions(
+      database
+        .get<Transaction>(Transaction.table)
+        .query(Q.where("command_id", commandId))
+        .observe(),
+    );
+  }, [database, commandId]);
+
+  return transactions;
 };

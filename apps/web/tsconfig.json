@@ -38,7 +38,7 @@
     "**/*.mts",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
-  ],
+, "../../packages/ui/components/main/buttons.tsx"  ],
   "exclude": [
     "node_modules"
   ]
