@@ -49,9 +49,16 @@ WHERE id = $1 AND deleted = false
 RETURNING *;
 
 -- name: DeleteCommand :exec
+-- deletes a command and all its related intents and transactions
 UPDATE commands
 SET deleted = true, updated_at = NOW()
 WHERE id = $1 AND deleted = false;
+UPDATE transactions
+SET deleted = true, updated_at = NOW()
+WHERE command_id = $1 AND deleted = false;
+UPDATE intents
+SET deleted = true, updated_at = NOW()
+WHERE command_id = $1 AND deleted = false;
 
 -- name: DeleteTransaction :exec
 UPDATE transactions

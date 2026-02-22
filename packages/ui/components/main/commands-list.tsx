@@ -1,6 +1,6 @@
 "use client";
 
-import { withObservables } from "@nozbe/watermelondb/react";
+import { useDatabase, withObservables } from "@nozbe/watermelondb/react";
 import {
   useGetCommands,
   useGetIntents,
@@ -49,11 +49,19 @@ const CommandItem = ({ command }: { command: Command }) => {
   const intents = useGetIntents(command.id); // we need to use this hook for observability to work.
   const transactions = useGetTransactions(command.id); // we need to use this hook for observability to work.
 
+  const database = useDatabase();
+  const handleDelete = async () => {
+    console.log("Deleting command", command.id);
+    await database.write(async () => {
+      await command.markAsDeleted();
+    });
+  };
+
   return (
     <Box className="p-4 m-2 border border-gray-200 rounded-lg border-b-4 bg-white">
       <HStack className="flex w-full items-center">
         <IntentsList intents={intents} className="grow" />
-        <Button className="m-2" onPress={() => command.delete()}>
+        <Button className="m-2" onPress={handleDelete}>
           <Icon as={TrashIcon} className="w-4 h-4 text-typography-100" />
         </Button>
       </HStack>

@@ -14,6 +14,7 @@ type Querier interface {
 	CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error)
 	CreateIntent(ctx context.Context, arg CreateIntentParams) (Intent, error)
 	CreateTransaction(ctx context.Context, arg CreateTransactionParams) (Transaction, error)
+	// deletes a command and all its related intents and transactions
 	DeleteCommand(ctx context.Context, id uuid.UUID) error
 	DeleteIntent(ctx context.Context, id uuid.UUID) error
 	DeleteTransaction(ctx context.Context, id uuid.UUID) error

@@ -145,6 +145,7 @@ SET deleted = true, updated_at = NOW()
 WHERE id = $1 AND deleted = false
 `
 
+// deletes a command and all its related intents and transactions
 func (q *Queries) DeleteCommand(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteCommand, id)
 	return err
