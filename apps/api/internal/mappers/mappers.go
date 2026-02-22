@@ -26,22 +26,44 @@ import (
 // goverter:extend github.com/dilocash/dilocash-oss/apps/api/internal/mappers:BoolToPgBool
 type Converter interface {
 	// Database -> Domain
+	// goverter:useZeroValueOnPointerInconsistency
 	TransactionFromDBToDomain(db database.Transaction) domain.Transaction
-	ToDomainUser(db database.User) domain.User
+	CommandFromDBToDomain(db database.Command) domain.Command
+	// goverter:useZeroValueOnPointerInconsistency
+	IntentFromDBToDomain(db database.Intent) domain.Intent
+	// goverter:useZeroValueOnPointerInconsistency
+	ProfileFromDBToDomain(db database.Profile) domain.Profile
 
 	// Domain -> Database
 	ToDBTransaction(d domain.Transaction) database.Transaction
+
+	// Domain -> Database params
 	ToDBCreateTransactionParams(d domain.Transaction) database.CreateTransactionParams
-	ToDBUser(d domain.User) database.User
+	ToDBCreateCommandParams(d domain.Command) database.CreateCommandParams
+	ToDBCreateIntentParams(d domain.Intent) database.CreateIntentParams
 
 	// Domain -> Transport
 	// goverter:ignore state sizeCache unknownFields
 	// goverter:map ID Id
-	// goverter:map UserID UserId
+	// goverter:map CommandID CommandId
 	ToTransportTransaction(d domain.Transaction) *transport.Transaction
+	// goverter:map ID Id
+	// goverter:ignore state sizeCache unknownFields
+	// goverter:enum no
+	ToTransportCommand(d domain.Command) *transport.Command
+	// goverter:map ID Id
+	// goverter:map CommandID CommandId
+	// goverter:ignore state sizeCache unknownFields
+	ToTransportIntent(d domain.Intent) *transport.Intent
 
 	// Transport -> Domain
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
-	TransactionFromTransportToDomain(t *transport.CreateTransactionRequest) domain.Transaction
+	CommandFromTransportToDomain(t *transport.Command) domain.Command
+	// goverter:ignoreMissing
+	// goverter:useZeroValueOnPointerInconsistency
+	IntentFromTransportToDomain(t *transport.Intent) domain.Intent
+	// goverter:ignoreMissing
+	// goverter:useZeroValueOnPointerInconsistency
+	TransactionFromTransportToDomain(t *transport.Transaction) domain.Transaction
 }

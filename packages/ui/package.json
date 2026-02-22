@@ -6,33 +6,39 @@
   "module": "index.js",
   "types": "index.d.ts",
   "dependencies": {
+    "@bufbuild/protobuf": "^2.11.0",
+    "@connectrpc/connect": "^2.1.1",
+    "@dilocash/database": "workspace:*",
+    "@dilocash/gen": "workspace:*",
+    "@expo/html-elements": "^0.12.5",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
-    "@expo/html-elements": "^0.10.1",
+    "@nozbe/watermelondb": "^0.28.0",
+    "@supabase/supabase-js": "^2.97.0",
+    "i18next": "^25.8.7",
+    "nativewind": "^4.1.23",
     "next": "16.1.6",
     "react": "^19.2.0",
     "react-aria": "^3.41.1",
     "react-dom": "^19.2.0",
-    "nativewind": "^4.1.23",
+    "react-i18next": "^16.5.4",
+    "react-native": "0.81.5",
     "react-native-safe-area-context": "^5.6.1",
     "react-native-svg": "^15.12.0",
-    "react-native-web": "^0.20.0",
-    "react-native": "0.81.5",
-    "i18next": "^25.8.7",
-    "react-i18next": "^16.5.4"
+    "react-native-web": "^0.20.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
-    "typescript": "^5",
-    "autoprefixer": "^10.4.21"
+    "typescript": "^5"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -1,0 +1,80 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/CommandsList",
+    "definitions": {
+        "CommandsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Command"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Command"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Commands List"
+        },
+        "dilocash.v1.Command": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "UUID generated in the client (localdb primary key)"
+                },
+                "command_status": {
+                    "enum": [
+                        "COMMAND_STATUS_UNSPECIFIED",
+                        0,
+                        "COMMAND_STATUS_PENDING",
+                        1,
+                        "COMMAND_STATUS_PROCESSING",
+                        2,
+                        "COMMAND_STATUS_FAILED",
+                        3,
+                        "COMMAND_STATUS_SYNCED",
+                        4
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Command Status"
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Flag for \"Soft Deletes\" (localdb requires it)"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Command",
+            "description": "represents the command of a financial transaction"
+        }
+    }
+}

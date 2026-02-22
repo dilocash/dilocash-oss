@@ -1,0 +1,23 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/PullCommandsRequest",
+    "definitions": {
+        "PullCommandsRequest": {
+            "properties": {
+                "last_updated_at": {
+                    "type": "string",
+                    "description": "The checkpoint that localdb will send",
+                    "format": "date-time"
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Batch size"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Pull Commands Request",
+            "description": "request to pull changes from the server"
+        }
+    }
+}

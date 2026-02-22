@@ -1,0 +1,67 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/TransactionsList",
+    "definitions": {
+        "TransactionsList": {
+            "properties": {
+                "created": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Transaction"
+                    },
+                    "type": "array"
+                },
+                "updated": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Transaction"
+                    },
+                    "type": "array"
+                },
+                "deleted": {
+                    "items": {
+                        "type": "string"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Transactions List"
+        },
+        "dilocash.v1.Transaction": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string",
+                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "command_id": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Transaction"
+        }
+    }
+}

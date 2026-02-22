@@ -4,11 +4,10 @@
  * license that can be found in the LICENSE file.
  */
 
-import { createBrowserClient } from "@supabase/ssr";
+import { getSupabaseClient } from '@dilocash/ui/auth/client';
 
-export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  );
-}
+export const supabase = getSupabaseClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+  window.localStorage
+);

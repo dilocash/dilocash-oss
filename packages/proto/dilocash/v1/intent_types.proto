@@ -10,21 +10,25 @@ option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generate
 
 import "google/protobuf/timestamp.proto";
 
+message IntentsList {
+  repeated Intent created = 1;
+  repeated Intent updated = 2;
+  repeated string deleted = 3;
+}
+
 // represents the intent of a financial transaction
 message Intent {
-  string id = 1;              // UUID generated in the client (RxDB primary key)
-  // we use string for the amount to maintain decimal precision in Go and JS
-  string amount = 2;
-  string currency = 3;
-  string recipient_id = 4;
-  string note = 5;
+  string id = 1;              // UUID generated in the client (localdb primary key)
+  string text_message = 2;
+  string audio_message = 3;
+  string image_message = 4;
   
   // critical fields for offline-first synchronization
-  IntentStatus status = 6;
-  google.protobuf.Timestamp created_at = 7;       // Timestamp in milliseconds (our Checkpoint)
-  google.protobuf.Timestamp updated_at = 8;       // Timestamp in milliseconds (our Checkpoint)
-  bool deleted = 9;           // Flag for "Soft Deletes" (RxDB requires it)
-  bool requires_review = 10;
+  IntentStatus intent_status = 5;
+  bool requires_review = 6;
+  string command_id = 7;
+  google.protobuf.Timestamp created_at = 8;       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 9;       // Timestamp in milliseconds (our Checkpoint)
 }
 
 enum IntentStatus {
@@ -33,27 +37,4 @@ enum IntentStatus {
   INTENT_STATUS_PENDING_REVIEW = 2;
   INTENT_STATUS_CONFIRMED = 3;
   INTENT_STATUS_FAILED = 4;
-}
-
-// request to pull changes from the server
-message PullIntentsRequest {
-  google.protobuf.Timestamp last_updated_at = 1;  // The checkpoint that RxDB will send
-  int32 limit = 2;            // Batch size
-}
-
-// server response with the new data
-message PullIntentsResponse {
-  repeated Intent intents = 1;
-  int64 checkpoint_updated_at = 2; // The new checkpoint for the next time
-}
-
-// request to push changes from the client
-message PushIntentsRequest {
-  repeated Intent intents = 1;
-}
-
-// response with the new data
-message PushIntentsResponse {
-  // Here you could return conflicts if the server rejects a version
-  repeated string conflict_ids = 1; 
 }

@@ -11,9 +11,11 @@ import { useState } from 'react';
 import { CheckIcon, EyeIcon, EyeOffIcon } from "../ui/icon";
 import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "../ui/checkbox";
 import { HStack } from '../ui/hstack';
+import { useLoginForm } from '../../auth/useLoginForm';
 
-export const AuthForm = () => {
-  const { t, i18n } = useTranslation();
+export const AuthForm = ({ supabase, onSuccess }: any) => {
+  const { form, updateField, submit, loading } = useLoginForm(supabase, onSuccess);
+  const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
   return (
     <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full align-center justify-center">
@@ -22,7 +24,7 @@ export const AuthForm = () => {
 
       <Text className="mt-4">{t('login.email')}</Text>
       <Input>
-        <InputField type="text" placeholder={t('login.email_placeholder')} />
+        <InputField value={form.email} onChangeText={(text) => updateField('email', text)} type="text" placeholder={t('login.email_placeholder')} />
       </Input>
 
       <Text className="mt-6">{t('login.password')}</Text>
@@ -30,6 +32,8 @@ export const AuthForm = () => {
         <InputField
               type={showPassword ? 'text' : 'password'}
               placeholder={t('login.password_placeholder')}
+              value={form.password}
+              onChangeText={(text) => updateField('password', text)}
             />
             <InputSlot
               onPress={() => setShowPassword(!showPassword)}
@@ -54,7 +58,7 @@ export const AuthForm = () => {
             </Button>
           </HStack>
 
-          <Button className="w-full" size="sm">
+          <Button onPress={submit} className="w-full" size="sm">
             <ButtonText>{t('login.action')}</ButtonText>
           </Button>
         </VStack>

@@ -26,23 +26,84 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type Transaction struct {
+type TransactionsList struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Amount        string                 `protobuf:"bytes,3,opt,name=amount,proto3" json:"amount,omitempty"`
-	Currency      string                 `protobuf:"bytes,4,opt,name=currency,proto3" json:"currency,omitempty"`
-	Category      string                 `protobuf:"bytes,5,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,6,opt,name=description,proto3" json:"description,omitempty"`
-	RawInput      string                 `protobuf:"bytes,7,opt,name=raw_input,json=rawInput,proto3" json:"raw_input,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	Created       []*Transaction         `protobuf:"bytes,1,rep,name=created,proto3" json:"created,omitempty"`
+	Updated       []*Transaction         `protobuf:"bytes,2,rep,name=updated,proto3" json:"updated,omitempty"`
+	Deleted       []string               `protobuf:"bytes,3,rep,name=deleted,proto3" json:"deleted,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TransactionsList) Reset() {
+	*x = TransactionsList{}
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TransactionsList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TransactionsList) ProtoMessage() {}
+
+func (x *TransactionsList) ProtoReflect() protoreflect.Message {
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TransactionsList.ProtoReflect.Descriptor instead.
+func (*TransactionsList) Descriptor() ([]byte, []int) {
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *TransactionsList) GetCreated() []*Transaction {
+	if x != nil {
+		return x.Created
+	}
+	return nil
+}
+
+func (x *TransactionsList) GetUpdated() []*Transaction {
+	if x != nil {
+		return x.Updated
+	}
+	return nil
+}
+
+func (x *TransactionsList) GetDeleted() []string {
+	if x != nil {
+		return x.Deleted
+	}
+	return nil
+}
+
+type Transaction struct {
+	state protoimpl.MessageState `protogen:"open.v1"`
+	Id    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	// we use string for the amount to maintain decimal precision in Go and JS
+	Amount        string                 `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
+	Currency      string                 `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
+	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
+	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
+	CommandId     string                 `protobuf:"bytes,6,opt,name=command_id,json=commandId,proto3" json:"command_id,omitempty"`
+	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"` // Timestamp in milliseconds (our Checkpoint)
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *Transaction) Reset() {
 	*x = Transaction{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -54,7 +115,7 @@ func (x *Transaction) String() string {
 func (*Transaction) ProtoMessage() {}
 
 func (x *Transaction) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[0]
+	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -67,19 +128,12 @@ func (x *Transaction) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Transaction.ProtoReflect.Descriptor instead.
 func (*Transaction) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{0}
+	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Transaction) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *Transaction) GetUserId() string {
-	if x != nil {
-		return x.UserId
 	}
 	return ""
 }
@@ -112,9 +166,9 @@ func (x *Transaction) GetDescription() string {
 	return ""
 }
 
-func (x *Transaction) GetRawInput() string {
+func (x *Transaction) GetCommandId() string {
 	if x != nil {
-		return x.RawInput
+		return x.CommandId
 	}
 	return ""
 }
@@ -126,380 +180,34 @@ func (x *Transaction) GetCreatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-type CreateTransactionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	Amount        string                 `protobuf:"bytes,2,opt,name=amount,proto3" json:"amount,omitempty"`
-	Currency      string                 `protobuf:"bytes,3,opt,name=currency,proto3" json:"currency,omitempty"`
-	Category      string                 `protobuf:"bytes,4,opt,name=category,proto3" json:"category,omitempty"`
-	Description   string                 `protobuf:"bytes,5,opt,name=description,proto3" json:"description,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // Optional, defaults to now
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateTransactionRequest) Reset() {
-	*x = CreateTransactionRequest{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateTransactionRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateTransactionRequest) ProtoMessage() {}
-
-func (x *CreateTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[1]
+func (x *Transaction) GetUpdatedAt() *timestamppb.Timestamp {
 	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateTransactionRequest.ProtoReflect.Descriptor instead.
-func (*CreateTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CreateTransactionRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *CreateTransactionRequest) GetAmount() string {
-	if x != nil {
-		return x.Amount
-	}
-	return ""
-}
-
-func (x *CreateTransactionRequest) GetCurrency() string {
-	if x != nil {
-		return x.Currency
-	}
-	return ""
-}
-
-func (x *CreateTransactionRequest) GetCategory() string {
-	if x != nil {
-		return x.Category
-	}
-	return ""
-}
-
-func (x *CreateTransactionRequest) GetDescription() string {
-	if x != nil {
-		return x.Description
-	}
-	return ""
-}
-
-func (x *CreateTransactionRequest) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
+		return x.UpdatedAt
 	}
 	return nil
-}
-
-type CreateTransactionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Transaction   *Transaction           `protobuf:"bytes,1,opt,name=transaction,proto3" json:"transaction,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *CreateTransactionResponse) Reset() {
-	*x = CreateTransactionResponse{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[2]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *CreateTransactionResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*CreateTransactionResponse) ProtoMessage() {}
-
-func (x *CreateTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[2]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use CreateTransactionResponse.ProtoReflect.Descriptor instead.
-func (*CreateTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{2}
-}
-
-func (x *CreateTransactionResponse) GetTransaction() *Transaction {
-	if x != nil {
-		return x.Transaction
-	}
-	return nil
-}
-
-type GetTransactionRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"` // For authorization verify
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetTransactionRequest) Reset() {
-	*x = GetTransactionRequest{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetTransactionRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetTransactionRequest) ProtoMessage() {}
-
-func (x *GetTransactionRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetTransactionRequest.ProtoReflect.Descriptor instead.
-func (*GetTransactionRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *GetTransactionRequest) GetId() string {
-	if x != nil {
-		return x.Id
-	}
-	return ""
-}
-
-func (x *GetTransactionRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-type GetTransactionResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Transaction   *Transaction           `protobuf:"bytes,1,opt,name=transaction,proto3" json:"transaction,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetTransactionResponse) Reset() {
-	*x = GetTransactionResponse{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetTransactionResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetTransactionResponse) ProtoMessage() {}
-
-func (x *GetTransactionResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetTransactionResponse.ProtoReflect.Descriptor instead.
-func (*GetTransactionResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *GetTransactionResponse) GetTransaction() *Transaction {
-	if x != nil {
-		return x.Transaction
-	}
-	return nil
-}
-
-type ListTransactionsRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
-	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
-	PageToken     string                 `protobuf:"bytes,3,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListTransactionsRequest) Reset() {
-	*x = ListTransactionsRequest{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListTransactionsRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListTransactionsRequest) ProtoMessage() {}
-
-func (x *ListTransactionsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListTransactionsRequest.ProtoReflect.Descriptor instead.
-func (*ListTransactionsRequest) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *ListTransactionsRequest) GetUserId() string {
-	if x != nil {
-		return x.UserId
-	}
-	return ""
-}
-
-func (x *ListTransactionsRequest) GetPageSize() int32 {
-	if x != nil {
-		return x.PageSize
-	}
-	return 0
-}
-
-func (x *ListTransactionsRequest) GetPageToken() string {
-	if x != nil {
-		return x.PageToken
-	}
-	return ""
-}
-
-type ListTransactionsResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Transactions  []*Transaction         `protobuf:"bytes,1,rep,name=transactions,proto3" json:"transactions,omitempty"`
-	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *ListTransactionsResponse) Reset() {
-	*x = ListTransactionsResponse{}
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[6]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *ListTransactionsResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*ListTransactionsResponse) ProtoMessage() {}
-
-func (x *ListTransactionsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_dilocash_v1_transaction_types_proto_msgTypes[6]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use ListTransactionsResponse.ProtoReflect.Descriptor instead.
-func (*ListTransactionsResponse) Descriptor() ([]byte, []int) {
-	return file_dilocash_v1_transaction_types_proto_rawDescGZIP(), []int{6}
-}
-
-func (x *ListTransactionsResponse) GetTransactions() []*Transaction {
-	if x != nil {
-		return x.Transactions
-	}
-	return nil
-}
-
-func (x *ListTransactionsResponse) GetNextPageToken() string {
-	if x != nil {
-		return x.NextPageToken
-	}
-	return ""
 }
 
 var File_dilocash_v1_transaction_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\n" +
-	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x80\x02\n" +
+	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x94\x01\n" +
+	"\x10TransactionsList\x122\n" +
+	"\acreated\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\acreated\x122\n" +
+	"\aupdated\x18\x02 \x03(\v2\x18.dilocash.v1.TransactionR\aupdated\x12\x18\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xa4\x02\n" +
 	"\vTransaction\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x16\n" +
-	"\x06amount\x18\x03 \x01(\tR\x06amount\x12\x1a\n" +
-	"\bcurrency\x18\x04 \x01(\tR\bcurrency\x12\x1a\n" +
-	"\bcategory\x18\x05 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x06 \x01(\tR\vdescription\x12\x1b\n" +
-	"\traw_input\x18\a \x01(\tR\brawInput\x129\n" +
-	"\n" +
-	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"\xe0\x01\n" +
-	"\x18CreateTransactionRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x16\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
 	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
 	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12\x1a\n" +
 	"\bcategory\x18\x04 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\x129\n" +
+	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"W\n" +
-	"\x19CreateTransactionResponse\x12:\n" +
-	"\vtransaction\x18\x01 \x01(\v2\x18.dilocash.v1.TransactionR\vtransaction\"@\n" +
-	"\x15GetTransactionRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
-	"\auser_id\x18\x02 \x01(\tR\x06userId\"T\n" +
-	"\x16GetTransactionResponse\x12:\n" +
-	"\vtransaction\x18\x01 \x01(\v2\x18.dilocash.v1.TransactionR\vtransaction\"n\n" +
-	"\x17ListTransactionsRequest\x12\x17\n" +
-	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x1b\n" +
-	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"command_id\x18\x06 \x01(\tR\tcommandId\x129\n" +
 	"\n" +
-	"page_token\x18\x03 \x01(\tR\tpageToken\"\x80\x01\n" +
-	"\x18ListTransactionsResponse\x12<\n" +
-	"\ftransactions\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\ftransactions\x12&\n" +
-	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageTokenBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_transaction_types_proto_rawDescOnce sync.Once
@@ -513,28 +221,22 @@ func file_dilocash_v1_transaction_types_proto_rawDescGZIP() []byte {
 	return file_dilocash_v1_transaction_types_proto_rawDescData
 }
 
-var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_dilocash_v1_transaction_types_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
 var file_dilocash_v1_transaction_types_proto_goTypes = []any{
-	(*Transaction)(nil),               // 0: dilocash.v1.Transaction
-	(*CreateTransactionRequest)(nil),  // 1: dilocash.v1.CreateTransactionRequest
-	(*CreateTransactionResponse)(nil), // 2: dilocash.v1.CreateTransactionResponse
-	(*GetTransactionRequest)(nil),     // 3: dilocash.v1.GetTransactionRequest
-	(*GetTransactionResponse)(nil),    // 4: dilocash.v1.GetTransactionResponse
-	(*ListTransactionsRequest)(nil),   // 5: dilocash.v1.ListTransactionsRequest
-	(*ListTransactionsResponse)(nil),  // 6: dilocash.v1.ListTransactionsResponse
-	(*timestamppb.Timestamp)(nil),     // 7: google.protobuf.Timestamp
+	(*TransactionsList)(nil),      // 0: dilocash.v1.TransactionsList
+	(*Transaction)(nil),           // 1: dilocash.v1.Transaction
+	(*timestamppb.Timestamp)(nil), // 2: google.protobuf.Timestamp
 }
 var file_dilocash_v1_transaction_types_proto_depIdxs = []int32{
-	7, // 0: dilocash.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
-	7, // 1: dilocash.v1.CreateTransactionRequest.created_at:type_name -> google.protobuf.Timestamp
-	0, // 2: dilocash.v1.CreateTransactionResponse.transaction:type_name -> dilocash.v1.Transaction
-	0, // 3: dilocash.v1.GetTransactionResponse.transaction:type_name -> dilocash.v1.Transaction
-	0, // 4: dilocash.v1.ListTransactionsResponse.transactions:type_name -> dilocash.v1.Transaction
-	5, // [5:5] is the sub-list for method output_type
-	5, // [5:5] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	1, // 0: dilocash.v1.TransactionsList.created:type_name -> dilocash.v1.Transaction
+	1, // 1: dilocash.v1.TransactionsList.updated:type_name -> dilocash.v1.Transaction
+	2, // 2: dilocash.v1.Transaction.created_at:type_name -> google.protobuf.Timestamp
+	2, // 3: dilocash.v1.Transaction.updated_at:type_name -> google.protobuf.Timestamp
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_dilocash_v1_transaction_types_proto_init() }
@@ -548,7 +250,7 @@ func file_dilocash_v1_transaction_types_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_dilocash_v1_transaction_types_proto_rawDesc), len(file_dilocash_v1_transaction_types_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

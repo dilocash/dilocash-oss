@@ -14,19 +14,42 @@ sql:
         sql_package: "pgx/v5"
         emit_json_tags: true
         emit_prepared_queries: false
+        emit_pointers_for_null_types: true
         emit_interface: true
         emit_exact_table_names: false
         overrides:
           - db_type: "uuid"
             go_type: "github.com/google/uuid.UUID"
+
+          - column: "commands.created_at"
+            go_type: "time.Time"
+          - column: "commands.updated_at"
+            go_type: "time.Time"
+          - column: "commands.deleted"
+            go_type: "bool"
+
           - column: "transactions.amount"
             go_type: "github.com/shopspring/decimal.Decimal"
           - column: "transactions.created_at"
             go_type: "time.Time"
-          - column: "users.created_at"
+          - column: "transactions.updated_at"
             go_type: "time.Time"
-          - column: "users.accepted_terms_at"
+          - column: "transactions.deleted"
+            go_type: "bool"
+
+          - column: "intents.created_at"
             go_type: "time.Time"
+          - column: "intents.updated_at"
+            go_type: "time.Time"
+          - column: "intents.deleted"
+            go_type: "bool"
+
+          - column: "profiles.created_at"
+            go_type: "time.Time"
+          - column: "profiles.accepted_terms_at"
+            go_type: "time.Time"
+          - column: "profiles.allow_data_analysis"
+            go_type: "bool"
 overrides:
   go:
     rename:

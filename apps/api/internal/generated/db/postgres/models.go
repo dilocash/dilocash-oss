@@ -8,26 +8,55 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/shopspring/decimal"
 )
 
-type Transaction struct {
-	ID          uuid.UUID       `json:"id"`
-	UserID      uuid.UUID       `json:"user_id"`
-	Amount      decimal.Decimal `json:"amount"`
-	Currency    string          `json:"currency"`
-	Category    pgtype.Text     `json:"category"`
-	Description pgtype.Text     `json:"description"`
-	RawInput    pgtype.Text     `json:"raw_input"`
-	CreatedAt   time.Time       `json:"created_at"`
+type AuthUser struct {
+	ID              uuid.UUID `json:"id"`
+	Email           *string   `json:"email"`
+	RawUserMetaData []byte    `json:"raw_user_meta_data"`
 }
 
-type User struct {
-	ID                   uuid.UUID   `json:"id"`
-	Email                string      `json:"email"`
-	AcceptedTermsVersion pgtype.Text `json:"accepted_terms_version"`
-	AcceptedTermsAt      time.Time   `json:"accepted_terms_at"`
-	AllowDataAnalysis    pgtype.Bool `json:"allow_data_analysis"`
-	CreatedAt            time.Time   `json:"created_at"`
+type Command struct {
+	ID            uuid.UUID `json:"id"`
+	CommandStatus int32     `json:"command_status"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	Deleted       bool      `json:"deleted"`
+	ProfileID     uuid.UUID `json:"profile_id"`
+}
+
+type Intent struct {
+	ID             uuid.UUID `json:"id"`
+	TextMessage    *string   `json:"text_message"`
+	AudioMessage   *string   `json:"audio_message"`
+	ImageMessage   *string   `json:"image_message"`
+	IntentStatus   int32     `json:"intent_status"`
+	RequiresReview *bool     `json:"requires_review"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	Deleted        bool      `json:"deleted"`
+	CommandID      uuid.UUID `json:"command_id"`
+}
+
+type Profile struct {
+	ID                   uuid.UUID `json:"id"`
+	DisplayName          *string   `json:"display_name"`
+	Email                *string   `json:"email"`
+	AcceptedTermsVersion *string   `json:"accepted_terms_version"`
+	AcceptedTermsAt      time.Time `json:"accepted_terms_at"`
+	AllowDataAnalysis    bool      `json:"allow_data_analysis"`
+	CreatedAt            time.Time `json:"created_at"`
+}
+
+type Transaction struct {
+	ID          uuid.UUID       `json:"id"`
+	Amount      decimal.Decimal `json:"amount"`
+	Currency    string          `json:"currency"`
+	Category    *string         `json:"category"`
+	Description *string         `json:"description"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
+	Deleted     bool            `json:"deleted"`
+	CommandID   uuid.UUID       `json:"command_id"`
 }

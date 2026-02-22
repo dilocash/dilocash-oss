@@ -12,73 +12,182 @@ import (
 
 type ConverterImpl struct{}
 
+func (c *ConverterImpl) CommandFromDBToDomain(source postgres.Command) domain.Command {
+	var domainCommand domain.Command
+	domainCommand.ID = mappers.CopyUUID(source.ID)
+	domainCommand.ProfileID = mappers.CopyUUID(source.ProfileID)
+	domainCommand.CommandStatus = source.CommandStatus
+	domainCommand.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	domainCommand.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	domainCommand.Deleted = source.Deleted
+	return domainCommand
+}
+func (c *ConverterImpl) CommandFromTransportToDomain(source *v1.Command) domain.Command {
+	var domainCommand domain.Command
+	if source != nil {
+		domainCommand.CommandStatus = int32((*source).CommandStatus)
+		domainCommand.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
+		domainCommand.UpdatedAt = mappers.TimestampToTime((*source).UpdatedAt)
+		domainCommand.Deleted = (*source).Deleted
+	}
+	return domainCommand
+}
+func (c *ConverterImpl) IntentFromDBToDomain(source postgres.Intent) domain.Intent {
+	var domainIntent domain.Intent
+	domainIntent.ID = mappers.CopyUUID(source.ID)
+	if source.TextMessage != nil {
+		domainIntent.TextMessage = *source.TextMessage
+	}
+	if source.AudioMessage != nil {
+		domainIntent.AudioMessage = *source.AudioMessage
+	}
+	if source.ImageMessage != nil {
+		domainIntent.ImageMessage = *source.ImageMessage
+	}
+	domainIntent.IntentStatus = source.IntentStatus
+	if source.RequiresReview != nil {
+		domainIntent.RequiresReview = *source.RequiresReview
+	}
+	domainIntent.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	domainIntent.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	domainIntent.Deleted = source.Deleted
+	domainIntent.CommandID = mappers.CopyUUID(source.CommandID)
+	return domainIntent
+}
+func (c *ConverterImpl) IntentFromTransportToDomain(source *v1.Intent) domain.Intent {
+	var domainIntent domain.Intent
+	if source != nil {
+		domainIntent.TextMessage = (*source).TextMessage
+		domainIntent.AudioMessage = (*source).AudioMessage
+		domainIntent.ImageMessage = (*source).ImageMessage
+		domainIntent.IntentStatus = int32((*source).IntentStatus)
+		domainIntent.RequiresReview = (*source).RequiresReview
+		domainIntent.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
+		domainIntent.UpdatedAt = mappers.TimestampToTime((*source).UpdatedAt)
+	}
+	return domainIntent
+}
+func (c *ConverterImpl) ProfileFromDBToDomain(source postgres.Profile) domain.Profile {
+	var domainProfile domain.Profile
+	domainProfile.ID = mappers.CopyUUID(source.ID)
+	if source.DisplayName != nil {
+		domainProfile.DisplayName = *source.DisplayName
+	}
+	if source.Email != nil {
+		domainProfile.Email = *source.Email
+	}
+	if source.AcceptedTermsVersion != nil {
+		domainProfile.AcceptedTermsVersion = *source.AcceptedTermsVersion
+	}
+	domainProfile.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
+	domainProfile.AllowDataAnalysis = source.AllowDataAnalysis
+	domainProfile.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return domainProfile
+}
+func (c *ConverterImpl) ToDBCreateCommandParams(source domain.Command) postgres.CreateCommandParams {
+	var postgresCreateCommandParams postgres.CreateCommandParams
+	postgresCreateCommandParams.ID = mappers.CopyUUID(source.ID)
+	postgresCreateCommandParams.ProfileID = mappers.CopyUUID(source.ProfileID)
+	postgresCreateCommandParams.CommandStatus = source.CommandStatus
+	postgresCreateCommandParams.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return postgresCreateCommandParams
+}
+func (c *ConverterImpl) ToDBCreateIntentParams(source domain.Intent) postgres.CreateIntentParams {
+	var postgresCreateIntentParams postgres.CreateIntentParams
+	postgresCreateIntentParams.ID = mappers.CopyUUID(source.ID)
+	postgresCreateIntentParams.CommandID = mappers.CopyUUID(source.CommandID)
+	pString := source.TextMessage
+	postgresCreateIntentParams.TextMessage = &pString
+	pString2 := source.AudioMessage
+	postgresCreateIntentParams.AudioMessage = &pString2
+	pString3 := source.ImageMessage
+	postgresCreateIntentParams.ImageMessage = &pString3
+	postgresCreateIntentParams.IntentStatus = source.IntentStatus
+	pBool := source.RequiresReview
+	postgresCreateIntentParams.RequiresReview = &pBool
+	postgresCreateIntentParams.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	return postgresCreateIntentParams
+}
 func (c *ConverterImpl) ToDBCreateTransactionParams(source domain.Transaction) postgres.CreateTransactionParams {
 	var postgresCreateTransactionParams postgres.CreateTransactionParams
-	postgresCreateTransactionParams.UserID = mappers.CopyUUID(source.UserID)
+	postgresCreateTransactionParams.ID = mappers.CopyUUID(source.ID)
+	postgresCreateTransactionParams.CommandID = mappers.CopyUUID(source.CommandID)
 	postgresCreateTransactionParams.Amount = mappers.CopyDecimal(source.Amount)
 	postgresCreateTransactionParams.Currency = source.Currency
-	postgresCreateTransactionParams.Category = mappers.StringToPgText(source.Category)
-	postgresCreateTransactionParams.Description = mappers.StringToPgText(source.Description)
-	postgresCreateTransactionParams.RawInput = mappers.StringToPgText(source.RawInput)
+	pString := source.Category
+	postgresCreateTransactionParams.Category = &pString
+	pString2 := source.Description
+	postgresCreateTransactionParams.Description = &pString2
+	postgresCreateTransactionParams.CreatedAt = mappers.CopyTime(source.CreatedAt)
 	return postgresCreateTransactionParams
 }
 func (c *ConverterImpl) ToDBTransaction(source domain.Transaction) postgres.Transaction {
 	var postgresTransaction postgres.Transaction
 	postgresTransaction.ID = mappers.CopyUUID(source.ID)
-	postgresTransaction.UserID = mappers.CopyUUID(source.UserID)
 	postgresTransaction.Amount = mappers.CopyDecimal(source.Amount)
 	postgresTransaction.Currency = source.Currency
-	postgresTransaction.Category = mappers.StringToPgText(source.Category)
-	postgresTransaction.Description = mappers.StringToPgText(source.Description)
-	postgresTransaction.RawInput = mappers.StringToPgText(source.RawInput)
+	pString := source.Category
+	postgresTransaction.Category = &pString
+	pString2 := source.Description
+	postgresTransaction.Description = &pString2
 	postgresTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	postgresTransaction.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	postgresTransaction.Deleted = source.Deleted
+	postgresTransaction.CommandID = mappers.CopyUUID(source.CommandID)
 	return postgresTransaction
 }
-func (c *ConverterImpl) ToDBUser(source domain.User) postgres.User {
-	var postgresUser postgres.User
-	postgresUser.ID = mappers.CopyUUID(source.ID)
-	postgresUser.Email = source.Email
-	postgresUser.AcceptedTermsVersion = mappers.StringToPgText(source.AcceptedTermsVersion)
-	postgresUser.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
-	postgresUser.AllowDataAnalysis = mappers.BoolToPgBool(source.AllowDataAnalysis)
-	postgresUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return postgresUser
+func (c *ConverterImpl) ToTransportCommand(source domain.Command) *v1.Command {
+	var v1Command v1.Command
+	v1Command.Id = mappers.UUIDToString(source.ID)
+	v1Command.CommandStatus = v1.CommandStatus(source.CommandStatus)
+	v1Command.Deleted = source.Deleted
+	v1Command.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
+	v1Command.UpdatedAt = mappers.TimeToTimestamp(source.UpdatedAt)
+	return &v1Command
 }
-func (c *ConverterImpl) ToDomainUser(source postgres.User) domain.User {
-	var domainUser domain.User
-	domainUser.ID = mappers.CopyUUID(source.ID)
-	domainUser.Email = source.Email
-	domainUser.AcceptedTermsVersion = mappers.PgTextToString(source.AcceptedTermsVersion)
-	domainUser.AcceptedTermsAt = mappers.CopyTime(source.AcceptedTermsAt)
-	domainUser.AllowDataAnalysis = mappers.PgBoolToBool(source.AllowDataAnalysis)
-	domainUser.CreatedAt = mappers.CopyTime(source.CreatedAt)
-	return domainUser
+func (c *ConverterImpl) ToTransportIntent(source domain.Intent) *v1.Intent {
+	var v1Intent v1.Intent
+	v1Intent.Id = mappers.UUIDToString(source.ID)
+	v1Intent.TextMessage = source.TextMessage
+	v1Intent.AudioMessage = source.AudioMessage
+	v1Intent.ImageMessage = source.ImageMessage
+	v1Intent.IntentStatus = v1.IntentStatus(source.IntentStatus)
+	v1Intent.RequiresReview = source.RequiresReview
+	v1Intent.CommandId = mappers.UUIDToString(source.CommandID)
+	v1Intent.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
+	v1Intent.UpdatedAt = mappers.TimeToTimestamp(source.UpdatedAt)
+	return &v1Intent
 }
 func (c *ConverterImpl) ToTransportTransaction(source domain.Transaction) *v1.Transaction {
 	var v1Transaction v1.Transaction
 	v1Transaction.Id = mappers.UUIDToString(source.ID)
-	v1Transaction.UserId = mappers.UUIDToString(source.UserID)
 	v1Transaction.Amount = mappers.DecimalToString(source.Amount)
 	v1Transaction.Currency = source.Currency
 	v1Transaction.Category = source.Category
 	v1Transaction.Description = source.Description
-	v1Transaction.RawInput = source.RawInput
+	v1Transaction.CommandId = mappers.UUIDToString(source.CommandID)
 	v1Transaction.CreatedAt = mappers.TimeToTimestamp(source.CreatedAt)
+	v1Transaction.UpdatedAt = mappers.TimeToTimestamp(source.UpdatedAt)
 	return &v1Transaction
 }
 func (c *ConverterImpl) TransactionFromDBToDomain(source postgres.Transaction) domain.Transaction {
 	var domainTransaction domain.Transaction
 	domainTransaction.ID = mappers.CopyUUID(source.ID)
-	domainTransaction.UserID = mappers.CopyUUID(source.UserID)
 	domainTransaction.Amount = mappers.CopyDecimal(source.Amount)
 	domainTransaction.Currency = source.Currency
-	domainTransaction.Category = mappers.PgTextToString(source.Category)
-	domainTransaction.Description = mappers.PgTextToString(source.Description)
-	domainTransaction.RawInput = mappers.PgTextToString(source.RawInput)
+	if source.Category != nil {
+		domainTransaction.Category = *source.Category
+	}
+	if source.Description != nil {
+		domainTransaction.Description = *source.Description
+	}
 	domainTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	domainTransaction.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	domainTransaction.Deleted = source.Deleted
+	domainTransaction.CommandID = mappers.CopyUUID(source.CommandID)
 	return domainTransaction
 }
-func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.CreateTransactionRequest) domain.Transaction {
+func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.Transaction) domain.Transaction {
 	var domainTransaction domain.Transaction
 	if source != nil {
 		domainTransaction.Amount = mappers.StringToDecimal((*source).Amount)
@@ -86,6 +195,7 @@ func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.CreateTransa
 		domainTransaction.Category = (*source).Category
 		domainTransaction.Description = (*source).Description
 		domainTransaction.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
+		domainTransaction.UpdatedAt = mappers.TimestampToTime((*source).UpdatedAt)
 	}
 	return domainTransaction
 }

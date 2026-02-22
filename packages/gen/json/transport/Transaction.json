@@ -7,11 +7,9 @@
                 "id": {
                     "type": "string"
                 },
-                "user_id": {
-                    "type": "string"
-                },
                 "amount": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
                 },
                 "currency": {
                     "type": "string"
@@ -22,11 +20,17 @@
                 "description": {
                     "type": "string"
                 },
-                "raw_input": {
+                "command_id": {
                     "type": "string"
                 },
                 "created_at": {
                     "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
                     "format": "date-time"
                 }
             },

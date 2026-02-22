@@ -13,7 +13,8 @@ env "local" {
 
   // URL of the database to migrate. 
   // This will be read from the DB_URL env var.
-  url = var.db_url
+  url     = var.db_url
+  schemas = ["public"]
 
   // Dev database for Atlas to use as a sandbox to calculate diffs
   dev = "docker://postgres/16/dev"

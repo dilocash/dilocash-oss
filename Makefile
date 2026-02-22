@@ -117,7 +117,11 @@ test: ## Run Go tests
 
 migrate-apply: ## Apply pending migrations to local DB
 	@echo "🚀 Applying migrations..."
-	cd apps/api && set -a && . ./.env && set +a && atlas migrate apply --env local
+	cd apps/api && set -a && . ./.env && set +a && atlas migrate apply --env local --allow-dirty
+
+migrate-hash: ## Generate a new migration file (usage: make migrate-new name=add_users)
+	@echo "📝 Generating migration hash..."
+	cd apps/api && set -a && . ./.env && set +a && atlas migrate hash --env local
 
 migrate-new: ## Generate a new migration file (usage: make migrate-new name=add_users)
 	@echo "📝 Generating new migration: $(name)..."

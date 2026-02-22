@@ -1,0 +1,151 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/PushCommandsRequest",
+    "definitions": {
+        "PushCommandsRequest": {
+            "properties": {
+                "commands": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Command"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Push Commands Request",
+            "description": "request to push changes from the client"
+        },
+        "dilocash.v1.Command": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "UUID generated in the client (localdb primary key)"
+                },
+                "created_at": {
+                    "type": "string",
+                    "description": "critical fields for offline-first synchronization  Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "description": "Timestamp in milliseconds (our Checkpoint)",
+                    "format": "date-time"
+                },
+                "deleted": {
+                    "type": "boolean",
+                    "description": "Flag for \"Soft Deletes\" (localdb requires it)"
+                },
+                "status": {
+                    "enum": [
+                        "COMMAND_STATUS_UNSPECIFIED",
+                        0,
+                        "COMMAND_STATUS_PENDING",
+                        1,
+                        "COMMAND_STATUS_PROCESSING",
+                        2,
+                        "COMMAND_STATUS_FAILED",
+                        3,
+                        "COMMAND_STATUS_SYNCED",
+                        4
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Command Status"
+                },
+                "intents": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Intent"
+                    },
+                    "type": "array"
+                },
+                "transactions": {
+                    "items": {
+                        "$ref": "#/definitions/dilocash.v1.Transaction"
+                    },
+                    "type": "array"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Command",
+            "description": "represents the command of a financial transaction"
+        },
+        "dilocash.v1.Intent": {
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "UUID generated in the client (localdb primary key)"
+                },
+                "text_message": {
+                    "type": "string"
+                },
+                "audio_message": {
+                    "type": "string"
+                },
+                "image_message": {
+                    "type": "string"
+                },
+                "status": {
+                    "enum": [
+                        "INTENT_STATUS_UNSPECIFIED",
+                        0,
+                        "INTENT_STATUS_PROCESSING",
+                        1,
+                        "INTENT_STATUS_PENDING_REVIEW",
+                        2,
+                        "INTENT_STATUS_CONFIRMED",
+                        3,
+                        "INTENT_STATUS_FAILED",
+                        4
+                    ],
+                    "oneOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "integer"
+                        }
+                    ],
+                    "title": "Intent Status"
+                },
+                "requires_review": {
+                    "type": "boolean"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Intent",
+            "description": "represents the intent of a financial transaction"
+        },
+        "dilocash.v1.Transaction": {
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "string",
+                    "description": "we use string for the amount to maintain decimal precision in Go and JS"
+                },
+                "currency": {
+                    "type": "string"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            },
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Transaction"
+        }
+    }
+}
