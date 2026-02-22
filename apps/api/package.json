@@ -9,7 +9,5 @@
     "lint": "go vet ./...",
     "start": "go run cmd/main.go"
   },
-  "dependencies": {
-    "@bufbuild/buf": "^1.65.0"
-  }
+  "dependencies": {}
 }
