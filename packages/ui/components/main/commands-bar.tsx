@@ -1,5 +1,5 @@
 import { HStack } from "../ui/hstack";
-import { Button, ButtonText } from "../ui/button";
+import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
 import useSync from "../../hooks/useSync";
 import { Transport } from "@connectrpc/connect";
 import { Input, InputField } from "../ui/input";
@@ -11,6 +11,16 @@ import { Database } from "@nozbe/watermelondb";
 import { Intent } from "@dilocash/database/local/model/intent";
 import { Command } from "@dilocash/database/local/model/commmand";
 import { Transaction } from "@dilocash/database/local/model/transaction";
+import {
+  AddIcon,
+  CheckCircleIcon,
+  CircleIcon,
+  ClockIcon,
+  CloseCircleIcon,
+  LoaderIcon,
+  MessageCircleIcon,
+  RepeatIcon,
+} from "../ui/icon";
 
 const CommandsBar = ({ transport }: { transport: Transport }) => {
   const [commandText, setCommandText] = useState("");
@@ -53,35 +63,38 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
       };
 
       return (
-        <Button className="w-32" onPress={handleClick}>
-          <ButtonText>{t("commands.add")}</ButtonText>
+        <Button onPress={handleClick}>
+          <ButtonIcon size="md" as={AddIcon} />
         </Button>
       );
     },
   );
 
   return (
-    <>
-      <HStack className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg">
-        <Input className="grow">
-          <InputField
-            value={commandText}
-            onChangeText={(text) => setCommandText(text)}
-            type="text"
-            placeholder={t("commands.command_placeholder")}
-          />
-        </Input>
-        <AddCommandButton />
-        <Button className="w-32">
-          <ButtonText>{t("commands.record")}</ButtonText>
-        </Button>
-        <Button className="w-32" onPress={sync}>
-          <ButtonText>
-            {isSyncing ? t("commands.syncing") : t("commands.sync")}
-          </ButtonText>
-        </Button>
-      </HStack>
-    </>
+    <HStack
+      space="md"
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg p-2"
+    >
+      <Input variant="rounded" className="grow">
+        <InputField
+          value={commandText}
+          onChangeText={(text) => setCommandText(text)}
+          type="text"
+          placeholder={t("commands.command_placeholder")}
+        />
+      </Input>
+      <AddCommandButton />
+      <Button>
+        <ButtonIcon size="md" as={MessageCircleIcon} />
+      </Button>
+      <Button onPress={sync}>
+        {isSyncing ? (
+          <ButtonSpinner color="orange" />
+        ) : (
+          <ButtonIcon size="md" as={RepeatIcon} />
+        )}
+      </Button>
+    </HStack>
   );
 };
 
