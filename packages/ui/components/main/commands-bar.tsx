@@ -30,6 +30,7 @@ import {
 import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transaction_types_pb";
 
 import { create } from "@bufbuild/protobuf";
+import { MicIcon } from "./icons/mic";
 
 const CommandsBar = ({ transport }: { transport: Transport }) => {
   const validator = createValidator();
@@ -98,8 +99,8 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
       };
 
       return (
-        <Button onPress={handleClick}>
-          <ButtonIcon size="xs" as={AddIcon} />
+        <Button size="md" onPress={handleClick}>
+          <ButtonIcon as={AddIcon} />
         </Button>
       );
     },
@@ -119,14 +120,14 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
         />
       </Input>
       <AddCommandButton />
-      <Button>
-        <ButtonIcon size="xs" as={MessageCircleIcon} />
+      <Button size="md">
+        <ButtonIcon as={MicIcon} />
       </Button>
-      <Button onPress={sync}>
+      <Button size="md" onPress={sync}>
         {isSyncing ? (
           <ButtonSpinner color="orange" />
         ) : (
-          <ButtonIcon size="xs" as={RepeatIcon} />
+          <ButtonIcon as={RepeatIcon} />
         )}
       </Button>
     </HStack>
