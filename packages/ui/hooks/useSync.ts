@@ -33,7 +33,7 @@ const useSync = (transport: Transport) => {
     try {
       await synchronize({
         database,
-        sendCreatedAsUpdated: true,
+        sendCreatedAsUpdated: false,
         pullChanges: async ({ lastPulledAt, schemaVersion, migration }) => {
           console.info("pullChanges", {
             lastPulledAt,
