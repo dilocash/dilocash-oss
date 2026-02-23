@@ -3,8 +3,8 @@ import { create } from "@bufbuild/protobuf";
 import { TimestampSchema, Timestamp } from "@bufbuild/protobuf/wkt";
 import {
   Changes,
-  ChangesSchema,
   PullChangesRequest,
+  PullChangesRequestSchema,
   PullChangesResponse,
   PushChangesRequest,
   PushChangesRequestSchema,
@@ -15,7 +15,6 @@ import { useState } from "react";
 
 import { createClient, Transport } from "@connectrpc/connect";
 import { SyncService } from "@dilocash/gen/ts/transport/dilocash/v1/sync_service_pb";
-import { PullChangesRequestSchema } from "@dilocash/gen/ts/transport/dilocash/v1/sync_types_pb";
 
 const useSync = (transport: Transport) => {
   const client = createClient(SyncService, transport);
@@ -59,30 +58,12 @@ const useSync = (transport: Transport) => {
 
           // WatermelonDB expects an object with { changes, timestamp }
           // We must ensure 'changes' is not undefined and map the proto timestamp to a number (ms)
-          const changes = {
-            commands: response.changes?.commands ?? {
-              created: [],
-              updated: [],
-              deleted: [],
-            },
-            intents: response.changes?.intents ?? {
-              created: [],
-              updated: [],
-              deleted: [],
-            },
-            transactions: response.changes?.transactions ?? {
-              created: [],
-              updated: [],
-              deleted: [],
-            },
-          };
+          const changes = changesToDB(response.changes);
 
-          const timestamp = response.timestamp
-            ? Number(response.timestamp.seconds) * 1000 +
-              Math.floor(response.timestamp.nanos / 1_000_000)
-            : Date.now();
-
-          return { changes, timestamp } as SyncPullResult;
+          return {
+            changes,
+            timestamp: toDbTimestamp(response.timestamp as Timestamp),
+          } as SyncPullResult;
         },
         pushChanges: async ({ changes, lastPulledAt }) => {
           console.info("pushChanges", { lastPulledAt, changes });
@@ -121,7 +102,7 @@ const useSync = (transport: Transport) => {
  * @param obj db-like object
  * @returns protobuf-like object
  */
-const dbObjToProtoObj = (obj: any): any => {
+const dbToProto = (obj: any): any => {
   const camelCaseObj = Object.fromEntries(
     Object.entries(obj).map(([key, value]) => [toCamelCase(key), value]),
   );
@@ -134,6 +115,47 @@ const dbObjToProtoObj = (obj: any): any => {
   return camelCaseObj;
 };
 
+const protoToDb = (obj: any): any => {
+  const camelCaseObj = Object.fromEntries(
+    Object.entries(obj).map(([key, value]) => [toSnakeCase(key), value]),
+  );
+  if (camelCaseObj.created_at) {
+    camelCaseObj.created_at = toDbTimestamp(
+      camelCaseObj.created_at as Timestamp,
+    );
+  }
+  if (camelCaseObj.updated_at) {
+    camelCaseObj.updated_at = toDbTimestamp(
+      camelCaseObj.updated_at as Timestamp,
+    );
+  }
+  return camelCaseObj;
+};
+
+const commandToProto = (obj: any): any => {
+  return dbToProto(obj);
+};
+
+const commandToDb = (obj: any): any => {
+  return protoToDb(obj);
+};
+
+const intentToProto = (obj: any): any => {
+  return dbToProto(obj);
+};
+
+const intentToDb = (obj: any): any => {
+  return protoToDb(obj);
+};
+
+const transactionToProto = (obj: any): any => {
+  return dbToProto(obj);
+};
+
+const transactionToDb = (obj: any): any => {
+  return protoToDb(obj);
+};
+
 const toProtoTimestamp = (timestamp: number): Timestamp => {
   return create(TimestampSchema, {
     seconds: BigInt(Math.floor(timestamp / 1000)),
@@ -141,36 +163,66 @@ const toProtoTimestamp = (timestamp: number): Timestamp => {
   });
 };
 
+const toDbTimestamp = (timestamp: Timestamp): number => {
+  return timestamp
+    ? Number(timestamp.seconds) * 1000 + Math.floor(timestamp.nanos / 1_000_000)
+    : Date.now();
+};
+
 const toCamelCase = (str: string): string => {
   return str.replace(/_([a-z])/g, (g) => g[1].toUpperCase());
+};
+
+const toSnakeCase = (str: string): string => {
+  return str.replace(/[A-Z]/g, (g) => `_${g.toLowerCase()}`);
 };
 
 const changesToProto = (obj: any): any => {
   return {
     commands: {
       created: obj.commands.created.map((command: any) =>
-        dbObjToProtoObj(command),
+        commandToProto(command),
       ),
       updated: obj.commands.updated.map((command: any) =>
-        dbObjToProtoObj(command),
+        commandToProto(command),
       ),
       deleted: obj.commands.deleted,
     },
     intents: {
-      created: obj.intents.created.map((intent: any) =>
-        dbObjToProtoObj(intent),
-      ),
-      updated: obj.intents.updated.map((intent: any) =>
-        dbObjToProtoObj(intent),
-      ),
+      created: obj.intents.created.map((intent: any) => intentToProto(intent)),
+      updated: obj.intents.updated.map((intent: any) => intentToProto(intent)),
       deleted: obj.intents.deleted,
     },
     transactions: {
       created: obj.transactions.created.map((transaction: any) =>
-        dbObjToProtoObj(transaction),
+        transactionToProto(transaction),
       ),
       updated: obj.transactions.updated.map((transaction: any) =>
-        dbObjToProtoObj(transaction),
+        transactionToProto(transaction),
+      ),
+      deleted: obj.transactions.deleted,
+    },
+  };
+};
+
+const changesToDB = (obj: any): any => {
+  return {
+    commands: {
+      created: obj.commands.created.map((command: any) => commandToDb(command)),
+      updated: obj.commands.updated.map((command: any) => commandToDb(command)),
+      deleted: obj.commands.deleted,
+    },
+    intents: {
+      created: obj.intents.created.map((intent: any) => intentToDb(intent)),
+      updated: obj.intents.updated.map((intent: any) => intentToDb(intent)),
+      deleted: obj.intents.deleted,
+    },
+    transactions: {
+      created: obj.transactions.created.map((transaction: any) =>
+        transactionToDb(transaction),
+      ),
+      updated: obj.transactions.updated.map((transaction: any) =>
+        transactionToDb(transaction),
       ),
       deleted: obj.transactions.deleted,
     },
