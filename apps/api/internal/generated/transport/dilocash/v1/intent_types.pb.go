@@ -11,6 +11,7 @@
 package v1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -255,24 +256,24 @@ var File_dilocash_v1_intent_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_intent_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1edilocash/v1/intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x85\x01\n" +
+	"\x1edilocash/v1/intent_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\"\x85\x01\n" +
 	"\vIntentsList\x12-\n" +
 	"\acreated\x18\x01 \x03(\v2\x13.dilocash.v1.IntentR\acreated\x12-\n" +
 	"\aupdated\x18\x02 \x03(\v2\x13.dilocash.v1.IntentR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x83\x03\n" +
-	"\x06Intent\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12!\n" +
-	"\ftext_message\x18\x02 \x01(\tR\vtextMessage\x12#\n" +
-	"\raudio_message\x18\x03 \x01(\tR\faudioMessage\x12#\n" +
-	"\rimage_message\x18\x04 \x01(\tR\fimageMessage\x12>\n" +
-	"\rintent_status\x18\x05 \x01(\x0e2\x19.dilocash.v1.IntentStatusR\fintentStatus\x12'\n" +
-	"\x0frequires_review\x18\x06 \x01(\bR\x0erequiresReview\x12\x1d\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xd8\x03\n" +
+	"\x06Intent\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12+\n" +
+	"\ftext_message\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vtextMessage\x12-\n" +
+	"\raudio_message\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\faudioMessage\x12-\n" +
+	"\rimage_message\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\fimageMessage\x12H\n" +
+	"\rintent_status\x18\x05 \x01(\x0e2\x19.dilocash.v1.IntentStatusB\b\xbaH\x05\x82\x01\x02\x10\x01R\fintentStatus\x120\n" +
+	"\x0frequires_review\x18\x06 \x01(\bB\a\xbaH\x04j\x02\b\x00R\x0erequiresReview\x12'\n" +
 	"\n" +
-	"command_id\x18\a \x01(\tR\tcommandId\x129\n" +
+	"command_id\x18\a \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\tcommandId\x12A\n" +
 	"\n" +
-	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tcreatedAt\x12A\n" +
 	"\n" +
-	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt*\xa4\x01\n" +
+	"updated_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tupdatedAt*\xa4\x01\n" +
 	"\fIntentStatus\x12\x1d\n" +
 	"\x19INTENT_STATUS_UNSPECIFIED\x10\x00\x12\x1c\n" +
 	"\x18INTENT_STATUS_PROCESSING\x10\x01\x12 \n" +

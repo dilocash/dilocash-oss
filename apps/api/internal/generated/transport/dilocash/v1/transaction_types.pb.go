@@ -11,6 +11,7 @@
 package v1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -191,23 +192,23 @@ var File_dilocash_v1_transaction_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\n" +
-	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x94\x01\n" +
+	"#dilocash/v1/transaction_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\"\x94\x01\n" +
 	"\x10TransactionsList\x122\n" +
 	"\acreated\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\acreated\x122\n" +
 	"\aupdated\x18\x02 \x03(\v2\x18.dilocash.v1.TransactionR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xa4\x02\n" +
-	"\vTransaction\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x16\n" +
-	"\x06amount\x18\x02 \x01(\tR\x06amount\x12\x1a\n" +
-	"\bcurrency\x18\x03 \x01(\tR\bcurrency\x12\x1a\n" +
-	"\bcategory\x18\x04 \x01(\tR\bcategory\x12 \n" +
-	"\vdescription\x18\x05 \x01(\tR\vdescription\x12\x1d\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x83\x03\n" +
+	"\vTransaction\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x124\n" +
+	"\x06amount\x18\x02 \x01(\tB\x1c\xbaH\x19r\x172\x15^[0-9]+(\\.[0-9]{2})?$R\x06amount\x12$\n" +
+	"\bcurrency\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x98\x01\x03R\bcurrency\x12#\n" +
+	"\bcategory\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x18dR\bcategory\x12*\n" +
+	"\vdescription\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vdescription\x12'\n" +
 	"\n" +
-	"command_id\x18\x06 \x01(\tR\tcommandId\x129\n" +
+	"command_id\x18\x06 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\tcommandId\x12A\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tcreatedAt\x12A\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tupdatedAtBTZRgithub.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1b\x06proto3"
 
 var (
 	file_dilocash_v1_transaction_types_proto_rawDescOnce sync.Once

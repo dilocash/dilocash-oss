@@ -22,7 +22,17 @@ import {
   RepeatIcon,
 } from "../ui/icon";
 
+import {
+  createValidator,
+  Violation,
+  type ValidationResult,
+} from "@bufbuild/protovalidate";
+import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transaction_types_pb";
+
+import { create } from "@bufbuild/protobuf";
+
 const CommandsBar = ({ transport }: { transport: Transport }) => {
+  const validator = createValidator();
   const [commandText, setCommandText] = useState("");
   const { t } = useTranslation();
   const { sync, isSyncing } = useSync(transport);
@@ -30,6 +40,29 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
   const AddCommandButton = withDatabase(
     ({ database }: { database: Database }) => {
       const handleClick = async () => {
+        const pieces = commandText.split(" ");
+        const parsedTransaction = {
+          amount: pieces[0],
+          currency: pieces[1],
+          description: pieces.slice(2).join(" "),
+        };
+
+        let validTransaction = true;
+
+        const validationResult: ValidationResult = validator.validate(
+          TransactionSchema,
+          create(TransactionSchema, parsedTransaction),
+        );
+        if (validationResult.kind !== "valid") {
+          validationResult.violations
+            ?.filter((violation: Violation) => {
+              return violation.ruleId !== "string.uuid_empty";
+            })
+            .forEach((violation: Violation) => {
+              console.error("Validation error", violation);
+            });
+          validTransaction = false;
+        }
         await database.write(async () => {
           let newCommand = database
             .get<Command>(Command.table)
@@ -41,22 +74,24 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
             .get<Intent>(Intent.table)
             .prepareCreate((intent) => {
               intent.textMessage = commandText;
-              intent.intentStatus = 0;
+              // 0 = unspecified, 4 = failed
+              intent.intentStatus = validTransaction ? 0 : 4;
               intent.command.set(newCommand);
             });
 
-          let newTransaction = database
-            .get<Transaction>(Transaction.table)
-            .prepareCreate((transaction) => {
-              const pieces = commandText.split(" ");
-
-              transaction.amount = pieces[0];
-              transaction.currency = pieces[1];
-              transaction.description = pieces.slice(2).join(" ");
-              transaction.command.set(newCommand);
-            });
-
-          await database.batch(newCommand, newIntent, newTransaction);
+          if (validTransaction) {
+            let newTransaction = database
+              .get<Transaction>(Transaction.table)
+              .prepareCreate((transaction) => {
+                transaction.amount = parsedTransaction.amount;
+                transaction.currency = parsedTransaction.currency;
+                transaction.description = parsedTransaction.description;
+                transaction.command.set(newCommand);
+              });
+            await database.batch(newCommand, newIntent, newTransaction);
+          } else {
+            await database.batch(newCommand, newIntent);
+          }
         });
         setCommandText("");
         await sync();

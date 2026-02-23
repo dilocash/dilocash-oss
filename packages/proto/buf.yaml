@@ -3,8 +3,8 @@
 # license that can be found in the LICENSE file.
 
 version: v2
-# deps:
-#   - buf.build/bufbuild/protovalidate
+deps:
+  - buf.build/bufbuild/protovalidate
 modules:
   - path: .
     excludes:
