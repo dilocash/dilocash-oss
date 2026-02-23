@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.dilocash"
     },
     "android": {
       "adaptiveIcon": {
@@ -29,12 +30,17 @@
     },
     "plugins": [
       "expo-router",
-      "@morrowdigital/watermelondb-expo-plugin",
+      [
+        "@morrowdigital/watermelondb-expo-plugin",
+        {
+          "disableJsi": true
+        }
+      ],
       [
         "expo-build-properties",
         {
           "android": {
-            "kotlinVersion": "1.9.24",
+            "kotlinVersion": "2.2.20",
             "packagingOptions": {
               "pickFirst": ["**/libc++_shared.so"]
             }

@@ -9,6 +9,7 @@ package dilocash.v1;
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 
 import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
 
 message CommandsList {
   repeated Command created = 1;
@@ -18,12 +19,12 @@ message CommandsList {
 
 // represents the command of a financial transaction
 message Command {
-  string id = 1;              // UUID generated in the client (localdb primary key)
+  string id = 1 [(buf.validate.field).string.uuid = true];              // UUID generated in the client (localdb primary key)
   // critical fields for offline-first synchronization
-  CommandStatus command_status = 2;
-  bool deleted = 3;           // Flag for "Soft Deletes" (localdb requires it)
-  google.protobuf.Timestamp created_at = 4;       // Timestamp in milliseconds (our Checkpoint)
-  google.protobuf.Timestamp updated_at = 5;       // Timestamp in milliseconds (our Checkpoint)
+  CommandStatus command_status = 2 [(buf.validate.field).enum.defined_only = true];
+  bool deleted = 3 [(buf.validate.field).required = false];           // Flag for "Soft Deletes" (localdb requires it)
+  google.protobuf.Timestamp created_at = 4 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 5 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
 }
 
 enum CommandStatus {
@@ -32,4 +33,5 @@ enum CommandStatus {
   COMMAND_STATUS_PROCESSING = 2;
   COMMAND_STATUS_FAILED = 3;
   COMMAND_STATUS_SYNCED = 4;
+
 }

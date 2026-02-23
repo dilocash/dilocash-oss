@@ -74,6 +74,10 @@ const CommandItem = ({ command }: { command: Command }) => {
     console.log("Deleting command", command.id);
     await database.write(async () => {
       await command.markAsDeleted();
+      (await command.intents).forEach((intent) => intent.markAsDeleted());
+      (await command.transactions).forEach((transaction) =>
+        transaction.markAsDeleted(),
+      );
     });
   };
 

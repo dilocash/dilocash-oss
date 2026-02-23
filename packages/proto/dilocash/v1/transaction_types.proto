@@ -7,7 +7,9 @@ syntax = "proto3";
 package dilocash.v1;
 
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
+
 import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
 
 message TransactionsList {
   repeated Transaction created = 1;
@@ -16,13 +18,13 @@ message TransactionsList {
 }
 
 message Transaction {
-  string id = 1;
+  string id = 1 [(buf.validate.field).string.uuid = true];
   // we use string for the amount to maintain decimal precision in Go and JS
-  string amount = 2;
-  string currency = 3;
-  string category = 4;
-  string description = 5;
-  string command_id = 6;
-  google.protobuf.Timestamp created_at = 7;       // Timestamp in milliseconds (our Checkpoint)
-  google.protobuf.Timestamp updated_at = 8;       // Timestamp in milliseconds (our Checkpoint)
+  string amount = 2  [(buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{2})?$"];
+  string currency = 3 [(buf.validate.field).string.len = 3];
+  string category = 4 [(buf.validate.field).string.max_len = 100];
+  string description = 5 [(buf.validate.field).string.max_len = 1000];
+  string command_id = 6 [(buf.validate.field).string.uuid = true];
+  google.protobuf.Timestamp created_at = 7 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 8 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
 }

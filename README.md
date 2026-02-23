@@ -261,6 +261,15 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 
 ---
 
+# expo android commands:
+
+```
+cd apps/mobile
+pnpx expo prebuild --clean
+pnpx expo run:android
+
+```
+
 ## 📄 License
 
 Dilocash (Core) is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).

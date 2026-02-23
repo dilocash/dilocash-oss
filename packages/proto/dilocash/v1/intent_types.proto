@@ -9,6 +9,7 @@ package dilocash.v1;
 option go_package = "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1";
 
 import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
 
 message IntentsList {
   repeated Intent created = 1;
@@ -18,17 +19,17 @@ message IntentsList {
 
 // represents the intent of a financial transaction
 message Intent {
-  string id = 1;              // UUID generated in the client (localdb primary key)
-  string text_message = 2;
-  string audio_message = 3;
-  string image_message = 4;
+  string id = 1 [(buf.validate.field).string.uuid = true];              // UUID generated in the client (localdb primary key)
+  string text_message = 2 [(buf.validate.field).string.max_len = 1000];
+  string audio_message = 3 [(buf.validate.field).string.max_len = 1000];
+  string image_message = 4 [(buf.validate.field).string.max_len = 1000];
   
   // critical fields for offline-first synchronization
-  IntentStatus intent_status = 5;
-  bool requires_review = 6;
-  string command_id = 7;
-  google.protobuf.Timestamp created_at = 8;       // Timestamp in milliseconds (our Checkpoint)
-  google.protobuf.Timestamp updated_at = 9;       // Timestamp in milliseconds (our Checkpoint)
+  IntentStatus intent_status = 5 [(buf.validate.field).enum.defined_only = true];
+  bool requires_review = 6 [(buf.validate.field).bool.const = false];
+  string command_id = 7 [(buf.validate.field).string.uuid = true];
+  google.protobuf.Timestamp created_at = 8 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
+  google.protobuf.Timestamp updated_at = 9 [(buf.validate.field).required = false];       // Timestamp in milliseconds (our Checkpoint)
 }
 
 enum IntentStatus {

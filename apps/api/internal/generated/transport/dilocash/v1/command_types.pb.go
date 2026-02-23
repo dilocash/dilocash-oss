@@ -11,6 +11,7 @@
 package v1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
@@ -223,19 +224,19 @@ var File_dilocash_v1_command_types_proto protoreflect.FileDescriptor
 
 const file_dilocash_v1_command_types_proto_rawDesc = "" +
 	"\n" +
-	"\x1fdilocash/v1/command_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\"\x88\x01\n" +
+	"\x1fdilocash/v1/command_types.proto\x12\vdilocash.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\"\x88\x01\n" +
 	"\fCommandsList\x12.\n" +
 	"\acreated\x18\x01 \x03(\v2\x14.dilocash.v1.CommandR\acreated\x12.\n" +
 	"\aupdated\x18\x02 \x03(\v2\x14.dilocash.v1.CommandR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\xec\x01\n" +
-	"\aCommand\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12A\n" +
-	"\x0ecommand_status\x18\x02 \x01(\x0e2\x1a.dilocash.v1.CommandStatusR\rcommandStatus\x12\x18\n" +
-	"\adeleted\x18\x03 \x01(\bR\adeleted\x129\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x98\x02\n" +
+	"\aCommand\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x12K\n" +
+	"\x0ecommand_status\x18\x02 \x01(\x0e2\x1a.dilocash.v1.CommandStatusB\b\xbaH\x05\x82\x01\x02\x10\x01R\rcommandStatus\x12 \n" +
+	"\adeleted\x18\x03 \x01(\bB\x06\xbaH\x03\xc8\x01\x00R\adeleted\x12A\n" +
 	"\n" +
-	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"created_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tcreatedAt\x12A\n" +
 	"\n" +
-	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt*\xa0\x01\n" +
+	"updated_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampB\x06\xbaH\x03\xc8\x01\x00R\tupdatedAt*\xa0\x01\n" +
 	"\rCommandStatus\x12\x1e\n" +
 	"\x1aCOMMAND_STATUS_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16COMMAND_STATUS_PENDING\x10\x01\x12\x1d\n" +
