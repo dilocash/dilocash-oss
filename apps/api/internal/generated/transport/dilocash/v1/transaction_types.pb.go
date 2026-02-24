@@ -196,10 +196,10 @@ const file_dilocash_v1_transaction_types_proto_rawDesc = "" +
 	"\x10TransactionsList\x122\n" +
 	"\acreated\x18\x01 \x03(\v2\x18.dilocash.v1.TransactionR\acreated\x122\n" +
 	"\aupdated\x18\x02 \x03(\v2\x18.dilocash.v1.TransactionR\aupdated\x12\x18\n" +
-	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x83\x03\n" +
+	"\adeleted\x18\x03 \x03(\tR\adeleted\"\x85\x03\n" +
 	"\vTransaction\x12\x18\n" +
-	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x124\n" +
-	"\x06amount\x18\x02 \x01(\tB\x1c\xbaH\x19r\x172\x15^[0-9]+(\\.[0-9]{2})?$R\x06amount\x12$\n" +
+	"\x02id\x18\x01 \x01(\tB\b\xbaH\x05r\x03\xb0\x01\x01R\x02id\x126\n" +
+	"\x06amount\x18\x02 \x01(\tB\x1e\xbaH\x1br\x192\x17^[0-9]+(\\.[0-9]{1,4})?$R\x06amount\x12$\n" +
 	"\bcurrency\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x98\x01\x03R\bcurrency\x12#\n" +
 	"\bcategory\x18\x04 \x01(\tB\a\xbaH\x04r\x02\x18dR\bcategory\x12*\n" +
 	"\vdescription\x18\x05 \x01(\tB\b\xbaH\x05r\x03\x18\xe8\aR\vdescription\x12'\n" +

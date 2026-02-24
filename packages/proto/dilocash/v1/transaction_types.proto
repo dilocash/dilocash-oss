@@ -20,7 +20,7 @@ message TransactionsList {
 message Transaction {
   string id = 1 [(buf.validate.field).string.uuid = true];
   // we use string for the amount to maintain decimal precision in Go and JS
-  string amount = 2  [(buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{2})?$"];
+  string amount = 2  [(buf.validate.field).string.pattern = "^[0-9]+(\\.[0-9]{1,4})?$"];
   string currency = 3 [(buf.validate.field).string.len = 3];
   string category = 4 [(buf.validate.field).string.max_len = 100];
   string description = 5 [(buf.validate.field).string.max_len = 1000];
