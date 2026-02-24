@@ -55,14 +55,15 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
           create(TransactionSchema, parsedTransaction),
         );
         if (validationResult.kind !== "valid") {
-          validationResult.violations
-            ?.filter((violation: Violation) => {
+          const cleanViolations = validationResult.violations?.filter(
+            (violation: Violation) => {
               return violation.ruleId !== "string.uuid_empty";
-            })
-            .forEach((violation: Violation) => {
-              console.error("Validation error", violation);
-            });
-          validTransaction = false;
+            },
+          );
+          cleanViolations?.forEach((violation: Violation) => {
+            console.error("Validation error", violation);
+          });
+          validTransaction = cleanViolations?.length === 0;
         }
         await database.write(async () => {
           let newCommand = database
