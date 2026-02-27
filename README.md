@@ -261,12 +261,34 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 
 ---
 
-# expo android commands:
+# expo mobile commands:
+
+
+## mobile folder
 
 ```
 cd apps/mobile
-pnpx expo prebuild --clean
-pnpx expo run:android
+```
+
+## packages check
+```
+pnpx expo-doctor
+pnpm list react -r --depth=Infinity
+
+```
+
+## gluestack add components
+```
+pnpx gluestack-ui add box text --path src
+```
+
+# module install
+```
+pnpm install
+
+npx expo start --clear
+
+pnpm run android
 
 ```
 
