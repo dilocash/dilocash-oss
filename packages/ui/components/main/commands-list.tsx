@@ -1,10 +1,11 @@
 "use client";
 
-import { useDatabase, withObservables } from "@nozbe/watermelondb/react";
+import { useDatabase } from "@nozbe/watermelondb/react";
 import {
   useGetCommands,
   useGetIntents,
   useGetTransactions,
+  useObservable,
 } from "../../hooks/useQuery";
 import IntentsList from "./intents-list";
 import TransactionsList from "./transactions-list";
@@ -29,19 +30,9 @@ import { ChevronDownIcon, ChevronUpIcon, Icon, TrashIcon } from "../ui/icon";
 import { useEffect, useRef } from "react";
 
 const CommandsListView = () => {
-  const commands = useGetCommands();
+  const commandsObservable = useGetCommands();
+  const commands = useObservable(commandsObservable);
 
-  return (
-    <EnhancedCommandsList
-      className=""
-      commands={commands}
-    ></EnhancedCommandsList>
-  );
-};
-
-export default CommandsListView;
-
-const CommandsList = ({ commands }: { commands: Command[] }) => {
   // Create a ref for the bottom-most element
   const bottomOfPanelRef = useRef<HTMLDivElement>(null);
 
@@ -61,9 +52,7 @@ const CommandsList = ({ commands }: { commands: Command[] }) => {
   );
 };
 
-const EnhancedCommandsList = withObservables(["commands"], ({ commands }) => ({
-  commands,
-}))(CommandsList);
+export default CommandsListView;
 
 const CommandItem = ({ command }: { command: Command }) => {
   const intents = useGetIntents(command.id); // we need to use this hook for observability to work.
