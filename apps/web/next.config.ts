@@ -12,9 +12,7 @@ const nextConfig: NextConfig = {
   /* config options here */
   cacheComponents: true,
   reactStrictMode: true,
-  turbopack : {
-    root : path.join(__dirname, '../..')
-  },
+
   transpilePackages: [
     "@dilocash/ui",
     "@dilocash/database",
@@ -22,6 +20,8 @@ const nextConfig: NextConfig = {
     "@gluestack-ui/utils",
     "@gluestack/ui-next-adapter",
     "react-native-web",
+    "nativewind",
+    "react-native-css-interop",
   ],
 };
 
