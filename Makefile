@@ -61,6 +61,9 @@ dev-mobile: install ## Start Mobile Android app via Turborepo
 dev-web: install ## Start Web app via Turborepo
 	pnpm dev --filter @dilocash/web
 
+dev-web-api: install ## Start Web app and API via Turborepo
+	pnpm dev --filter @dilocash/web --filter @dilocash/api
+
 dev-api: install ## Start API via Turborepo
 	pnpm dev --filter @dilocash/api
 
