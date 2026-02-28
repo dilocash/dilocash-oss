@@ -6,23 +6,31 @@
 
 import type { NextConfig } from "next";
 import { withGluestackUI } from '@gluestack/ui-next-adapter';
-const path = require('path');
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
   reactStrictMode: true,
-  turbopack : {
-    root : path.join(__dirname, '../..')
-  },
   transpilePackages: [
     "@dilocash/ui",
     "@dilocash/database",
     "@gluestack-ui/core",
     "@gluestack-ui/utils",
     "@gluestack/ui-next-adapter",
-    "react-native-web",
+    "react-native-css-interop"
   ],
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      'react-native$': 'react-native-web',
+    };
+    config.resolve.extensions = [
+      '.web.js',
+      '.web.jsx',
+      '.web.ts',
+      '.web.tsx',
+      ...config.resolve.extensions,
+    ];
+    return config;
+  },
 };
 
 export default withGluestackUI(nextConfig);

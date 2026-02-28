@@ -1,11 +1,6 @@
 "use client";
-import { withObservables } from "@nozbe/watermelondb/react";
 import { Transaction } from "@dilocash/database/local/model/transaction";
-import { Button, ButtonText } from "../ui/button";
 import { Box } from "../ui/box";
-import { HStack } from "../ui/hstack";
-import { Text } from "../ui/text";
-import { VStack } from "../ui/vstack";
 import {
   Accordion,
   AccordionItem,
@@ -17,7 +12,6 @@ import {
   AccordionContentText,
 } from "../ui/accordion";
 import { ChevronDownIcon, ChevronUpIcon } from "../ui/icon";
-import { useState } from "react";
 import {
   Table,
   TableBody,
@@ -27,15 +21,21 @@ import {
   TableData,
   TableFooter,
 } from "../ui/table";
+import { useObservable } from "../../hooks/useQuery";
+import { Observable } from "@nozbe/watermelondb/utils/rx";
 
 const TransactionsList = ({
-  transactions,
+  transactions: transactionsObservable,
+  className,
 }: {
-  transactions: Transaction[];
+  transactions: Observable<Transaction[]>;
+  className?: string;
 }) => {
+  const transactions = useObservable(transactionsObservable);
+
   return (
     transactions.length > 0 && (
-      <Box className="w-full">
+      <Box className={`w-full ${className}`}>
         <Accordion
           size="sm"
           variant="unfilled"
@@ -106,6 +106,5 @@ const TransactionsList = ({
   );
 };
 
-export default withObservables(["transactions"], ({ transactions }) => ({
-  transactions,
-}))(TransactionsList);
+export default TransactionsList;
+

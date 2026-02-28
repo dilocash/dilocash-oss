@@ -11,6 +11,26 @@ const defaultObservable = <T>(): Observable<T[]> =>
     observer.next([]);
   });
 
+export function useObservable<T>(observable: Observable<T>): T {
+  const [data, setData] = useState<T>(() => {
+    let initialValue: T;
+    const sub = observable.subscribe((val) => {
+      initialValue = val;
+    });
+    sub.unsubscribe();
+    return initialValue!;
+  });
+
+  useEffect(() => {
+    const subscription = observable.subscribe((newData) => {
+      setData(newData);
+    });
+    return () => subscription.unsubscribe();
+  }, [observable]);
+
+  return data;
+}
+
 export const useGetCommands = () => {
   const database = useDatabase();
   const [commands, setCommands] =

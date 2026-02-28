@@ -5,5 +5,3 @@ packages:
 ignoredBuiltDependencies:
   - sharp
   - unrs-resolver
-
-name: dilocash-oss
