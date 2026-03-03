@@ -14,7 +14,7 @@ export const UIIcon = createIcon({
   Root: PrimitiveIcon,
 }) as React.ForwardRefExoticComponent<
   React.ComponentPropsWithoutRef<typeof PrimitiveIcon> &
-    React.RefAttributes<React.ComponentRef<typeof Svg>>
+  React.RefAttributes<React.ComponentRef<typeof Svg>>
 >;
 
 const iconStyle = tva({

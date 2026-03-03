@@ -1,9 +1,8 @@
 import { HStack } from "../ui/hstack";
-import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
+import { Button, ButtonIcon, ButtonSpinner } from "../ui/button";
 import useSync from "../../hooks/useSync";
 import { Transport } from "@connectrpc/connect";
 import { Input, InputField } from "../ui/input";
-import { useDatabase } from "@nozbe/watermelondb/react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { withDatabase } from "@nozbe/watermelondb/react";
@@ -13,12 +12,6 @@ import { Command } from "@dilocash/database/local/model/commmand";
 import { Transaction } from "@dilocash/database/local/model/transaction";
 import {
   AddIcon,
-  CheckCircleIcon,
-  CircleIcon,
-  ClockIcon,
-  CloseCircleIcon,
-  LoaderIcon,
-  MessageCircleIcon,
   RepeatIcon,
 } from "../ui/icon";
 

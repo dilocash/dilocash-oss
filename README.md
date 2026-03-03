@@ -292,6 +292,28 @@ pnpm run android
 
 ```
 
+# apk local generation
+
+```
+cd apps/mobile/android
+
+npx expo prebuild
+
+# For a debug APK (faster)
+./gradlew assembleDebug
+
+# For a release APK
+./gradlew assembleRelease
+
+# apk location
+
+## release build
+`android/app/build/outputs/apk/release/app-release.apk`
+
+## debug build
+`android/app/build/outputs/apk/debug/app-debug.apk`
+
+
 ## 📄 License
 
 Dilocash (Core) is licensed under the [MIT License](https://www.google.com/search?q=LICENSE).

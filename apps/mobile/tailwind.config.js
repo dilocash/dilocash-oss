@@ -1,25 +1,14 @@
-// apps/mobile/tailwind.config.ts
-import type { Config } from "tailwindcss";
-
-// @ts-ignore
-// import nativewind from "nativewind/preset";
-
-const config: Config = {
+/** @type {import('tailwindcss').Config} */
+module.exports = {
   darkMode: process.env.DARK_MODE === 'media' ? 'media' : 'class',
   content: [
-    './app/**/*.{html,js,jsx,ts,tsx,mdx}',
-    './components/**/*.{html,js,jsx,ts,tsx,mdx}',
-    './utils/**/*.{html,js,jsx,ts,tsx,mdx}',
-    './*.{html,js,jsx,ts,tsx,mdx}',
-    './src/**/*.{html,js,jsx,ts,tsx,mdx}',
-    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}",
-    "./src/**/*.{js,ts,jsx,tsx}",
-    "./app/**/*.{js,ts,jsx,tsx}",
-    "@dilocash/ui/**/*.{js,ts,jsx,tsx}",
-    "./components/**/*.{js,ts,jsx,tsx}",
+    "./app/**/*.{html,js,jsx,ts,tsx,mdx}",
+    "./components/**/*.{html,js,jsx,ts,tsx,mdx}",
+    "./utils/**/*.{html,js,jsx,ts,tsx,mdx}",
+    "./*.{html,js,jsx,ts,tsx,mdx}",
+    "./src/**/*.{html,js,jsx,ts,tsx,mdx}",
     "../../packages/ui/components/**/*.{js,ts,jsx,tsx}",
     "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
-    
   ],
   presets: [require('nativewind/preset')],
   important: 'html',
@@ -188,9 +177,9 @@ const config: Config = {
         },
       },
       fontFamily: {
-        // heading: undefined,
-        // body: undefined,
-        // mono: undefined,
+        heading: undefined,
+        body: undefined,
+        mono: undefined,
         jakarta: ['var(--font-plus-jakarta-sans)'],
         roboto: ['var(--font-roboto)'],
         code: ['var(--font-source-code-pro)'],
@@ -215,7 +204,5 @@ const config: Config = {
         'soft-4': '0px 0px 40px rgba(38, 38, 38, 0.1)',
       },
     },
-  }
+  },
 };
-
-export default config;

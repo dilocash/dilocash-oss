@@ -27,9 +27,9 @@ export default function Index() {
   useEffect(() => {
     async function prepare() {
       try {
-        //await getOfflineSession(); // Verifica SecureStore
-        // Simula una carga mínima para evitar parpadeos
-        await new Promise((resolve) => setTimeout(resolve, 10000));
+        //await getOfflineSession(); // Check SecureStore
+        // emulates a minimal load to avoid flickering
+        await new Promise((resolve) => setTimeout(resolve, 1000));
       } finally {
         setIsLoaded(true);
       }

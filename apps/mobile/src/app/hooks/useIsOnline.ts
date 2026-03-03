@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import NetInfo from "@react-native-community/netinfo";
 
-export const useIsOnline = () => {
+const useIsOnline = () => {
   const [isOnline, setIsOnline] = useState(true);
 
   useEffect(() => {
@@ -15,3 +15,5 @@ export const useIsOnline = () => {
 
   return isOnline;
 };
+
+export default useIsOnline;

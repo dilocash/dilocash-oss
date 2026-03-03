@@ -11,23 +11,12 @@ import IntentsList from "./intents-list";
 import TransactionsList from "./transactions-list";
 import { Command } from "@dilocash/database/local/model/commmand";
 import { VStack } from "../ui/vstack";
-import { Button, ButtonText } from "../ui/button";
-import { Box } from "../ui/box";
+import { Button } from "../ui/button";
 import { HStack } from "../ui/hstack";
 import { Card } from "../ui/card";
-import { Text } from "../ui/text";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionContentText,
-  AccordionHeader,
-  AccordionIcon,
-  AccordionItem,
-  AccordionTitleText,
-  AccordionTrigger,
-} from "../ui/accordion";
-import { ChevronDownIcon, ChevronUpIcon, Icon, TrashIcon } from "../ui/icon";
+import { Icon, TrashIcon } from "../ui/icon";
 import { useEffect, useRef } from "react";
+import { Platform } from 'react-native';
 
 const CommandsListView = () => {
   const commandsObservable = useGetCommands();
@@ -35,19 +24,23 @@ const CommandsListView = () => {
 
   // Create a ref for the bottom-most element
   const bottomOfPanelRef = useRef<HTMLDivElement>(null);
-
-  // Use useEffect to scroll to the ref whenever messages change
-  useEffect(() => {
-    // The scrollIntoView method handles the actual scrolling
-    bottomOfPanelRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [commands]); // Dependency array includes messages to trigger on update
+  console.debug("Platform.OS", Platform.OS);
+  const isWeb = Platform.OS === 'web';
+  if (isWeb) {
+    console.debug("isWeb", isWeb);
+    // Use useEffect to scroll to the ref whenever messages change
+    useEffect(() => {
+      // The scrollIntoView method handles the actual scrolling
+      bottomOfPanelRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, [commands]); // Dependency array includes messages to trigger on update
+  }
 
   return (
     <VStack className="h-full overflow-y-scroll pb-5">
       {commands.map((command, i) => (
         <CommandItem key={i} command={command} />
       ))}
-      <div ref={bottomOfPanelRef} />
+      {isWeb && <div ref={bottomOfPanelRef} />}
     </VStack>
   );
 };
@@ -60,7 +53,7 @@ const CommandItem = ({ command }: { command: Command }) => {
 
   const database = useDatabase();
   const handleDelete = async () => {
-    console.log("Deleting command", command.id);
+    console.debug("Deleting command", command.id);
     await database.write(async () => {
       await command.markAsDeleted();
       (await command.intents).forEach((intent) => intent.markAsDeleted());
