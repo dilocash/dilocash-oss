@@ -30,7 +30,7 @@ import {
 import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transaction_types_pb";
 
 import { create } from "@bufbuild/protobuf";
-import { MicIcon } from "./icons/mic";
+import { MicIcon } from "./icons";
 
 const CommandsBar = ({ transport }: { transport: Transport }) => {
   const validator = createValidator();
