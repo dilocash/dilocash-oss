@@ -298,12 +298,18 @@ pnpm run android
 cd apps/mobile/android
 
 npx expo prebuild
+```
 
 # For a debug APK (faster)
+```
 ./gradlew assembleDebug
+```
 
 # For a release APK
+
+```
 ./gradlew assembleRelease
+```
 
 # apk location
 
