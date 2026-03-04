@@ -4,8 +4,6 @@
  * license that can be found in the LICENSE file.
  */
 "use client";
-// import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
-import { Box } from "@dilocash/ui/components/ui/box";
 
 import CommandsView from "@dilocash/ui/components/main/commands-view";
 import { createConnectTransport } from "@connectrpc/connect-web";
@@ -37,9 +35,6 @@ export default function Home() {
   });
 
   return (
-    <Box className="w-full h-full flex-1 flex-1 bg-gray-50">
-      {/* <AuthForm supabase={supabase} onSuccess={() => console.log('Login success')} /> */}
-      <CommandsView transport={transport} />
-    </Box>
+    <CommandsView transport={transport} className="h-screen" />
   );
 }

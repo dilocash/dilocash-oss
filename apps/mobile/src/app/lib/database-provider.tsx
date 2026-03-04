@@ -21,6 +21,10 @@ const CustomeDatabaseProvider = ({ children }: PropsWithChildren) => {
       const adapter = new SQLiteAdapter({
         dbName: "dilocash",
         schema,
+        jsi: true,
+        onSetUpError: (error: Error) => {
+          console.log("error setting up database", error);
+        },
         //migrations: [],
       });
 

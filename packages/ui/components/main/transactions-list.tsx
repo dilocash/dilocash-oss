@@ -68,25 +68,25 @@ const TransactionsList = ({
                 <Table className="w-full">
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Description</TableHead>
-                      <TableHead>Currency</TableHead>
-                      <TableHead>Amount</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">Description</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">Currency</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">Amount</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     {transactions.map((transaction) => (
                       <TableRow key={transaction.id}>
-                        <TableData>{transaction.description}</TableData>
-                        <TableData>{transaction.currency}</TableData>
-                        <TableData>{transaction.amount}</TableData>
+                        <TableData className="text-xs md:text-base">{transaction.description}</TableData>
+                        <TableData className="text-xs md:text-base">{transaction.currency}</TableData>
+                        <TableData className="text-xs md:text-base">{transaction.amount}</TableData>
                       </TableRow>
                     ))}
                   </TableBody>
                   <TableFooter>
                     <TableRow>
-                      <TableHead>Total</TableHead>
-                      <TableHead></TableHead>
-                      <TableHead>
+                      <TableHead className="text-xs md:text-base">Total</TableHead>
+                      <TableHead className="text-xs md:text-base"></TableHead>
+                      <TableHead className="text-xs md:text-base">
                         {transactions.reduce(
                           (acc: number, transaction: Transaction) => {
                             return acc + parseFloat(transaction.amount);

@@ -15,7 +15,7 @@ const IntentsList = ({ intents: intentsObservable, className }: { intents: Obser
   const intents = useObservable(intentsObservable);
 
   return (
-    <Box className={`p-4 w-full ${className}`}>
+    <Box className={`grow p-4 ${className}`}>
       {intents.map((intent) => (
         <HStack key={intent.id}>
           {intent.intentStatus === 0 && (

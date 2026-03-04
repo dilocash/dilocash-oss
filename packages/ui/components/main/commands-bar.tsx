@@ -1,9 +1,8 @@
 import { HStack } from "../ui/hstack";
-import { Button, ButtonIcon, ButtonSpinner, ButtonText } from "../ui/button";
+import { Button, ButtonIcon, ButtonSpinner } from "../ui/button";
 import useSync from "../../hooks/useSync";
 import { Transport } from "@connectrpc/connect";
 import { Input, InputField } from "../ui/input";
-import { useDatabase } from "@nozbe/watermelondb/react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { withDatabase } from "@nozbe/watermelondb/react";
@@ -13,12 +12,6 @@ import { Command } from "@dilocash/database/local/model/commmand";
 import { Transaction } from "@dilocash/database/local/model/transaction";
 import {
   AddIcon,
-  CheckCircleIcon,
-  CircleIcon,
-  ClockIcon,
-  CloseCircleIcon,
-  LoaderIcon,
-  MessageCircleIcon,
   RepeatIcon,
 } from "../ui/icon";
 
@@ -30,9 +23,9 @@ import {
 import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transaction_types_pb";
 
 import { create } from "@bufbuild/protobuf";
-import { MicIcon } from "./icons/mic";
+import { MicIcon } from "./icons";
 
-const CommandsBar = ({ transport }: { transport: Transport }) => {
+const CommandsBar = ({ transport, className }: { transport: Transport, className?: string }) => {
   const validator = createValidator();
   const [commandText, setCommandText] = useState("");
   const { t } = useTranslation();
@@ -110,7 +103,7 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
   return (
     <HStack
       space="sm"
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg p-2"
+      className={className}
     >
       <Input variant="rounded" className="grow">
         <InputField
