@@ -7,7 +7,8 @@ import '@/global.css';
 import DatabaseProvider from "./lib/database-provider";
 import * as Localization from "expo-localization";
 import { initI18n } from "@dilocash/i18n";
-import { Slot } from "expo-router";
+import { Slot, Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 // we get the mobile language (ej. 'en', 'es')
 const deviceLanguage = Localization.getLocales()[0].languageCode ?? "en";
@@ -20,7 +21,7 @@ export {
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: "index",
 };
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -58,7 +59,16 @@ function RootLayoutNav() {
   return (
     <DatabaseProvider>
       <GluestackUIProvider mode="light">
-        <Slot />
+        <SafeAreaProvider>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              statusBarHidden: false,
+              statusBarTranslucent: true,
+              statusBarStyle: "dark",
+            }}
+          />
+        </SafeAreaProvider>
       </GluestackUIProvider>
     </DatabaseProvider>
   );

@@ -25,7 +25,7 @@ import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transa
 import { create } from "@bufbuild/protobuf";
 import { MicIcon } from "./icons";
 
-const CommandsBar = ({ transport }: { transport: Transport }) => {
+const CommandsBar = ({ transport, className }: { transport: Transport, className?: string }) => {
   const validator = createValidator();
   const [commandText, setCommandText] = useState("");
   const { t } = useTranslation();
@@ -103,7 +103,7 @@ const CommandsBar = ({ transport }: { transport: Transport }) => {
   return (
     <HStack
       space="sm"
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white shadow-lg p-2"
+      className={className}
     >
       <Input variant="rounded" className="grow">
         <InputField

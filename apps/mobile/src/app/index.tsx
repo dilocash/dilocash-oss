@@ -1,9 +1,11 @@
-import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
 import { useEffect, useState } from "react";
 import { AppLoader } from "@dilocash/ui/components/app-loader";
 import CommandsView from "@dilocash/ui/components/main/commands-view";
 import { createConnectTransport } from "@connectrpc/connect-web";
 import supabase from "./lib/supabase/client";
+import { KeyboardAvoidingView, Platform } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 const BASE_URL = process.env.EXPO_PUBLIC_API_URL;
 
 export default function Index() {
@@ -38,8 +40,12 @@ export default function Index() {
   }, []);
   if (!isLoaded) return <AppLoader subMessage="Accediendo..." isWeb={false} />;
   return (
-    <>
-      <CommandsView transport={transport} />
-    </>
+    <SafeAreaView style={{ flex: 1 }}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <CommandsView transport={transport} />
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
