@@ -7,26 +7,35 @@
 
 import CommandsView from "@dilocash/ui/components/main/commands-view";
 import { createConnectTransport } from "@connectrpc/connect-web";
-import { getSupabaseClient } from "@dilocash/ui/auth/client";
+import { supabase } from "../lib/supabase/client";
+import { useEffect, useState } from "react";
+import { Session } from "@supabase/supabase-js";
 
 const BASE_URL = "http://localhost:8080";
 
 export default function Home() {
+
+  const [session, setSession] = useState<Session | null>(null)
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      console.debug('getSession', session);
+      setSession(session)
+    })
+    supabase.auth.onAuthStateChange((_event, session) => {
+      console.debug('onAuthStateChange', _event, session);
+      setSession(session)
+    })
+  }, []);
+
   const transport = createConnectTransport({
     baseUrl: process.env.NEXT_PUBLIC_API_URL || BASE_URL,
     interceptors: [
       (next) => async (req) => {
-        const supabase = getSupabaseClient(
-          process.env.NEXT_PUBLIC_SUPABASE_URL!,
-          process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-          localStorage,
-        );
-        const { data } = await supabase.auth.getSession();
-
-        if (data.session?.access_token) {
+        if (session?.access_token) {
           req.header.set(
             "Authorization",
-            `Bearer ${data.session.access_token}`,
+            `Bearer ${session.access_token}`,
           );
         }
         return await next(req);
@@ -35,6 +44,6 @@ export default function Home() {
   });
 
   return (
-    <CommandsView transport={transport} className="h-screen" />
+    <CommandsView transport={transport} session={session} className="h-screen" />
   );
 }
