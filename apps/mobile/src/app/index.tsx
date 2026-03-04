@@ -44,7 +44,7 @@ export default function Index() {
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <CommandsView transport={transport} />
+        <CommandsView transport={transport} className="h-full" />
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
