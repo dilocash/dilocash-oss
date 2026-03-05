@@ -6,12 +6,13 @@ import CommandsListView from "./commands-list";
 import { VStack } from "../ui/vstack";
 import { isWeb } from "@gluestack-ui/utils/nativewind-utils";
 import { Box } from "../ui/box";
-import { Session } from "@supabase/supabase-js";
 import { HStack } from "../ui/hstack";
 import { AlertCircleIcon, CheckIcon, Icon } from "../ui/icon";
 import { Text } from "../ui/text";
+import { useAuth } from "../../auth/provider";
 
-const CommandsView = ({ transport, session, className }: { transport: Transport, session: Session | null, className?: string }) => {
+const CommandsView = ({ transport, className }: { transport: Transport, className?: string }) => {
+  const { session } = useAuth();
   return (
     <VStack className={`${className}`}>
       <HStack className="p-5">

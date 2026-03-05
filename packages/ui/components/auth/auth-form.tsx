@@ -7,13 +7,25 @@ import { Heading } from '../ui/heading';
 import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
 import { Button, ButtonText } from '../ui/button';
 import { Text } from '../ui/text';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { CheckIcon, EyeIcon, EyeOffIcon } from "../ui/icon";
 import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "../ui/checkbox";
 import { HStack } from '../ui/hstack';
 import { useLoginForm } from '../../auth/useLoginForm';
+import { useAuth } from '../../auth/provider';
+import { useRouter } from 'solito/navigation';
 
 export const AuthForm = ({ supabase, onSuccess }: any) => {
+  const { session, isLoading } = useAuth()
+  const { replace } = useRouter()
+  useEffect(() => {
+    if (!isLoading && session) {
+      replace('/main')
+    }
+  }, [session, isLoading, replace])
+
+  if (isLoading) return null
+
   const { form, updateField, submit, loading } = useLoginForm(supabase, onSuccess);
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
@@ -30,37 +42,37 @@ export const AuthForm = ({ supabase, onSuccess }: any) => {
       <Text className="mt-6">{t('login.password')}</Text>
       <Input>
         <InputField
-              type={showPassword ? 'text' : 'password'}
-              placeholder={t('login.password_placeholder')}
-              value={form.password}
-              onChangeText={(text) => updateField('password', text)}
-            />
-            <InputSlot
-              onPress={() => setShowPassword(!showPassword)}
-              className="mr-3"
-            >
-              <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
-            </InputSlot>
-        </Input>
+          type={showPassword ? 'text' : 'password'}
+          placeholder={t('login.password_placeholder')}
+          value={form.password}
+          onChangeText={(text) => updateField('password', text)}
+        />
+        <InputSlot
+          onPress={() => setShowPassword(!showPassword)}
+          className="mr-3"
+        >
+          <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+        </InputSlot>
+      </Input>
 
-        <HStack className="justify-between my-5">
-            <Checkbox value={''} size="sm">
-              <CheckboxIndicator>
-                <CheckboxIcon as={CheckIcon} />
-              </CheckboxIndicator>
-              <CheckboxLabel>{t('login.remember_me')}</CheckboxLabel>
-            </Checkbox>
+      <HStack className="justify-between my-5">
+        <Checkbox value={''} size="sm">
+          <CheckboxIndicator>
+            <CheckboxIcon as={CheckIcon} />
+          </CheckboxIndicator>
+          <CheckboxLabel>{t('login.remember_me')}</CheckboxLabel>
+        </Checkbox>
 
-            <Button variant="link" size="sm">
-              <ButtonText className="underline underline-offset-1">
-                {t('login.forgot_password')}
-              </ButtonText>
-            </Button>
-          </HStack>
+        <Button variant="link" size="sm">
+          <ButtonText className="underline underline-offset-1">
+            {t('login.forgot_password')}
+          </ButtonText>
+        </Button>
+      </HStack>
 
-          <Button onPress={submit} className="w-full" size="sm">
-            <ButtonText>{t('login.action')}</ButtonText>
-          </Button>
-        </VStack>
+      <Button onPress={submit} className="w-full" size="sm">
+        <ButtonText>{t('login.action')}</ButtonText>
+      </Button>
+    </VStack>
   );
 };

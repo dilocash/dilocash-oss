@@ -7,6 +7,8 @@ import DatabaseProvider from '../lib/database-provider';
 import i18n, { initI18n } from '@dilocash/i18n';
 import { useEffect, useState } from 'react';
 import { AppLoader } from '@dilocash/ui/components/app-loader';
+import { AuthProvider } from "@dilocash/ui/auth/provider";
+import { supabase } from "../lib/supabase/client";
 
 export default function RootLayout({
   children,
@@ -16,16 +18,16 @@ export default function RootLayout({
   const [isReady, setIsReady] = useState(false);
   useEffect(() => {
     // init i18n
-    
-  const setup = async () => {
-    await initI18n(true);
-    var millisecondsToWait = 50;
-    setTimeout(function() {
-      // Whatever you want to do after the wait
-      setIsReady(true);
-    }, millisecondsToWait);
-  };
-  setup();
+
+    const setup = async () => {
+      await initI18n(true);
+      var millisecondsToWait = 50;
+      setTimeout(function () {
+        // Whatever you want to do after the wait
+        setIsReady(true);
+      }, millisecondsToWait);
+    };
+    setup();
 
   }, []);
   return (
@@ -33,7 +35,9 @@ export default function RootLayout({
       <body>
         <DatabaseProvider>
           <GluestackUIProvider mode="light">
-            {!isReady ? <AppLoader subMessage="..." isWeb={true} /> : children}
+            <AuthProvider supabase={supabase}>
+              {!isReady ? <AppLoader subMessage="..." isWeb={true} /> : children}
+            </AuthProvider>
           </GluestackUIProvider>
         </DatabaseProvider>
       </body>
