@@ -55,8 +55,8 @@ install: ## Install all dependencies at the root
 dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
-dev-mobile: install ## Start Mobile Android app via Turborepo
-	pnpm dev --filter @dilocash/mobile -- --android --clear
+dev-mobile: install ## Start Mobile Android app
+	cd apps/mobile && pnpm run android
 
 dev-web: install ## Start Web app via Turborepo
 	pnpm dev --filter @dilocash/web
