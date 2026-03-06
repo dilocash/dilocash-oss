@@ -7,8 +7,10 @@ import '@/global.css';
 import DatabaseProvider from "./lib/database-provider";
 import * as Localization from "expo-localization";
 import { initI18n } from "@dilocash/i18n";
-import { Slot, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { AuthProvider } from "@dilocash/ui/auth/provider";
+import supabase from "./lib/supabase/client";
 
 // we get the mobile language (ej. 'en', 'es')
 const deviceLanguage = Localization.getLocales()[0].languageCode ?? "en";
@@ -37,7 +39,7 @@ export default function RootLayout() {
   useEffect(() => {
 
     if (error) {
-      console.error(error);
+      console.error('expo error', error);
       throw error;
     }
   }, [error]);
@@ -59,16 +61,18 @@ function RootLayoutNav() {
   return (
     <DatabaseProvider>
       <GluestackUIProvider mode="light">
-        <SafeAreaProvider>
-          <Stack
-            screenOptions={{
-              headerShown: false,
-              statusBarHidden: false,
-              statusBarTranslucent: true,
-              statusBarStyle: "dark",
-            }}
-          />
-        </SafeAreaProvider>
+        <AuthProvider supabase={supabase}>
+          <SafeAreaProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+                statusBarHidden: false,
+                statusBarTranslucent: true,
+                statusBarStyle: "dark",
+              }}
+            />
+          </SafeAreaProvider>
+        </AuthProvider>
       </GluestackUIProvider>
     </DatabaseProvider>
   );

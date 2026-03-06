@@ -6,7 +6,7 @@
 "use client";
 
 import { AuthProvider } from "@dilocash/ui/auth/provider";
-import { supabase } from "../lib/supabase/client";
+import supabase from "../lib/supabase/client";
 import MainScreen from "./main/page";
 
 export default function Home() {

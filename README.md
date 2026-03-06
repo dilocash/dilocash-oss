@@ -277,9 +277,10 @@ pnpm list react -r --depth=Infinity
 
 ```
 
-## gluestack add components
+## gluestack add components (shared UI)
 ```
-pnpx gluestack-ui add box text --path src
+cd packages/ui
+pnpx gluestack-ui add box text alert --path components/ui
 ```
 
 # module install

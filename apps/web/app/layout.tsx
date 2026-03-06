@@ -8,7 +8,7 @@ import i18n, { initI18n } from '@dilocash/i18n';
 import { useEffect, useState } from 'react';
 import { AppLoader } from '@dilocash/ui/components/app-loader';
 import { AuthProvider } from "@dilocash/ui/auth/provider";
-import { supabase } from "../lib/supabase/client";
+import supabase from "../lib/supabase/client";
 
 export default function RootLayout({
   children,

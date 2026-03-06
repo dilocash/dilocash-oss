@@ -5,13 +5,12 @@
  */
 "use client";
 
-import { AuthForm } from "@dilocash/ui/components/auth/auth-form";
-import { supabase } from "../../lib/supabase/client";
+import { SignupForm } from "@dilocash/ui/components/auth/signup-form";
 import { useEffect } from "react";
 import { useAuth } from "@dilocash/ui/auth/provider";
 import { useRouter } from "solito/navigation";
 
-export default function LoginScreen() {
+export default function SignupScreen() {
     const { session, isLoading } = useAuth()
     const { replace } = useRouter()
     useEffect(() => {
@@ -20,13 +19,9 @@ export default function LoginScreen() {
             replace('/main')
         }
     }, [session, isLoading, replace])
-    console.log(isLoading)
     if (isLoading) return null
 
     return (
-        <>
-            <div>asgfasgasg</div>
-            <AuthForm supabase={supabase} />
-        </>
+        <SignupForm />
     );
 }

@@ -9,5 +9,7 @@ import { getSupabaseClient } from '@dilocash/ui/auth/client';
 export const supabase = getSupabaseClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-  window.localStorage
+  typeof window !== 'undefined' ? window.localStorage : undefined
 );
+
+export default supabase;

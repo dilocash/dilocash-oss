@@ -9,15 +9,29 @@
     "action": "Iniciar Sesión",
     "forgot_password": "¿Olvidaste tu contraseña?",
     "remember_me": "Recordarme",
-    "sign_up": "¿No tienes cuenta?",
-    "sign_up_link": "Regístrate"
+    "sign_up_question": "¿No tienes cuenta?",
+    "sign_up": "Regístrate"
+  },
+  "signup": {
+    "title": "Registro",
+    "subtitle": "Ingresa tus datos para registrarte",
+    "email": "Correo electrónico",
+    "email_placeholder": "Ingresa tu correo electrónico",
+    "password": "Contraseña",
+    "password_placeholder": "Ingresa tu contraseña",
+    "password_repeat": "Repite tu contraseña",
+    "password_repeat_placeholder": "Repite tu contraseña",
+    "action": "Registrar",
+    "sign_up_question": "¿Ya tienes una cuenta?",
+    "login": "Inicia Sesión"
   },
   "commands": {
     "command_placeholder": "Dilo y regístralo...",
     "add": "Agregar",
     "record": "Grabar",
     "sync": "Sincronizar",
-    "syncing": "Sincronizando..."
+    "syncing": "Sincronizando...",
+    "connect" : "Conectar"
   },
   "intents": {
     "types": {
@@ -34,6 +48,13 @@
     "placeholders": {
       "voice_note": "Nota de voz: {{context}}"
     }
+  },
+  "transactions": {
+    "table_title":"Detalles de transacciones",
+    "description":"Descripción",
+    "currency":"Moneda",
+    "amount":"Monto",
+    "total":"Total"
   },
   "common": {
     "currency": "USD"

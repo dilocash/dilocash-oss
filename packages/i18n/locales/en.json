@@ -9,15 +9,29 @@
     "action": "Log in",
     "forgot_password": "Forgot password?",
     "remember_me": "Remember me",
-    "sign_up": "Don't have an account?",
-    "sign_up_link": "Sign up"
+    "sign_up_question": "Don't have an account?",
+    "sign_up": "Sign up"
+  },
+  "signup": {
+    "title": "Sign up",
+    "subtitle": "Enter your details to Sign up",
+    "email": "Email",
+    "email_placeholder": "Enter your email",
+    "password": "Password",
+    "password_placeholder": "Enter your password",
+    "password_repeat": "Repeat Password",
+    "password_repeat_placeholder": "Repeat your password",
+    "action": "Sign up",
+    "login_question": "Already have an account?",
+    "login": "Sign up"
   },
   "commands": {
     "command_placeholder": "Say it and track it...",
     "add": "Add",
     "record": "Record",
     "sync": "Sync",
-    "syncing": "Syncing..."
+    "syncing": "Syncing...",
+    "connect" : "Connect"
   },
   "intents": {
     "types": {
@@ -34,6 +48,13 @@
     "placeholders": {
       "voice_note": "Voice note: {{context}}"
     }
+  },
+  "transactions": {
+    "table_title":"Transaction details",
+    "description":"Description",
+    "currency":"Currency",
+    "amount":"Amount",
+    "total":"Total"
   },
   "common": {
     "currency": "USD"

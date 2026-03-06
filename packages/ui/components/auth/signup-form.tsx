@@ -1,6 +1,4 @@
 'use client';
-// packages/ui/src/components/AuthForm.tsx
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { VStack } from '../ui/vstack';
 import { Heading } from '../ui/heading';
@@ -15,7 +13,7 @@ import { useLoginForm } from '../../auth/useLoginForm';
 import { useAuth } from '../../auth/provider';
 import { useRouter } from 'solito/navigation';
 
-export const AuthForm = ({ supabase, onSuccess }: any) => {
+export const SignupForm = ({ supabase, onSuccess }: any) => {
   const { session, isLoading } = useAuth()
   const { replace } = useRouter()
   useEffect(() => {
@@ -29,21 +27,26 @@ export const AuthForm = ({ supabase, onSuccess }: any) => {
   const { form, updateField, submit, loading } = useLoginForm(supabase, onSuccess);
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
+
+  const handleSignUp = async () => {
+    replace("/auth/signup")
+  };
+
   return (
     <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full align-center justify-center">
-      <Heading>{t('login.title')}</Heading>
-      <Text className="mt-2">{t('login.subtitle')}</Text>
+      <Heading>{t('signup.title')}</Heading>
+      <Text className="mt-2">{t('signup.subtitle')}</Text>
 
-      <Text className="mt-4">{t('login.email')}</Text>
+      <Text className="mt-4">{t('signup.email')}</Text>
       <Input>
-        <InputField value={form.email} onChangeText={(text) => updateField('email', text)} type="text" placeholder={t('login.email_placeholder')} />
+        <InputField value={form.email} onChangeText={(text) => updateField('email', text)} type="text" placeholder={t('signup.email_placeholder')} />
       </Input>
 
-      <Text className="mt-6">{t('login.password')}</Text>
+      <Text className="mt-6">{t('signup.password')}</Text>
       <Input>
         <InputField
           type={showPassword ? 'text' : 'password'}
-          placeholder={t('login.password_placeholder')}
+          placeholder={t('signup.password_placeholder')}
           value={form.password}
           onChangeText={(text) => updateField('password', text)}
         />
@@ -55,24 +58,33 @@ export const AuthForm = ({ supabase, onSuccess }: any) => {
         </InputSlot>
       </Input>
 
-      <HStack className="justify-between my-5">
-        <Checkbox value={''} size="sm">
-          <CheckboxIndicator>
-            <CheckboxIcon as={CheckIcon} />
-          </CheckboxIndicator>
-          <CheckboxLabel>{t('login.remember_me')}</CheckboxLabel>
-        </Checkbox>
+      <Text className="mt-6">{t('signup.password_repeat')}</Text>
+      <Input>
+        <InputField
+          type={showPassword ? 'text' : 'password'}
+          placeholder={t('signup.password_repeat_placeholder')}
+          value={form.password}
+          onChangeText={(text) => updateField('password', text)}
+        />
+        <InputSlot
+          onPress={() => setShowPassword(!showPassword)}
+          className="mr-3"
+        >
+          <InputIcon as={showPassword ? EyeIcon : EyeOffIcon} />
+        </InputSlot>
+      </Input>
 
-        <Button variant="link" size="sm">
-          <ButtonText className="underline underline-offset-1">
-            {t('login.forgot_password')}
-          </ButtonText>
-        </Button>
-      </HStack>
-
-      <Button onPress={submit} className="w-full" size="sm">
-        <ButtonText>{t('login.action')}</ButtonText>
+      <Button onPress={submit} className="w-full mt-6" size="sm">
+        <ButtonText>{t('signup.action')}</ButtonText>
       </Button>
+
+      <Text className="text-center pt-5">{t('signup.sign_up_question')}</Text>
+      <Button variant="link" onPress={handleSignUp}>
+        <ButtonText className="underline underline-offset-1">
+          {t('signup.login')}
+        </ButtonText>
+      </Button>
+
     </VStack>
   );
 };

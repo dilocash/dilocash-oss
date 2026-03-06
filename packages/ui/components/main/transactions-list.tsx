@@ -23,6 +23,7 @@ import {
 } from "../ui/table";
 import { useObservable } from "../../hooks/useQuery";
 import { Observable } from "@nozbe/watermelondb/utils/rx";
+import { useTranslation } from "react-i18next";
 
 const TransactionsList = ({
   transactions: transactionsObservable,
@@ -32,6 +33,7 @@ const TransactionsList = ({
   className?: string;
 }) => {
   const transactions = useObservable(transactionsObservable);
+  const { t } = useTranslation();
 
   return (
     transactions.length > 0 && (
@@ -51,7 +53,7 @@ const TransactionsList = ({
                   return (
                     <>
                       <AccordionTitleText>
-                        Transaction Details
+                        {t('transactions.table_title')}
                       </AccordionTitleText>
                       {isExpanded ? (
                         <AccordionIcon as={ChevronUpIcon} className="ml-3" />
@@ -68,9 +70,9 @@ const TransactionsList = ({
                 <Table className="w-full">
                   <TableHeader>
                     <TableRow>
-                      <TableHead className="text-xs md:text-base p-1">Description</TableHead>
-                      <TableHead className="text-xs md:text-base p-1">Currency</TableHead>
-                      <TableHead className="text-xs md:text-base p-1">Amount</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">{t('transactions.description')}</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">{t('transactions.currency')}</TableHead>
+                      <TableHead className="text-xs md:text-base p-1">{t('transactions.amount')}</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -84,7 +86,7 @@ const TransactionsList = ({
                   </TableBody>
                   <TableFooter>
                     <TableRow>
-                      <TableHead className="text-xs md:text-base">Total</TableHead>
+                      <TableHead className="text-xs md:text-base">{t('transactions.total')}</TableHead>
                       <TableHead className="text-xs md:text-base"></TableHead>
                       <TableHead className="text-xs md:text-base">
                         {transactions.reduce(

@@ -7,7 +7,7 @@
 
 import CommandsView from "@dilocash/ui/components/main/commands-view";
 import { AuthProvider } from "@dilocash/ui/auth/provider";
-import { supabase } from "../../lib/supabase/client";
+import supabase from "../../lib/supabase/client";
 import { getConnectTransport } from "../../lib/connect/transport";
 import { useAuth } from "@dilocash/ui/auth/provider";
 
@@ -16,8 +16,6 @@ export default function Home() {
   const transport = getConnectTransport(session);
 
   return (
-    <AuthProvider supabase={supabase}>
-      <CommandsView transport={transport} className="h-screen" />
-    </AuthProvider>
+    <CommandsView transport={transport} className="h-screen" />
   );
 }

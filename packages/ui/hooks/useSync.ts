@@ -88,7 +88,7 @@ const useSync = (transport: Transport) => {
         },
       });
     } catch (e) {
-      console.error(e);
+      console.error('sync error', e);
     }
 
     setIsSyncing(false);
