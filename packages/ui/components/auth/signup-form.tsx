@@ -28,12 +28,26 @@ export const SignupForm = ({ supabase, onSuccess }: any) => {
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleSignUp = async () => {
-    replace("/auth/signup")
+  const handleSignIn = async () => {
+    replace('/auth/signin', {
+      experimental: {
+        nativeBehavior: 'stack-replace',
+        isNestedNavigator: false, // Set to true if inside tabs/nested stack
+      },
+    })
+  };
+
+  const handleCancel = async () => {
+    replace('/main', {
+      experimental: {
+        nativeBehavior: 'stack-replace',
+        isNestedNavigator: false, // Set to true if inside tabs/nested stack
+      },
+    })
   };
 
   return (
-    <VStack className="rounded-xl border border-outline-200 bg-background-0 p-6 w-full h-full align-center justify-center">
+    <VStack className="rounded-xl border border-outline-200 bg-background-0 p-10 w-full h-full align-center justify-center">
       <Heading>{t('signup.title')}</Heading>
       <Text className="mt-2">{t('signup.subtitle')}</Text>
 
@@ -42,7 +56,7 @@ export const SignupForm = ({ supabase, onSuccess }: any) => {
         <InputField value={form.email} onChangeText={(text) => updateField('email', text)} type="text" placeholder={t('signup.email_placeholder')} />
       </Input>
 
-      <Text className="mt-6">{t('signup.password')}</Text>
+      <Text className="mt-5">{t('signup.password')}</Text>
       <Input>
         <InputField
           type={showPassword ? 'text' : 'password'}
@@ -58,7 +72,7 @@ export const SignupForm = ({ supabase, onSuccess }: any) => {
         </InputSlot>
       </Input>
 
-      <Text className="mt-6">{t('signup.password_repeat')}</Text>
+      <Text className="mt-5">{t('signup.password_repeat')}</Text>
       <Input>
         <InputField
           type={showPassword ? 'text' : 'password'}
@@ -74,12 +88,16 @@ export const SignupForm = ({ supabase, onSuccess }: any) => {
         </InputSlot>
       </Input>
 
-      <Button onPress={submit} className="w-full mt-6" size="sm">
+      <Button onPress={submit} className="rounded-full w-full mt-5">
         <ButtonText>{t('signup.action')}</ButtonText>
       </Button>
 
+      <Button onPress={handleCancel} className="rounded-full w-full mt-5 bg-secondary-900" size="sm">
+        <ButtonText>{t('common.cancel')}</ButtonText>
+      </Button>
+
       <Text className="text-center pt-5">{t('signup.sign_up_question')}</Text>
-      <Button variant="link" onPress={handleSignUp}>
+      <Button variant="link" onPress={handleSignIn}>
         <ButtonText className="underline underline-offset-1">
           {t('signup.login')}
         </ButtonText>

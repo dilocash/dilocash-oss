@@ -9,6 +9,8 @@ import { SignupForm } from "@dilocash/ui/components/auth/signup-form";
 import { useEffect } from "react";
 import { useAuth } from "@dilocash/ui/auth/provider";
 import { useRouter } from "solito/navigation";
+import { Box } from "@dilocash/ui/components/ui/box";
+import { Center } from "@dilocash/ui/components/ui/center";
 
 export default function SignupScreen() {
     const { session, isLoading } = useAuth()
@@ -22,6 +24,10 @@ export default function SignupScreen() {
     if (isLoading) return null
 
     return (
-        <SignupForm />
+        <Box className="w-screen h-screen items-center justify-center">
+            <Center className="w-full h-full md:w-auto md:h-auto">
+                <SignupForm />
+            </Center>
+        </Box>
     );
 }

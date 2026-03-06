@@ -57,6 +57,7 @@
     "total":"Total"
   },
   "common": {
-    "currency": "USD"
+    "currency": "USD",
+    "cancel": "Cancel"
   }
 }
