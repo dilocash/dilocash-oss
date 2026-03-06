@@ -170,6 +170,9 @@ clean-ui: ## Remove generated ui code
 	rm -rf packages/ui/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
 
+clean-expo: ## clears expo
+	cd apps/mobile && pnpm run clear
+
 tidy: ## Tidy Go modules
 	cd apps/api && go mod tidy
 	cd infra && go mod tidy

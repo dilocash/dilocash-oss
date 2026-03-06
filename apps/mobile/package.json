@@ -4,6 +4,7 @@
   "version": "0.1.0",
   "scripts": {
     "start": "expo start --clear",
+    "clear": "CI=1 expo start --clear",
     "reset-project": "node ./scripts/reset-project.js",
     "android": "DARK_MODE=class expo run:android",
     "ios": "DARK_MODE=class expo run:ios",
