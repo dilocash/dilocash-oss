@@ -2,12 +2,14 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import { Session, User, SupabaseClient } from '@supabase/supabase-js'
 
 type AuthContextType = {
+    supabase: SupabaseClient | null
     session: Session | null
     user: User | null
     isLoading: boolean
 }
 
 const AuthContext = createContext<AuthContextType>({
+    supabase: null,
     session: null,
     user: null,
     isLoading: true,
@@ -20,12 +22,14 @@ export function AuthProvider({ supabase, children }: { supabase: SupabaseClient,
     useEffect(() => {
         // get session
         supabase.auth.getSession().then(({ data: { session } }) => {
+            console.debug('getSession', session)
             setSession(session)
             setIsLoading(false)
         })
 
         // listen for changes (login, logout, etc.)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            console.debug('onAuthStateChange', _event, session)
             setSession(session)
             setIsLoading(false)
         })
@@ -34,7 +38,7 @@ export function AuthProvider({ supabase, children }: { supabase: SupabaseClient,
     }, [])
 
     return (
-        <AuthContext.Provider value={{ session, user: session?.user ?? null, isLoading }}>
+        <AuthContext.Provider value={{ session, supabase, user: session?.user ?? null, isLoading }}>
             {children}
         </AuthContext.Provider>
     )

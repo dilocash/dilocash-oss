@@ -12,7 +12,7 @@ import { useEffect } from "react";
 import { useAuth } from "@dilocash/ui/auth/provider";
 import { useRouter } from "solito/navigation";
 import { Box } from "@dilocash/ui/components/ui/box";
-
+// not used, only signin/signup with otp working properly @see SignupFormOTP
 export default function LoginScreen() {
   const { session, isLoading } = useAuth()
   const { replace } = useRouter()

@@ -6,8 +6,6 @@
 "use client";
 
 import CommandsView from "@dilocash/ui/components/main/commands-view";
-import { AuthProvider } from "@dilocash/ui/auth/provider";
-import supabase from "../../lib/supabase/client";
 import { getConnectTransport } from "../../lib/connect/transport";
 import { useAuth } from "@dilocash/ui/auth/provider";
 

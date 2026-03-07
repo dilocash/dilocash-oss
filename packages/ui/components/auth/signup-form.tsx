@@ -6,14 +6,12 @@ import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
 import { Button, ButtonText } from '../ui/button';
 import { Text } from '../ui/text';
 import { useState, useEffect } from 'react';
-import { CheckIcon, EyeIcon, EyeOffIcon } from "../ui/icon";
-import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "../ui/checkbox";
-import { HStack } from '../ui/hstack';
-import { useLoginForm } from '../../auth/useLoginForm';
+import { EyeIcon, EyeOffIcon } from "../ui/icon";
+import { useSigninForm } from '../../auth/useSigninForm';
 import { useAuth } from '../../auth/provider';
 import { useRouter } from 'solito/navigation';
 
-export const SignupForm = ({ supabase, onSuccess }: any) => {
+export const SignupForm = ({ supabase, onOTPSent }: any) => {
   const { session, isLoading } = useAuth()
   const { replace } = useRouter()
   useEffect(() => {
@@ -24,7 +22,7 @@ export const SignupForm = ({ supabase, onSuccess }: any) => {
 
   if (isLoading) return null
 
-  const { form, updateField, submit, loading } = useLoginForm(supabase, onSuccess);
+  const { form, updateField, submit, loading } = useSigninForm(supabase, onOTPSent);
   const { t } = useTranslation();
   const [showPassword, setShowPassword] = useState(false);
 

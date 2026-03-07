@@ -5,28 +5,41 @@
  */
 "use client";
 
-import { SignupForm } from "@dilocash/ui/components/auth/signup-form";
-import { useEffect } from "react";
-import { useAuth } from "@dilocash/ui/auth/provider";
+import supabase from "../../../lib/supabase/client";
+import { SignupFormOTP } from "@dilocash/ui/components/auth/signup-form-otp";
+import { VerifyCodeForm } from "@dilocash/ui/components/auth/verify-code-form";
+import { useState } from "react";
 import { useRouter } from "solito/navigation";
 import { Box } from "@dilocash/ui/components/ui/box";
 import { Center } from "@dilocash/ui/components/ui/center";
 
 export default function SignupScreen() {
-    const { session, isLoading } = useAuth()
     const { replace } = useRouter()
-    useEffect(() => {
-        // If session exists, redirect to main screen
-        if (!isLoading && session) {
-            replace('/main')
-        }
-    }, [session, isLoading, replace])
-    if (isLoading) return null
+    const [emailForVerification, setEmailForVerification] = useState(null);
+    const handleOtpSent = (email: any) => {
+        console.debug(`otp sent to ${email}`)
+        setEmailForVerification(email);
+    };
+
+    const handleOtpVerified = (email: any) => {
+        console.debug(`otp verified for ${email}`)
+        setEmailForVerification(null);
+        replace('/main', {
+            experimental: {
+                nativeBehavior: 'stack-replace',
+                isNestedNavigator: false,
+            },
+        })
+    };
 
     return (
         <Box className="w-screen h-screen items-center justify-center">
             <Center className="w-full h-full md:w-auto md:h-auto">
-                <SignupForm />
+                {!emailForVerification ? (
+                    <SignupFormOTP supabase={supabase} onOTPSent={handleOtpSent} />
+                ) : (
+                    <VerifyCodeForm supabase={supabase} email={emailForVerification} onOTPVerified={handleOtpVerified} />
+                )}
             </Center>
         </Box>
     );

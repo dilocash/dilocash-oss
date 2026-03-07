@@ -67,7 +67,6 @@ function RootLayoutNav() {
               screenOptions={{
                 headerShown: false,
                 statusBarHidden: false,
-                statusBarTranslucent: true,
                 statusBarStyle: "dark",
               }}
             />

@@ -23,7 +23,24 @@
     "password_repeat_placeholder": "Repite tu contraseña",
     "action": "Registrar",
     "sign_up_question": "¿Ya tienes una cuenta?",
-    "login": "Inicia Sesión"
+    "login": "Inicia Sesión",
+    "otp": {
+      "title" : "Registro/Inicio de Sesión por código OTP",
+      "subtitle": "Ingresa tus datos para iniciar sesión con código OTP (contraseña de un solo uso)",
+      "action": "Solicitar código",
+      "email_helper": "Debes ingresar un correo electrónico válido",
+      "email_invalid": "Un correo electrónico válido es requerido"
+    }
+  },
+  "otp" : {
+    "title": "Validación de código OTP",
+    "subtitle": "Ingresa el código OTP enviado a",
+    "code_label": "Código OTP",
+    "code_placeholder": "Ingresa el código OTP",
+    "code_helper": "Debe ser un código de 6 digitos",
+    "code_invalid": "Debe ser un código de 6 digitos",
+    "action": "Validar",
+    "validation_failed": "Código OTP inválido"
   },
   "commands": {
     "command_placeholder": "Dilo y regístralo...",
@@ -58,6 +75,12 @@
   },
   "common": {
     "currency": "USD",
-    "cancel" : "Cancelar"
+    "cancel" : "Cancelar",
+    "connect": "Iniciar sesión",
+    "disconnect": "Cerrar sesión",
+    "connected": "Conectado",
+    "disconnected": "Desconectado",
+    "connected_as": "Conectado como",
+    "offline_first_docs" : "Esta app tiene una forma de trabajo 'Primero sin conexion', por lo que puedes usarla y trabajar con ella sin una sesion activa, al iniciar sesion, el proceso de sincronizacion actualizara tu contenido automaticamente."
   }
 }

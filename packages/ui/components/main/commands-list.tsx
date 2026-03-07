@@ -23,10 +23,8 @@ const CommandsListView = ({ className }: { className?: string }) => {
 
   // Create a ref for the bottom-most element
   const bottomOfPanelRef = useRef<HTMLDivElement>(null);
-  console.debug("Platform.OS", Platform.OS);
   const isWeb = Platform.OS === 'web';
   if (isWeb) {
-    console.debug("isWeb", isWeb);
     // Use useEffect to scroll to the ref whenever messages change
     useEffect(() => {
       // The scrollIntoView method handles the actual scrolling

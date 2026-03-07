@@ -23,15 +23,31 @@
     "password_repeat_placeholder": "Repeat your password",
     "action": "Sign up",
     "login_question": "Already have an account?",
-    "login": "Sign up"
+    "login": "Sign up",
+    "otp": {
+      "title" : "OTP Sign in/Sign up",
+      "subtitle": "Enter your details to Sign up/Sign in with an OTP code (One time password)",
+      "action": "Request code",
+      "email_helper": "Must be a valid email.",
+      "email_invalid": "A valid email is required"
+    }
+  },
+  "otp" : {
+    "title": "OTP validation",
+    "subtitle": "Enter the OTP code sent to",
+    "code_label": "OTP code",
+    "code_placeholder": "Enter the OTP code",
+    "code_helper": "Must be a 6 digits code",
+    "code_invalid": "Must be a 6 digits code",
+    "action": "Validate",
+    "validation_failed": "Invalid OTP code"
   },
   "commands": {
     "command_placeholder": "Say it and track it...",
     "add": "Add",
     "record": "Record",
     "sync": "Sync",
-    "syncing": "Syncing...",
-    "connect" : "Connect"
+    "syncing": "Syncing..."
   },
   "intents": {
     "types": {
@@ -58,6 +74,12 @@
   },
   "common": {
     "currency": "USD",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "connect": "Connect",
+    "disconnect": "Disconnect",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "connected_as": "Connected as",
+    "offline_first_docs" : "This app has an 'Offline First' mode, so you can use it and work with it without an active session. When you log in, the synchronization process will automatically update your content."
   }
 }

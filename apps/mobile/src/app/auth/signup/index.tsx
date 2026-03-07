@@ -5,24 +5,39 @@
  */
 "use client";
 
-import { SignupForm } from "@dilocash/ui/components/auth/signup-form";
-import { useEffect } from "react";
-import { useAuth } from "@dilocash/ui/auth/provider";
+import supabase from "../../lib/supabase/client";
+import { SignupFormOTP } from "@dilocash/ui/components/auth/signup-form-otp";
+import { VerifyCodeForm } from "@dilocash/ui/components/auth/verify-code-form";
+import { useState } from "react";
 import { useRouter } from "solito/navigation";
+import { Box } from "@dilocash/ui/components/ui/box";
 
-export default function SigninScreen() {
-    const { session, isLoading } = useAuth()
-    const { push } = useRouter()
-    useEffect(() => {
-        // If session exists, redirect to main screen
-        if (!isLoading && session) {
-            push('/main')
-        }
-    }, [session, isLoading])
-    if (isLoading) return null
+export default function SignupScreen() {
+    const { replace } = useRouter()
+    const [emailForVerification, setEmailForVerification] = useState(null);
+    const handleOtpSent = (email: any) => {
+        console.debug(`otp sent to ${email}`)
+        setEmailForVerification(email);
+    };
+
+    const handleOtpVerified = (email: any) => {
+        console.debug(`otp verified for ${email}`)
+        setEmailForVerification(null);
+        replace('/main', {
+            experimental: {
+                nativeBehavior: 'stack-replace',
+                isNestedNavigator: false,
+            },
+        })
+    };
 
     return (
-        <SignupForm />
+        <Box className="h-full">
+            {!emailForVerification ? (
+                <SignupFormOTP supabase={supabase} onOTPSent={handleOtpSent} />
+            ) : (
+                <VerifyCodeForm supabase={supabase} email={emailForVerification} onOTPVerified={handleOtpVerified} />
+            )}
+        </Box>
     );
-
 }

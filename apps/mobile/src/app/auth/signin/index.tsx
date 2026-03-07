@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import { useAuth } from "@dilocash/ui/auth/provider";
 import { useRouter } from "solito/navigation";
 
+// not used, only signin/signup with otp working properly @see SignupFormOTP
 export default function SigninScreen() {
     const { session, isLoading } = useAuth()
     const { push } = useRouter()
