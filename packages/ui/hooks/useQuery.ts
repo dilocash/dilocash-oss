@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 import { Observable } from "@nozbe/watermelondb/utils/rx";
 import { useEffect, useState } from "react";
 import { Command } from "@dilocash/database/local/model/commmand";

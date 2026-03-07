@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 import { createContext, useContext, useEffect, useState } from 'react'
 import { Session, User, SupabaseClient } from '@supabase/supabase-js'
 

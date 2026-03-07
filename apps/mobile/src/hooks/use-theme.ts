@@ -1,4 +1,10 @@
 /**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
+/**
  * Learn more about light and dark modes:
  * https://docs.expo.dev/guides/color-schemes/
  */
