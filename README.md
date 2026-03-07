@@ -258,7 +258,7 @@ We document our "Why." All architectural choices are logged in `docs/adr/`.
 - **ADR 041:** [Adoption of Fargate for gRPC Support](docs/adr/0041-adoption-of-fargate-for-grpc-support.md)
 - **ADR 042:** [Adoption of Goverter for Automated Model Mapping](docs/adr/0042-adoption-of-goverter-for-mapping.md)
 - **ADR 043:** [Offline-First Architecture using RxDB and Connect-go](docs/adr/0043-offline-first-architecture.md)
-
+- **ADR 044:** [Local Database Selection — WatermelonDB over RxDB](docs/adr/0044-local-database-selection-watermelondb.md)
 ---
 
 # expo mobile commands:

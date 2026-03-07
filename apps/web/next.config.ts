@@ -9,6 +9,7 @@ import { withGluestackUI } from '@gluestack/ui-next-adapter';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  turbopack: {},
   transpilePackages: [
     "@dilocash/ui",
     "@dilocash/database",
