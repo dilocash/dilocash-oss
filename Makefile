@@ -5,7 +5,7 @@ BIN_DIR := ./bin
 PROTO_DIR := ./packages/proto
 GEN_DIR := ./gen
 DOCS_DIR := ./docs/diagrams
-LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts"
+LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts" -ignore "pnpm-lock.yaml"
 
 # Tools
 BUF := buf
@@ -55,8 +55,8 @@ install: ## Install all dependencies at the root
 dev: install ## Start all applications (API, Web, Mobile) via Turborepo
 	pnpm dev
 
-dev-mobile: install ## Start Mobile Android app via Turborepo
-	pnpm dev --filter @dilocash/mobile -- --android --clear
+dev-mobile: install ## Start Mobile Android app
+	cd apps/mobile && pnpm run android
 
 dev-web: install ## Start Web app via Turborepo
 	pnpm dev --filter @dilocash/web
@@ -169,6 +169,9 @@ clean-ui: ## Remove generated ui code
 	rm -rf apps/mobile/node_modules apps/mobile/.expo apps/mobile/android apps/mobile/ios
 	rm -rf packages/ui/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
+
+clean-expo: ## clears expo
+	cd apps/mobile && pnpm run clear
 
 tidy: ## Tidy Go modules
 	cd apps/api && go mod tidy

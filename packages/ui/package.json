@@ -15,6 +15,7 @@
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
+    "@legendapp/motion": "^2.4.0",
     "@nozbe/watermelondb": "^0.28.0",
     "@supabase/supabase-js": "^2.97.0",
     "i18next": "^25.8.7",
@@ -23,7 +24,8 @@
     "react": "19.2.0",
     "react-aria": "^3.41.1",
     "react-dom": "19.2.0",
-    "react-i18next": "^16.5.4"
+    "react-i18next": "^16.5.4",
+    "solito": "^5.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

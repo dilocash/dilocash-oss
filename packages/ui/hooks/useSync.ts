@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 import { synchronize, SyncPullResult } from "@nozbe/watermelondb/sync";
 import { create } from "@bufbuild/protobuf";
 import { TimestampSchema, Timestamp } from "@bufbuild/protobuf/wkt";
@@ -88,7 +94,7 @@ const useSync = (transport: Transport) => {
         },
       });
     } catch (e) {
-      console.error(e);
+      console.error('sync error', e);
     }
 
     setIsSyncing(false);

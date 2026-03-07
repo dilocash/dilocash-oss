@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 "use client";
 
 import { useDatabase } from "@nozbe/watermelondb/react";
@@ -23,10 +29,8 @@ const CommandsListView = ({ className }: { className?: string }) => {
 
   // Create a ref for the bottom-most element
   const bottomOfPanelRef = useRef<HTMLDivElement>(null);
-  console.debug("Platform.OS", Platform.OS);
   const isWeb = Platform.OS === 'web';
   if (isWeb) {
-    console.debug("isWeb", isWeb);
     // Use useEffect to scroll to the ref whenever messages change
     useEffect(() => {
       // The scrollIntoView method handles the actual scrolling

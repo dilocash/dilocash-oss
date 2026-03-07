@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   darkMode: process.env.DARK_MODE === 'media' ? 'media' : 'class',

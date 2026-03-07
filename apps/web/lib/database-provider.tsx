@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 "use client";
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { Database } from '@nozbe/watermelondb';
@@ -22,6 +28,9 @@ const CustomeDatabaseProvider = ({ children }: PropsWithChildren) => {
         useIncrementalIndexedDB: true,
         dbName: "dilocash",
         schema,
+        onSetUpError: (error: Error) => {
+          console.log("error setting up database", error);
+        },
       });
 
       const db = new Database({
