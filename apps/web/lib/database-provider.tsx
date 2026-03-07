@@ -22,6 +22,9 @@ const CustomeDatabaseProvider = ({ children }: PropsWithChildren) => {
         useIncrementalIndexedDB: true,
         dbName: "dilocash",
         schema,
+        onSetUpError: (error: Error) => {
+          console.log("error setting up database", error);
+        },
       });
 
       const db = new Database({
