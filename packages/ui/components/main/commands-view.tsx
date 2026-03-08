@@ -18,7 +18,7 @@ const CommandsView = ({ transport, className }: { transport: Transport, classNam
     <VStack className={`${className}`}>
       <TopBar />
       <CommandsListView className="flex-1" />
-      <CommandsBar transport={transport} className={`px-2 pt-2 ${isWeb ? "m-2" : ""}`} />
+      <CommandsBar transport={transport} className={`px-2 pt-2 ${isWeb ? "mb-5" : ""}`} />
     </VStack>
   );
 };

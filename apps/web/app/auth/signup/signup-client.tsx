@@ -5,14 +5,15 @@
  */
 "use client";
 
-import supabase from "../../lib/supabase/client";
+import supabase from "../../../lib/supabase/client";
 import { SignupFormOTP } from "@dilocash/ui/components/auth/signup-form-otp";
 import { VerifyCodeForm } from "@dilocash/ui/components/auth/verify-code-form";
 import { useState } from "react";
 import { useRouter } from "solito/navigation";
 import { Box } from "@dilocash/ui/components/ui/box";
+import { Center } from "@dilocash/ui/components/ui/center";
 
-export default function SignupScreen() {
+export default function SignupClient() {
     const { replace } = useRouter()
     const [emailForVerification, setEmailForVerification] = useState(null);
     const handleOtpSent = (email: any) => {
@@ -32,12 +33,14 @@ export default function SignupScreen() {
     };
 
     return (
-        <Box className="h-full">
-            {!emailForVerification ? (
-                <SignupFormOTP supabase={supabase} onOTPSent={handleOtpSent} />
-            ) : (
-                <VerifyCodeForm supabase={supabase} email={emailForVerification} onOTPVerified={handleOtpVerified} />
-            )}
+        <Box className="w-screen h-screen items-center justify-center">
+            <Center className="w-full h-full md:w-auto md:h-auto">
+                {!emailForVerification ? (
+                    <SignupFormOTP supabase={supabase} onOTPSent={handleOtpSent} />
+                ) : (
+                    <VerifyCodeForm supabase={supabase} email={emailForVerification} onOTPVerified={handleOtpVerified} />
+                )}
+            </Center>
         </Box>
     );
 }
