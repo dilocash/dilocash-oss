@@ -5,11 +5,11 @@
  */
 "use client";
 
-import { SigninForm } from "@dilocash/ui-components/components/auth/signin-form";
+import { SigninForm } from "@dilocash/ui-features/features/auth/signin-form";
 import { Center } from "@dilocash/ui-components/components/ui/center";
 import supabase from "../../../lib/supabase/client";
 import { useEffect } from "react";
-import { useAuth } from "@dilocash/ui-components/auth/provider";
+import { useAuth } from "@dilocash/ui-features/utils/auth-provider";
 import { useRouter } from "solito/navigation";
 import { Box } from "@dilocash/ui-components/components/ui/box";
 
