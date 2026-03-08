@@ -9,6 +9,12 @@ import "../styles/styles.css";
 import type { Viewport, Metadata } from 'next';
 import { headers } from 'next/headers';
 import ClientLayout from './client-layout';
+import { SerwistProvider } from "./serwist/serwist";
+
+const APP_NAME = "Dilocash";
+const APP_DEFAULT_TITLE = "Dilocash";
+const APP_TITLE_TEMPLATE = "%s | Dilocash";
+const APP_DESCRIPTION = "Manage your cash and expenses easily with dilocash.";
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -20,11 +26,11 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: {
-    default: 'dilocash',
-    template: '%s | dilocash',
+    default: APP_DEFAULT_TITLE,
+    template: APP_TITLE_TEMPLATE,
   },
-  description: 'Manage your cash and expenses easily with dilocash.',
-  applicationName: 'dilocash',
+  description: APP_DESCRIPTION,
+  applicationName: APP_NAME,
   authors: [{ name: 'dilocash' }],
   keywords: ['cash', 'expenses', 'finance', 'management'],
   appleWebApp: {
@@ -37,14 +43,20 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: 'website',
-    siteName: 'dilocash',
-    title: 'dilocash',
-    description: 'Manage your cash and expenses easily with dilocash.',
+    siteName: APP_NAME,
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
   },
   twitter: {
     card: 'summary',
-    title: 'dilocash',
-    description: 'Manage your cash and expenses easily with dilocash.',
+    title: {
+      default: APP_DEFAULT_TITLE,
+      template: APP_TITLE_TEMPLATE,
+    },
+    description: APP_DESCRIPTION,
   },
 };
 
@@ -82,9 +94,12 @@ export default async function RootLayout({
   const locale = detectLocale(headersList.get('accept-language'));
 
   return (
-    <html lang={locale}>
+    <html lang={locale} dir="ltr">
+      <head />
       <body>
-        <ClientLayout locale={locale}>{children}</ClientLayout>
+        <SerwistProvider swUrl="/serwist/sw.js">
+          <ClientLayout locale={locale}>{children}</ClientLayout>
+        </SerwistProvider>
       </body>
     </html>
   );

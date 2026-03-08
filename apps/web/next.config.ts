@@ -6,18 +6,25 @@
 
 import type { NextConfig } from "next";
 import { withGluestackUI } from '@gluestack/ui-next-adapter';
+import { withSerwist } from "@serwist/turbopack";
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  turbopack: {},
+  turbopack: {
+    resolveAlias: {
+      "react-native": "react-native-web",
+    }
+  },
   transpilePackages: [
     "@dilocash/ui",
     "@dilocash/database",
     "@gluestack-ui/core",
     "@gluestack-ui/utils",
     "@gluestack/ui-next-adapter",
-    "react-native-css-interop"
+    "react-native-css-interop",
+    "react-native-svg",
+    "react-native-safe-area-context"
   ]
 };
 
-export default withGluestackUI(nextConfig);
+export default withSerwist(withGluestackUI(nextConfig));

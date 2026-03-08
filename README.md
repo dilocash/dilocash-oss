@@ -320,6 +320,18 @@ npx expo prebuild
 ## debug build
 `android/app/build/outputs/apk/debug/app-debug.apk`
 
+# kill local web server
+
+```
+pkill -9 -f "next dev" || true && pkill -9 -f "turbo" || true
+```
+
+# generate pwa icons
+
+```
+cd apps/web
+pnpx pwa-assets-generator --preset minimal-2023 public/dilocash.svg
+```
 
 ## 📄 License
 
