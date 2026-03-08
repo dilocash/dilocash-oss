@@ -1,3 +1,9 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 // @ts-check
 // If you want to use the fully resolved Next.js
 // configuration to resolve Serwist configuration,

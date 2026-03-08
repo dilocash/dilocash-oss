@@ -1,2 +1,8 @@
+/**
+ * Copyright (c) 2026 dilocash
+ * Use of this source code is governed by an MIT-style
+ * license that can be found in the LICENSE file.
+ */
+
 "use client";
 export { SerwistProvider } from "@serwist/next/react";

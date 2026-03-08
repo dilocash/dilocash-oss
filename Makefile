@@ -115,6 +115,8 @@ lint: ## Run linters for Go and Protobuf
 test: ## Run Go tests
 	@echo "🚀 Running tests..."
 	cd apps/api && go test -v -race ./...
+	cd packages/ui && pnpm test
+	cd packages/i18n && pnpm test
 
 # --- Database Migrations ---
 

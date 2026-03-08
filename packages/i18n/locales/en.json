@@ -23,7 +23,7 @@
     "password_repeat_placeholder": "Repeat your password",
     "action": "Sign up",
     "login_question": "Already have an account?",
-    "login": "Sign up",
+    "login": "Sign in",
     "otp": {
       "title" : "OTP Sign in/Sign up",
       "subtitle": "Enter your details to Sign up/Sign in with an OTP code (One time password)",
@@ -47,7 +47,8 @@
     "add": "Add",
     "record": "Record",
     "sync": "Sync",
-    "syncing": "Syncing..."
+    "syncing": "Syncing...",
+    "connect": "Connect"
   },
   "intents": {
     "types": {

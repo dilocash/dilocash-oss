@@ -22,7 +22,7 @@
     "password_repeat": "Repite tu contraseña",
     "password_repeat_placeholder": "Repite tu contraseña",
     "action": "Registrar",
-    "sign_up_question": "¿Ya tienes una cuenta?",
+    "login_question": "¿Ya tienes una cuenta?",
     "login": "Inicia Sesión",
     "otp": {
       "title" : "Registro/Inicio de Sesión por código OTP",

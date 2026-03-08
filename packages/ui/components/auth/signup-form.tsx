@@ -100,7 +100,7 @@ export const SignupForm = ({ supabase, onOTPSent }: any) => {
         <ButtonText>{t('common.cancel')}</ButtonText>
       </Button>
 
-      <Text className="text-center pt-5">{t('signup.sign_up_question')}</Text>
+      <Text className="text-center pt-5">{t('signup.login_question')}</Text>
       <Button variant="link" onPress={handleSignIn}>
         <ButtonText className="underline underline-offset-1">
           {t('signup.login')}
