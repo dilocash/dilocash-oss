@@ -26,7 +26,7 @@ export const SignupFormOTP = ({ supabase, onOTPSent }: any) => {
   const { replace } = useRouter()
   useEffect(() => {
     if (!isLoading && session) {
-      replace('/main')
+      replace('/')
     }
   }, [session, isLoading, replace])
 
@@ -42,7 +42,7 @@ export const SignupFormOTP = ({ supabase, onOTPSent }: any) => {
   };
 
   const handleCancel = async () => {
-    replace('/main', {
+    replace('/', {
       experimental: {
         nativeBehavior: 'stack-replace',
         isNestedNavigator: false, // Set to true if inside tabs/nested stack
@@ -60,7 +60,12 @@ export const SignupFormOTP = ({ supabase, onOTPSent }: any) => {
           <FormControlLabelText>{t('signup.email')}</FormControlLabelText>
         </FormControlLabel>
         <Input>
-          <InputField value={form.email} onChangeText={(text) => updateField('email', text)} type="text" placeholder={t('signup.email_placeholder')} />
+          <InputField
+            value={form.email}
+            onChangeText={(text) => updateField('email', text)}
+            type="text"
+            keyboardType="email-address"
+            placeholder={t('signup.email_placeholder')} />
         </Input>
         <FormControlHelper>
           <FormControlHelperText>

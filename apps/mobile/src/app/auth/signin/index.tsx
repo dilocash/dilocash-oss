@@ -18,7 +18,7 @@ export default function SigninScreen() {
     useEffect(() => {
         // If session exists, redirect to main screen
         if (!isLoading && session) {
-            push('/main')
+            push('/')
         }
     }, [session, isLoading])
     if (isLoading) return null

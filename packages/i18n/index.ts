@@ -10,7 +10,8 @@ import LanguageDetector from 'i18next-browser-languagedetector'; // Web only
 import es from './locales/es.json';
 import en from './locales/en.json';
 
-export const initI18n = (isWeb: boolean, extraLng?: string) => {
+export const initI18n = (isWeb: boolean, extraLng?: string): Promise<unknown> => {
+  if (i18n.isInitialized) return Promise.resolve();
   const instance = i18n.use(initReactI18next);
 
   // Only use the automatic detector if we are on the web

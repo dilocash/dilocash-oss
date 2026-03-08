@@ -4,48 +4,87 @@
  * license that can be found in the LICENSE file.
  */
 
-"use client";
 import "../styles/global.css";
 import "../styles/styles.css";
+import type { Viewport, Metadata } from 'next';
+import { headers } from 'next/headers';
+import ClientLayout from './client-layout';
 
-import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
-import DatabaseProvider from '../lib/database-provider';
-import i18n, { initI18n } from '@dilocash/i18n';
-import { useEffect, useState } from 'react';
-import { AppLoader } from '@dilocash/ui/components/app-loader';
-import { AuthProvider } from "@dilocash/ui/auth/provider";
-import supabase from "../lib/supabase/client";
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#ffffff',
+};
 
-export default function RootLayout({
+export const metadata: Metadata = {
+  title: {
+    default: 'dilocash',
+    template: '%s | dilocash',
+  },
+  description: 'Manage your cash and expenses easily with dilocash.',
+  applicationName: 'dilocash',
+  authors: [{ name: 'dilocash' }],
+  keywords: ['cash', 'expenses', 'finance', 'management'],
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'dilocash',
+  },
+  formatDetection: {
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    siteName: 'dilocash',
+    title: 'dilocash',
+    description: 'Manage your cash and expenses easily with dilocash.',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'dilocash',
+    description: 'Manage your cash and expenses easily with dilocash.',
+  },
+};
+
+const SUPPORTED_LOCALES = ['es', 'en'] as const;
+type Locale = (typeof SUPPORTED_LOCALES)[number];
+const DEFAULT_LOCALE: Locale = 'en';
+
+/**
+ * Parses the Accept-Language header and returns the best matching
+ * supported locale, falling back to DEFAULT_LOCALE.
+ *
+ * e.g. "es-419,es;q=0.9,en;q=0.8" → "es"
+ */
+function detectLocale(acceptLanguage: string | null): Locale {
+  if (!acceptLanguage) return DEFAULT_LOCALE;
+
+  const preferred = acceptLanguage
+    .split(',')
+    .map((part) => {
+      const [tag, q] = part.trim().split(';q=');
+      return { lang: tag?.split('-')[0]?.toLowerCase() ?? '', q: q ? parseFloat(q) : 1 };
+    })
+    .sort((a, b) => b.q - a.q)
+    .map((p) => p.lang);
+
+  return (preferred.find((l): l is Locale => (SUPPORTED_LOCALES as readonly string[]).includes(l))) ?? DEFAULT_LOCALE;
+}
+
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [isReady, setIsReady] = useState(false);
-  useEffect(() => {
-    // init i18n
+  const headersList = await headers();
+  const locale = detectLocale(headersList.get('accept-language'));
 
-    const setup = async () => {
-      await initI18n(true);
-      var millisecondsToWait = 50;
-      setTimeout(function () {
-        // Whatever you want to do after the wait
-        setIsReady(true);
-      }, millisecondsToWait);
-    };
-    setup();
-
-  }, []);
   return (
-    <html lang={i18n.language}>
+    <html lang={locale}>
       <body>
-        <DatabaseProvider>
-          <GluestackUIProvider mode="light">
-            <AuthProvider supabase={supabase}>
-              {!isReady ? <AppLoader subMessage="..." isWeb={true} /> : children}
-            </AuthProvider>
-          </GluestackUIProvider>
-        </DatabaseProvider>
+        <ClientLayout locale={locale}>{children}</ClientLayout>
       </body>
     </html>
   );

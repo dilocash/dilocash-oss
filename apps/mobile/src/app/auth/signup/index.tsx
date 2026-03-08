@@ -23,7 +23,7 @@ export default function SignupScreen() {
     const handleOtpVerified = (email: any) => {
         console.debug(`otp verified for ${email}`)
         setEmailForVerification(null);
-        replace('/main', {
+        replace('/', {
             experimental: {
                 nativeBehavior: 'stack-replace',
                 isNestedNavigator: false,

@@ -25,7 +25,7 @@ export const SigninForm = ({ supabase, onSuccess }: any) => {
   const { replace } = useRouter()
   useEffect(() => {
     if (!isLoading && session) {
-      replace('/main')
+      replace('/')
     }
   }, [session, isLoading, replace])
 
@@ -45,7 +45,7 @@ export const SigninForm = ({ supabase, onSuccess }: any) => {
   };
 
   const handleCancel = async () => {
-    replace('/main', {
+    replace('/', {
       experimental: {
         nativeBehavior: 'stack-replace',
         isNestedNavigator: false, // Set to true if inside tabs/nested stack

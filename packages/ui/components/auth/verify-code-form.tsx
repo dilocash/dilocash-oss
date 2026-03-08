@@ -18,6 +18,7 @@ import { useRouter } from 'solito/navigation';
 import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from '../ui/form-control';
 import { Box } from '../ui/box';
 import { Alert, AlertIcon, AlertText } from '../ui/alert';
+import { HStack } from '../ui/hstack';
 
 export const VerifyCodeForm = ({ supabase, email, onOTPVerified }: any) => {
   const { replace } = useRouter()
@@ -39,7 +40,7 @@ export const VerifyCodeForm = ({ supabase, email, onOTPVerified }: any) => {
   };
 
   const handleCancel = async () => {
-    replace('/main', {
+    replace('/', {
       experimental: {
         nativeBehavior: 'stack-replace',
         isNestedNavigator: false, // Set to true if inside tabs/nested stack
@@ -60,7 +61,10 @@ export const VerifyCodeForm = ({ supabase, email, onOTPVerified }: any) => {
   return (
     <VStack className="rounded-xl border border-outline-200 bg-background-0 p-10 w-full h-full align-center justify-center">
       <Heading>{t('otp.title')}</Heading>
-      <Box className='w-full flex-row mt-2'><Text>{t('otp.subtitle')}</Text><Text className='italic ml-2'>{email}</Text></Box>
+      <HStack className='inline' space="md">
+        <Text>{t('otp.subtitle') + " "}</Text>
+        <Text className='italic'>{email}</Text>
+      </HStack>
       <FormControl className="mt-4" isInvalid={isInvalid}>
         <FormControlLabel>
           <FormControlLabelText>{t('otp.code_label')}</FormControlLabelText>

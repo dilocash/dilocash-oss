@@ -111,7 +111,7 @@ const CommandsBar = ({ transport, className }: { transport: Transport, className
       space="sm"
       className={className}
     >
-      <Input variant="rounded" className="grow">
+      <Input variant="rounded" className="flex-1">
         <InputField
           value={commandText}
           onChangeText={(text) => setCommandText(text)}
