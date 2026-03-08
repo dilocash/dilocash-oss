@@ -14,6 +14,6 @@ export default function MainClient() {
   const transport = getConnectTransport(session);
 
   return (
-    <CommandsView transport={transport} className="h-screen h-dvh" />
+    <CommandsView transport={transport} className="h-dvh" />
   );
 }
