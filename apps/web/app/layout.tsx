@@ -92,12 +92,11 @@ export default async function RootLayout({
 }>) {
   const headersList = await headers();
   const locale = detectLocale(headersList.get('accept-language'));
-
   return (
     <html lang={locale} dir="ltr">
       <head />
       <body>
-        <SerwistProvider swUrl="/serwist/sw.js">
+        <SerwistProvider swUrl="/sw.js" /* disable={process.env.NODE_ENV === "development"} */>
           <ClientLayout locale={locale}>{children}</ClientLayout>
         </SerwistProvider>
       </body>

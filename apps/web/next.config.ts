@@ -6,8 +6,6 @@
 
 import type { NextConfig } from "next";
 import { withGluestackUI } from '@gluestack/ui-next-adapter';
-import { withSerwist } from "@serwist/turbopack";
-
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   turbopack: {
@@ -27,4 +25,4 @@ const nextConfig: NextConfig = {
   ]
 };
 
-export default withSerwist(withGluestackUI(nextConfig));
+export default withGluestackUI(nextConfig);
