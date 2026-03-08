@@ -1,8 +1,3 @@
-/**
- * Copyright (c) 2026 dilocash
- * Use of this source code is governed by an MIT-style
- * license that can be found in the LICENSE file.
- */
 
 import React from 'react';
 import { createIcon } from '@gluestack-ui/core/icon/creator';
@@ -31,10 +26,10 @@ const iconStyle = tva({
 export const Icon = React.forwardRef<
   React.ComponentRef<typeof UIIcon>,
   React.ComponentPropsWithoutRef<typeof UIIcon> &
-    VariantProps<typeof iconStyle> & {
-      height?: number | string;
-      width?: number | string;
-    }
+  VariantProps<typeof iconStyle> & {
+    height?: number | string;
+    width?: number | string;
+  }
 >(function Icon({ size = 'md', className, ...props }, ref) {
   if (typeof size === 'number') {
     return (
@@ -82,10 +77,10 @@ const createIconUI = ({ ...props }: ParameterTypes) => {
   return React.forwardRef<
     React.ComponentRef<typeof UIIcon>,
     React.ComponentPropsWithoutRef<typeof UIIcon> &
-      VariantProps<typeof iconStyle> & {
-        height?: number | string;
-        width?: number | string;
-      }
+    VariantProps<typeof iconStyle> & {
+      height?: number | string;
+      width?: number | string;
+    }
   >(function UIIcon({ className, ...inComingprops }, ref) {
     const calculateClassName = React.useMemo(() => {
       return className === undefined

@@ -1,8 +1,3 @@
-/**
- * Copyright (c) 2026 dilocash
- * Use of this source code is governed by an MIT-style
- * license that can be found in the LICENSE file.
- */
 
 import React, { forwardRef, memo } from 'react';
 import { H1, H2, H3, H4, H5, H6 } from '@expo/html-elements';

@@ -1,8 +1,3 @@
-/**
- * Copyright (c) 2026 dilocash
- * Use of this source code is governed by an MIT-style
- * license that can be found in the LICENSE file.
- */
 
 import React from 'react';
 import { createIcon } from '@gluestack-ui/core/icon/creator';
@@ -97,7 +92,7 @@ const createIconUI = ({ ...props }: ParameterTypes) => {
     ...props,
   }) as React.ForwardRefExoticComponent<
     React.ComponentPropsWithoutRef<typeof PrimitiveIcon> &
-      React.RefAttributes<React.ComponentRef<typeof Svg>>
+    React.RefAttributes<React.ComponentRef<typeof Svg>>
   >;
 
   return React.forwardRef<React.ComponentRef<typeof Svg>>(function UIIcon(

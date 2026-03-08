@@ -1,8 +1,3 @@
-/**
- * Copyright (c) 2026 dilocash
- * Use of this source code is governed by an MIT-style
- * license that can be found in the LICENSE file.
- */
 
 "use client";
 import React from "react";
@@ -84,7 +79,7 @@ const menuItemLabelStyle = tva({
 const BackdropPressable = React.forwardRef<
   React.ComponentRef<typeof Pressable>,
   React.ComponentPropsWithoutRef<typeof Pressable> &
-    VariantProps<typeof menuBackdropStyle>
+  VariantProps<typeof menuBackdropStyle>
 >(function BackdropPressable({ className, ...props }, ref) {
   return (
     <Pressable
@@ -119,7 +114,7 @@ const Item = React.forwardRef<
 const Separator = React.forwardRef<
   React.ComponentRef<typeof View>,
   React.ComponentPropsWithoutRef<typeof View> &
-    VariantProps<typeof menuSeparatorStyle>
+  VariantProps<typeof menuSeparatorStyle>
 >(function Separator({ className, ...props }, ref) {
   return (
     <View
