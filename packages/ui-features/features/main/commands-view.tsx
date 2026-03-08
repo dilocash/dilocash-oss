@@ -9,7 +9,7 @@
 import { Transport } from "@connectrpc/connect";
 import CommandsBar from "./commands-bar";
 import CommandsListView from "./commands-list";
-import { VStack } from "../ui/vstack";
+import { VStack } from "@dilocash/ui-components/components/ui//vstack";
 import { isWeb } from "@gluestack-ui/utils/nativewind-utils";
 import TopBar from "./top-bar";
 

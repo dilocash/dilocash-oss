@@ -5,13 +5,13 @@
  */
 "use client";
 
-import { SigninForm } from "@dilocash/ui/components/auth/signin-form";
-import { Center } from "@dilocash/ui/components/ui/center";
+import { SigninForm } from "@dilocash/ui-components/components/auth/signin-form";
+import { Center } from "@dilocash/ui-components/components/ui/center";
 import supabase from "../../../lib/supabase/client";
 import { useEffect } from "react";
-import { useAuth } from "@dilocash/ui/auth/provider";
+import { useAuth } from "@dilocash/ui-components/auth/provider";
 import { useRouter } from "solito/navigation";
-import { Box } from "@dilocash/ui/components/ui/box";
+import { Box } from "@dilocash/ui-components/components/ui/box";
 
 export default function SigninClient() {
   const { session, isLoading } = useAuth()

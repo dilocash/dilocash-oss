@@ -1,0 +1,48 @@
+{
+  "name": "@dilocash/ui-components",
+  "version": "0.1.0",
+  "description": "shared ui components",
+  "main": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
+  "dependencies": {
+    "@bufbuild/protobuf": "^2.11.0",
+    "@bufbuild/protovalidate": "^1.1.1",
+    "@connectrpc/connect": "^2.1.1",
+    "@dilocash/database": "workspace:*",
+    "@dilocash/gen": "workspace:*",
+    "@expo/html-elements": "^0.12.5",
+    "@gluestack-ui/core": "^3.0.12",
+    "@gluestack-ui/utils": "^3.0.13",
+    "@gluestack/ui-next-adapter": "^3.0.3",
+    "@legendapp/motion": "^2.4.0",
+    "@nozbe/watermelondb": "^0.28.0",
+    "@supabase/supabase-js": "^2.97.0",
+    "i18next": "^25.8.7",
+    "nativewind": "^4.1.23",
+    "next": "16.1.6",
+    "react": "19.2.0",
+    "react-aria": "^3.41.1",
+    "react-dom": "19.2.0",
+    "react-i18next": "^16.5.4",
+    "solito": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "~19.2.10",
+    "@types/react-dom": "19.2.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5",
+    "vitest": "^4.0.18"
+  },
+  "scripts": {
+    "test": "vitest run"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT"
+}

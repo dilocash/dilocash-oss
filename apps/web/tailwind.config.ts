@@ -15,8 +15,8 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
-    "../../packages/ui/components/**/*.{js,ts,jsx,tsx}",
-    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
+    "../../packages/ui-components/components/**/*.{js,ts,jsx,tsx}",
+    "../../packages/ui-features/features/**/*.{js,ts,jsx,tsx}"
   ],
   presets: [require('nativewind/preset')],
   important: 'html',

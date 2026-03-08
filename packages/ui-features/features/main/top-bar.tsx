@@ -6,17 +6,17 @@
 
 "use client";
 
-import { Box } from "../ui/box";
-import { HStack } from "../ui/hstack";
-import { AtSignIcon, CheckIcon, CloseCircleIcon, InfoIcon } from "../ui/icon";
-import { useAuth } from "../../auth/provider";
-import { Alert, AlertIcon, AlertText } from "../ui/alert";
+import { Box } from "@dilocash/ui-components/components/ui//box";
+import { HStack } from "@dilocash/ui-components/components/ui//hstack";
+import { AtSignIcon, CheckIcon, CloseCircleIcon, InfoIcon } from "@dilocash/ui-components/components/ui//icon";
+import { useAuth } from "../../utils/auth-provider";
+import { Alert, AlertIcon, AlertText } from "@dilocash/ui-components/components/ui//alert";
 import { useRouter } from "solito/navigation";
 import { useTranslation } from "react-i18next";
-import { useAuthActions } from "../../auth/useAuthActions";
-import { Button, ButtonIcon, ButtonText } from "../ui/button";
-import { Tooltip, TooltipContent } from "../ui/tooltip";
-import { Text } from "../ui/text";
+import { useAuthActions } from "../../hooks/useAuthActions";
+import { Button, ButtonIcon, ButtonText } from "@dilocash/ui-components/components/ui//button";
+import { Tooltip, TooltipContent } from "@dilocash/ui-components/components/ui//tooltip";
+import { Text } from "@dilocash/ui-components/components/ui//text";
 
 const TopBar = ({ className }: { className?: string }) => {
     const { session, supabase } = useAuth()

@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-import { getSupabaseClient } from '@dilocash/ui/auth/client';
+import { getSupabaseClient } from "@dilocash/ui-features/utils/supabase/client";
 
 export const supabase = getSupabaseClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,

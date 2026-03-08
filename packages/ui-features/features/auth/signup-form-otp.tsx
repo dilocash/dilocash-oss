@@ -6,16 +6,16 @@
 
 'use client';
 import { useTranslation } from 'react-i18next';
-import { VStack } from '../ui/vstack';
-import { Heading } from '../ui/heading';
-import { Input, InputField, } from '../ui/input';
-import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from '../ui/form-control';
-import { Button, ButtonText } from '../ui/button';
-import { Text } from '../ui/text';
+import { VStack } from '@dilocash/ui-components/components/ui//vstack';
+import { Heading } from '@dilocash/ui-components/components/ui//heading';
+import { Input, InputField, } from '@dilocash/ui-components/components/ui//input';
+import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from '@dilocash/ui-components/components/ui//form-control';
+import { Button, ButtonText } from '@dilocash/ui-components/components/ui//button';
+import { Text } from '@dilocash/ui-components/components/ui//text';
 import { useState, useEffect } from 'react';
-import { AlertCircleIcon } from "../ui/icon";
-import { useSigninForm } from '../../auth/useSigninForm';
-import { useAuth } from '../../auth/provider';
+import { AlertCircleIcon } from "@dilocash/ui-components/components/ui//icon";
+import { useSigninForm } from '../../hooks/useSigninForm';
+import { useAuth } from '../../utils/auth-provider';
 import { useRouter } from 'solito/navigation';
 
 export const SignupFormOTP = ({ supabase, onOTPSent }: any) => {

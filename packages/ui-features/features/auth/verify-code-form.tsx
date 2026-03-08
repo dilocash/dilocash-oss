@@ -6,19 +6,19 @@
 
 'use client';
 import { useTranslation } from 'react-i18next';
-import { VStack } from '../ui/vstack';
-import { Heading } from '../ui/heading';
-import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
-import { Button, ButtonText } from '../ui/button';
-import { Text } from '../ui/text';
+import { VStack } from '@dilocash/ui-components/components/ui//vstack';
+import { Heading } from '@dilocash/ui-components/components/ui//heading';
+import { Input, InputField, InputIcon, InputSlot } from '@dilocash/ui-components/components/ui//input';
+import { Button, ButtonText } from '@dilocash/ui-components/components/ui//button';
+import { Text } from '@dilocash/ui-components/components/ui//text';
 import { useState, useEffect, useRef } from 'react';
-import { AlertCircleIcon, CloseCircleIcon, EyeIcon, EyeOffIcon, InfoIcon } from "../ui/icon";
-import { useOTPVerificationForm } from '../../auth/useOTPVerificationForm';
+import { AlertCircleIcon, CloseCircleIcon, EyeIcon, EyeOffIcon, InfoIcon } from "@dilocash/ui-components/components/ui//icon";
+import { useOTPVerificationForm } from '../../hooks/useOTPVerificationForm';
 import { useRouter } from 'solito/navigation';
-import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from '../ui/form-control';
-import { Box } from '../ui/box';
-import { Alert, AlertIcon, AlertText } from '../ui/alert';
-import { HStack } from '../ui/hstack';
+import { FormControl, FormControlError, FormControlErrorIcon, FormControlErrorText, FormControlHelper, FormControlHelperText, FormControlLabel, FormControlLabelText } from '@dilocash/ui-components/components/ui//form-control';
+import { Box } from '@dilocash/ui-components/components/ui//box';
+import { Alert, AlertIcon, AlertText } from '@dilocash/ui-components/components/ui//alert';
+import { HStack } from '@dilocash/ui-components/components/ui//hstack';
 
 export const VerifyCodeForm = ({ supabase, email, onOTPVerified }: any) => {
   const { replace } = useRouter()

@@ -5,9 +5,9 @@
  */
 "use client";
 
-import CommandsView from "@dilocash/ui/components/main/commands-view";
+import CommandsView from "@dilocash/ui-features/features/main/commands-view";
 import { getConnectTransport } from "../../lib/connect/transport";
-import { useAuth } from "@dilocash/ui/auth/provider";
+import { useAuth } from "@dilocash/ui-features/utils/auth-provider";
 
 export default function MainClient() {
   const { session } = useAuth();

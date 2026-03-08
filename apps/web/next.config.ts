@@ -14,7 +14,8 @@ const nextConfig: NextConfig = {
     }
   },
   transpilePackages: [
-    "@dilocash/ui",
+    "@dilocash/ui-components",
+    "@dilocash/ui-features",
     "@dilocash/database",
     "@gluestack-ui/core",
     "@gluestack-ui/utils",

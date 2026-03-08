@@ -17,7 +17,8 @@
     "@dilocash/database": "workspace:*",
     "@dilocash/gen": "workspace:*",
     "@dilocash/i18n": "workspace:*",
-    "@dilocash/ui": "workspace:*",
+    "@dilocash/ui-components": "workspace:*",
+    "@dilocash/ui-features": "workspace:*",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",
     "@gluestack/ui-next-adapter": "^3.0.3",
@@ -31,7 +32,8 @@
     "uuid": "^13.0.0"
   },
   "devDependencies": {
-    "@dilocash/ui": "workspace:*",
+    "@dilocash/ui-components": "workspace:*",
+    "@dilocash/ui-features": "workspace:*",
     "@serwist/cli": "^9.5.6",
     "@serwist/next": "^9.5.6",
     "@types/node": "^20",

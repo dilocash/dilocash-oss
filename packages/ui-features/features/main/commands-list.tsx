@@ -16,10 +16,10 @@ import {
 import IntentsList from "./intents-list";
 import TransactionsList from "./transactions-list";
 import { Command } from "@dilocash/database/local/model/commmand";
-import { Button, ButtonIcon } from "../ui/button";
-import { HStack } from "../ui/hstack";
-import { Card } from "../ui/card";
-import { TrashIcon } from "../ui/icon";
+import { Button, ButtonIcon } from "@dilocash/ui-components/components/ui//button";
+import { HStack } from "@dilocash/ui-components/components/ui//hstack";
+import { Card } from "@dilocash/ui-components/components/ui//card";
+import { TrashIcon } from "@dilocash/ui-components/components/ui//icon";
 import { useEffect, useRef } from "react";
 import { Platform, ScrollView } from 'react-native';
 

@@ -40,7 +40,15 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    "**/*.mts",
+    "../app/features/auth/signin-form.tsx",
+    "../app/features/auth/signup-form-otp.tsx",
+    "../app/features/auth/signup-form.tsx",
+    "../app/features/auth/verify-code-form.tsx",
+    "../app/hooks/useQuery.ts",
+    "../app/hooks/useSync.ts",
+    "../app/utils/app-loader.tsx",
+    "../ui-components/components/app-loader.tsx"
   ],
   "exclude": [
     "node_modules"

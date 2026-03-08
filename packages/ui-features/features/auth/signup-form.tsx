@@ -6,15 +6,15 @@
 
 'use client';
 import { useTranslation } from 'react-i18next';
-import { VStack } from '../ui/vstack';
-import { Heading } from '../ui/heading';
-import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
-import { Button, ButtonText } from '../ui/button';
-import { Text } from '../ui/text';
+import { VStack } from '@dilocash/ui-components/components/ui//vstack';
+import { Heading } from '@dilocash/ui-components/components/ui//heading';
+import { Input, InputField, InputIcon, InputSlot } from '@dilocash/ui-components/components/ui//input';
+import { Button, ButtonText } from '@dilocash/ui-components/components/ui//button';
+import { Text } from '@dilocash/ui-components/components/ui//text';
 import { useState, useEffect } from 'react';
-import { EyeIcon, EyeOffIcon } from "../ui/icon";
-import { useSigninForm } from '../../auth/useSigninForm';
-import { useAuth } from '../../auth/provider';
+import { EyeIcon, EyeOffIcon } from "@dilocash/ui-components/components/ui//icon";
+import { useSigninForm } from '../../hooks/useSigninForm';
+import { useAuth } from '../../utils/auth-provider';
 import { useRouter } from 'solito/navigation';
 
 export const SignupForm = ({ supabase, onOTPSent }: any) => {

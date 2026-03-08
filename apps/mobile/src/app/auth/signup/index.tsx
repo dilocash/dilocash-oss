@@ -6,11 +6,11 @@
 "use client";
 
 import supabase from "../../lib/supabase/client";
-import { SignupFormOTP } from "@dilocash/ui/components/auth/signup-form-otp";
-import { VerifyCodeForm } from "@dilocash/ui/components/auth/verify-code-form";
+import { SignupFormOTP } from "@dilocash/ui-features/features/auth/signup-form-otp";
+import { VerifyCodeForm } from "@dilocash/ui-features/features/auth/verify-code-form";
 import { useState } from "react";
 import { useRouter } from "solito/navigation";
-import { Box } from "@dilocash/ui/components/ui/box";
+import { Box } from "@dilocash/ui-components/components/ui/box";
 
 export default function SignupScreen() {
     const { replace } = useRouter()

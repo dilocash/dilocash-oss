@@ -5,10 +5,10 @@
  */
 "use client";
 
-import { SigninForm } from "@dilocash/ui/components/auth/signin-form";
+import { SigninForm } from "@dilocash/ui-features/features/auth/signin-form";
 import supabase from "../../lib/supabase/client";
 import { useEffect } from "react";
-import { useAuth } from "@dilocash/ui/auth/provider";
+import { useAuth } from "@dilocash/ui-features/utils/auth-provider";
 import { useRouter } from "solito/navigation";
 
 // not used, only signin/signup with otp working properly @see SignupFormOTP

@@ -6,7 +6,7 @@
 
 import { useEffect } from 'react'
 import { useRouter } from 'solito/navigation'
-import { useAuth } from './provider'
+import { useAuth } from './auth-provider'
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
     const { user, isLoading } = useAuth()

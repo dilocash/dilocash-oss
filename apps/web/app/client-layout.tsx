@@ -6,12 +6,12 @@
 
 "use client";
 
-import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
+import { GluestackUIProvider } from "@dilocash/ui-components/components/ui/gluestack-ui-provider";
 import DatabaseProvider from '../lib/database-provider';
 import { initI18n } from '@dilocash/i18n';
 import { useEffect, useState } from 'react';
-import { AppLoader } from '@dilocash/ui/components/app-loader';
-import { AuthProvider } from "@dilocash/ui/auth/provider";
+import { AppLoader } from '@dilocash/ui-components/components/app-loader';
+import { AuthProvider } from "@dilocash/ui-features/utils/auth-provider";
 import supabase from "../lib/supabase/client";
 
 export default function ClientLayout({

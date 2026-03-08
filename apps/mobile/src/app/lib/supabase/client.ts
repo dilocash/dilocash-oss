@@ -4,7 +4,7 @@
  * license that can be found in the LICENSE file.
  */
 
-import { getSupabaseClient } from "@dilocash/ui/auth/client";
+import { getSupabaseClient } from "@dilocash/ui-features/utils/supabase/client";
 import * as SecureStore from "expo-secure-store";
 // TODO test this
 const ExpoSecureStoreAdapter = {

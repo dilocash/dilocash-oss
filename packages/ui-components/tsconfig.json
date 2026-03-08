@@ -1,0 +1,55 @@
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": [
+        "./*"
+      ],
+      "tailwind.config": [
+        "./tailwind.config.ts"
+      ]
+    },
+    "jsxImportSource": "nativewind"
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts",
+    "../app/features/auth/signin-form.tsx",
+    "../app/features/auth/signup-form-otp.tsx",
+    "../app/features/auth/signup-form.tsx",
+    "../app/features/auth/verify-code-form.tsx",
+    "../app/hooks/useQuery.ts",
+    "../app/hooks/useSync.ts",
+    "../app/utils/app-loader.tsx"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

@@ -6,7 +6,7 @@
 
 "use client";
 import { Transaction } from "@dilocash/database/local/model/transaction";
-import { Box } from "../ui/box";
+import { Box } from "@dilocash/ui-components/components/ui//box";
 import {
   Accordion,
   AccordionItem,
@@ -16,8 +16,8 @@ import {
   AccordionIcon,
   AccordionContent,
   AccordionContentText,
-} from "../ui/accordion";
-import { ChevronDownIcon, ChevronUpIcon } from "../ui/icon";
+} from "@dilocash/ui-components/components/ui//accordion";
+import { ChevronDownIcon, ChevronUpIcon } from "@dilocash/ui-components/components/ui//icon";
 import {
   Table,
   TableBody,
@@ -26,7 +26,7 @@ import {
   TableHead,
   TableData,
   TableFooter,
-} from "../ui/table";
+} from "@dilocash/ui-components/components/ui//table";
 import { useObservable } from "../../hooks/useQuery";
 import { Observable } from "@nozbe/watermelondb/utils/rx";
 import { useTranslation } from "react-i18next";

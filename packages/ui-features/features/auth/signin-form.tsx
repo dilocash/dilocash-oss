@@ -6,19 +6,19 @@
 
 'use client';
 import { useTranslation } from 'react-i18next';
-import { VStack } from '../ui/vstack';
-import { Heading } from '../ui/heading';
-import { Input, InputField, InputIcon, InputSlot } from '../ui/input';
-import { Button, ButtonText } from '../ui/button';
-import { Text } from '../ui/text';
+import { VStack } from '@dilocash/ui-components/components/ui/vstack';
+import { Heading } from '@dilocash/ui-components/components/ui//heading';
+import { Input, InputField, InputIcon, InputSlot } from '@dilocash/ui-components/components/ui//input';
+import { Button, ButtonText } from '@dilocash/ui-components/components/ui//button';
+import { Text } from '@dilocash/ui-components/components/ui//text';
 import { useState, useEffect } from 'react';
-import { CheckIcon, EyeIcon, EyeOffIcon } from "../ui/icon";
-import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "../ui/checkbox";
-import { HStack } from '../ui/hstack';
-import { useLoginForm } from '../../auth/useLoginForm';
-import { useAuth } from '../../auth/provider';
+import { CheckIcon, EyeIcon, EyeOffIcon } from "@dilocash/ui-components/components/ui//icon";
+import { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon } from "@dilocash/ui-components/components/ui//checkbox";
+import { HStack } from '@dilocash/ui-components/components/ui//hstack';
+import { useLoginForm } from '../../hooks/useLoginForm';
+import { useAuth } from '../../utils/auth-provider';
 import { useRouter } from 'solito/navigation';
-import { Box } from '../ui/box';
+import { Box } from '@dilocash/ui-components/components/ui//box';
 
 export const SigninForm = ({ supabase, onSuccess }: any) => {
   const { session, isLoading } = useAuth()

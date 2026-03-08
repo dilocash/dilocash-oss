@@ -6,14 +6,14 @@
 
 "use client";
 import { Intent } from "@dilocash/database/local/model/intent";
-import { Box } from "../ui/box";
-import { Text } from "../ui/text";
+import { Box } from "@dilocash/ui-components/components/ui//box";
+import { Text } from "@dilocash/ui-components/components/ui//text";
 import {
   AlertCircleIcon,
   ClockIcon,
   Icon,
-} from "../ui/icon";
-import { HStack } from "../ui/hstack";
+} from "@dilocash/ui-components/components/ui//icon";
+import { HStack } from "@dilocash/ui-components/components/ui//hstack";
 import { useObservable } from "../../hooks/useQuery";
 import { Observable } from "@nozbe/watermelondb/utils/rx";
 

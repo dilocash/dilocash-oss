@@ -5,7 +5,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { AppLoader } from "@dilocash/ui/components/app-loader";
+import { AppLoader } from "@dilocash/ui-components/components/app-loader";
 import { KeyboardAvoidingView, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MainScreen from "./main";

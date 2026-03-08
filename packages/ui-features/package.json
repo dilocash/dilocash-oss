@@ -1,7 +1,7 @@
 {
-  "name": "@dilocash/ui",
+  "name": "@dilocash/ui-features",
   "version": "0.1.0",
-  "description": "shared ui components",
+  "description": "ui shared features",
   "main": "index.js",
   "module": "index.js",
   "types": "index.d.ts",
@@ -11,6 +11,7 @@
     "@connectrpc/connect": "^2.1.1",
     "@dilocash/database": "workspace:*",
     "@dilocash/gen": "workspace:*",
+    "@dilocash/ui-components": "workspace:*",
     "@expo/html-elements": "^0.12.5",
     "@gluestack-ui/core": "^3.0.12",
     "@gluestack-ui/utils": "^3.0.13",

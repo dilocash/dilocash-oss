@@ -5,7 +5,7 @@ BIN_DIR := ./bin
 PROTO_DIR := ./packages/proto
 GEN_DIR := ./gen
 DOCS_DIR := ./docs/diagrams
-LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts" -ignore "pnpm-lock.yaml"
+LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "packages/ui-components/components/ui/**"  -ignore "apps/mobile/node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts" -ignore "apps/mobile/expo-env.d.ts" -ignore "pnpm-lock.yaml"
 
 # Tools
 BUF := buf
@@ -115,7 +115,8 @@ lint: ## Run linters for Go and Protobuf
 test: ## Run Go tests
 	@echo "🚀 Running tests..."
 	cd apps/api && go test -v -race ./...
-	cd packages/ui && pnpm test
+	cd packages/ui-features && pnpm test
+	cd packages/ui-components && pnpm test
 	cd packages/i18n && pnpm test
 
 # --- Database Migrations ---
@@ -169,7 +170,8 @@ clean-full: clean ## Remove generated binaries and code
 clean-ui: ## Remove generated ui code
 	rm -rf apps/web/node_modules apps/web/.next apps/web/public/sw*
 	rm -rf apps/mobile/node_modules apps/mobile/.expo apps/mobile/android apps/mobile/ios
-	rm -rf packages/ui/node_modules
+	rm -rf packages/ui-features/node_modules
+	rm -rf packages/ui-components/node_modules
 	@echo "🧹 Cleaned all generated ui assets."
 
 clean-expo: ## clears expo

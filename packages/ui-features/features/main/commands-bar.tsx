@@ -4,11 +4,11 @@
  * license that can be found in the LICENSE file.
  */
 
-import { HStack } from "../ui/hstack";
-import { Button, ButtonIcon, ButtonSpinner } from "../ui/button";
+import { HStack } from "@dilocash/ui-components/components/ui//hstack";
+import { Button, ButtonIcon, ButtonSpinner } from "@dilocash/ui-components/components/ui//button";
 import useSync from "../../hooks/useSync";
 import { Transport } from "@connectrpc/connect";
-import { Input, InputField } from "../ui/input";
+import { Input, InputField } from "@dilocash/ui-components/components/ui//input";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { withDatabase } from "@nozbe/watermelondb/react";
@@ -19,7 +19,7 @@ import { Transaction } from "@dilocash/database/local/model/transaction";
 import {
   AddIcon,
   RepeatIcon,
-} from "../ui/icon";
+} from "@dilocash/ui-components/components/ui//icon";
 
 import {
   createValidator,
@@ -29,7 +29,7 @@ import {
 import { TransactionSchema } from "@dilocash/gen/ts/transport/dilocash/v1/transaction_types_pb";
 
 import { create } from "@bufbuild/protobuf";
-import { MicIcon } from "./icons";
+import { MicIcon } from "@dilocash/ui-components/components/icons";
 
 const CommandsBar = ({ transport, className }: { transport: Transport, className?: string }) => {
   const validator = createValidator();

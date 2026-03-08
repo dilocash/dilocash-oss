@@ -8,14 +8,14 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
-import { GluestackUIProvider } from "@dilocash/ui/components/ui/gluestack-ui-provider";
+import { GluestackUIProvider } from "@dilocash/ui-components/components/ui/gluestack-ui-provider";
 import '@/global.css';
 import DatabaseProvider from "./lib/database-provider";
 import * as Localization from "expo-localization";
 import { initI18n } from "@dilocash/i18n";
 import { Stack } from "expo-router";
 import { SafeAreaProvider } from "react-native-safe-area-context";
-import { AuthProvider } from "@dilocash/ui/auth/provider";
+import { AuthProvider } from "@dilocash/ui-features/utils/auth-provider";
 import supabase from "./lib/supabase/client";
 
 // we get the mobile language (ej. 'en', 'es')

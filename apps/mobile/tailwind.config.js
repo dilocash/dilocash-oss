@@ -13,8 +13,8 @@ module.exports = {
     "./utils/**/*.{html,js,jsx,ts,tsx,mdx}",
     "./*.{html,js,jsx,ts,tsx,mdx}",
     "./src/**/*.{html,js,jsx,ts,tsx,mdx}",
-    "../../packages/ui/components/**/*.{js,ts,jsx,tsx}",
-    "../../packages/ui/src/**/*.{js,ts,jsx,tsx}"
+    "../../packages/ui-components/components/**/*.{js,ts,jsx,tsx}",
+    "../../packages/ui-features/**/*.{js,ts,jsx,tsx}"
   ],
   presets: [require('nativewind/preset')],
   important: 'html',
