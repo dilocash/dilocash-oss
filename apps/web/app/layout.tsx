@@ -96,7 +96,7 @@ export default async function RootLayout({
     <html lang={locale} dir="ltr">
       <head />
       <body>
-        <SerwistProvider swUrl="/sw.js" /* disable={process.env.NODE_ENV === "development"} */>
+        <SerwistProvider swUrl="/sw.js" disable={process.env.NODE_ENV === "development"}>
           <ClientLayout locale={locale}>{children}</ClientLayout>
         </SerwistProvider>
       </body>
