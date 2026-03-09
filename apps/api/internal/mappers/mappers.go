@@ -5,7 +5,7 @@
 package mappers
 
 import (
-	"github.com/dilocash/dilocash-oss/apps/api/internal/domain"
+	domain "github.com/dilocash/dilocash-oss/apps/api/internal/domain"
 	database "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	transport "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
 )
