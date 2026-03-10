@@ -1,3 +1,7 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
 package usecase
 
 import (
@@ -14,7 +18,7 @@ type SyncPullUsecase struct {
 	transactionRepo domain.TransactionRepository
 }
 
-func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.IntentRepository, transactionRepo domain.TransactionRepository) *SyncPullUsecase {
+func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.IntentRepository, transactionRepo domain.TransactionRepository, transactor domain.Transactor) *SyncPullUsecase {
 	return &SyncPullUsecase{
 		commandRepo:     commandRepo,
 		intentRepo:      intentRepo,
@@ -24,15 +28,15 @@ func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.
 
 func (u *SyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
 	slog.Info("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	commandsSync, err := u.commandRepo.PullCommandChanges(profileId, lastPulledAt)
+	commandsSync, err := u.commandRepo.PullCommandChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}
-	intentsSync, err := u.intentRepo.PullIntentChanges(profileId, lastPulledAt)
+	intentsSync, err := u.intentRepo.PullIntentChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}
-	transactionsSync, err := u.transactionRepo.PullTransactionChanges(profileId, lastPulledAt)
+	transactionsSync, err := u.transactionRepo.PullTransactionChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}

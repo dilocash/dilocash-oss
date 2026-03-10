@@ -1,6 +1,11 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -26,6 +31,6 @@ type IntentsSync struct {
 }
 
 type IntentRepository interface {
-	PullIntentChanges(profileId string, lastPulledAt time.Time) (*IntentsSync, error)
-	PushIntentChanges(profileId string, intentsSync *IntentsSync) error
+	PullIntentChanges(context context.Context, profileId string, lastPulledAt time.Time) (*IntentsSync, error)
+	PushIntentChanges(context context.Context, profileId string, intentsSync *IntentsSync) error
 }

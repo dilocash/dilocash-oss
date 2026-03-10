@@ -1,6 +1,11 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
 package domain
 
 import (
+	"context"
 	"time"
 
 	"github.com/google/uuid"
@@ -22,6 +27,6 @@ type CommandsSync struct {
 }
 
 type CommandRepository interface {
-	PullCommandChanges(profileId string, lastPulledAt time.Time) (*CommandsSync, error)
-	PushCommandChanges(profileId string, commandsSync *CommandsSync) error
+	PullCommandChanges(context context.Context, profileId string, lastPulledAt time.Time) (*CommandsSync, error)
+	PushCommandChanges(context context.Context, profileId string, commandsSync *CommandsSync) error
 }

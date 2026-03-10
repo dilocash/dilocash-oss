@@ -77,12 +77,13 @@ func main() {
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	pool := initDB()
 
-	commandRepository := repository.NewPostgresRepo(&ctx, pool)
-	intentRepository := repository.NewPostgresRepo(&ctx, pool)
-	transactionRepository := repository.NewPostgresRepo(&ctx, pool)
+	commandRepository := repository.NewPostgresRepo(pool)
+	intentRepository := repository.NewPostgresRepo(pool)
+	transactionRepository := repository.NewPostgresRepo(pool)
+	transactor := repository.NewPostgresTransactor(pool)
 
-	syncPullUsecase := usecase.NewSyncPullUsecase(commandRepository, intentRepository, transactionRepository)
-	syncPushUsecase := usecase.NewSyncPushUsecase(commandRepository, intentRepository, transactionRepository)
+	syncPullUsecase := usecase.NewSyncPullUsecase(commandRepository, intentRepository, transactionRepository, transactor)
+	syncPushUsecase := usecase.NewSyncPushUsecase(commandRepository, intentRepository, transactionRepository, transactor)
 
 	defer pool.Close()
 
@@ -117,7 +118,7 @@ func main() {
 		mux := http.NewServeMux()
 
 		// Register all services
-		registerAllServices(ctx, mux, grpcServer, pool, syncPullUsecase, syncPushUsecase)
+		registerAllServices(ctx, mux, syncPullUsecase, syncPushUsecase)
 
 		p := new(http.Protocols)
 		p.SetHTTP1(true)

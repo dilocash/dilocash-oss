@@ -1,3 +1,7 @@
+// Copyright (c) 2026 dilocash
+// Use of this source code is governed by an MIT-style
+// license that can be found in the LICENSE file.
+
 package repository
 
 import (
@@ -16,26 +20,27 @@ import (
 )
 
 type PostgresRepo struct {
-	ctx  *context.Context
 	q    *db.Queries
 	pool *pgxpool.Pool
 }
 
-func NewPostgresRepo(ctx *context.Context, pool *pgxpool.Pool) *PostgresRepo {
+func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
 	return &PostgresRepo{
-		ctx:  ctx,
 		q:    db.New(pool),
 		pool: pool,
 	}
 }
 
-func (r *PostgresRepo) PullCommandChanges(profileId string, lastPulledAt time.Time) (*domain.CommandsSync, error) {
+func (r *PostgresRepo) PullCommandChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.CommandsSync, error) {
 	converter := &mappers.ConverterImpl{}
 	created := []domain.Command{}
 
+	executor := r.getDB(ctx)
+	q := db.New(executor)
+
 	slog.Info("pulling command changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
 	// execute query to get created commands since lastPulledAt
-	createdCommandsResult, err := r.q.ListCommandsByProfileIdAndCreatedAfter(*r.ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
+	createdCommandsResult, err := q.ListCommandsByProfileIdAndCreatedAfter(ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		CreatedAt: lastPulledAt,
 		Limit:     100,
@@ -54,7 +59,7 @@ func (r *PostgresRepo) PullCommandChanges(profileId string, lastPulledAt time.Ti
 
 	updated := []domain.Command{}
 	// execute query to get updated commands since lastPulledAt
-	updatedCommandsResult, err := r.q.ListCommandsByProfileIdAndUpdatedAfter(*r.ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
+	updatedCommandsResult, err := q.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -74,7 +79,7 @@ func (r *PostgresRepo) PullCommandChanges(profileId string, lastPulledAt time.Ti
 	deleted := []uuid.UUID{}
 
 	// execute query to get deleted commands since lastPulledAt
-	deletedCommandsResult, err := r.q.ListDeletedCommandsByProfileIdAndUpdatedAfter(*r.ctx, db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
+	deletedCommandsResult, err := q.ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -96,13 +101,15 @@ func (r *PostgresRepo) PullCommandChanges(profileId string, lastPulledAt time.Ti
 	}, nil
 }
 
-func (r *PostgresRepo) PullIntentChanges(profileId string, lastPulledAt time.Time) (*domain.IntentsSync, error) {
+func (r *PostgresRepo) PullIntentChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.IntentsSync, error) {
 	converter := &mappers.ConverterImpl{}
 	created := []domain.Intent{}
 
+	executor := r.getDB(ctx)
+	q := db.New(executor)
 	slog.Info("pulling intent changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
 	// execute query to get intents since lastPulledAt
-	createdIntentsResult, err := r.q.ListIntentsByProfileIdAndCreatedAfter(*r.ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
+	createdIntentsResult, err := q.ListIntentsByProfileIdAndCreatedAfter(ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		CreatedAt: lastPulledAt,
 		Limit:     100,
@@ -121,7 +128,7 @@ func (r *PostgresRepo) PullIntentChanges(profileId string, lastPulledAt time.Tim
 
 	updated := []domain.Intent{}
 	// execute query to get updated intents since lastPulledAt
-	updatedIntentsResult, err := r.q.ListIntentsByProfileIdAndUpdatedAfter(*r.ctx, db.ListIntentsByProfileIdAndUpdatedAfterParams{
+	updatedIntentsResult, err := q.ListIntentsByProfileIdAndUpdatedAfter(ctx, db.ListIntentsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -140,7 +147,7 @@ func (r *PostgresRepo) PullIntentChanges(profileId string, lastPulledAt time.Tim
 
 	deleted := []uuid.UUID{}
 	// execute query to get deleted intents since lastPulledAt
-	deletedIntentsResult, err := r.q.ListDeletedIntentsByProfileIdAndUpdatedAfter(*r.ctx, db.ListDeletedIntentsByProfileIdAndUpdatedAfterParams{
+	deletedIntentsResult, err := q.ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedIntentsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -161,13 +168,15 @@ func (r *PostgresRepo) PullIntentChanges(profileId string, lastPulledAt time.Tim
 	}, nil
 }
 
-func (r *PostgresRepo) PullTransactionChanges(profileId string, lastPulledAt time.Time) (*domain.TransactionsSync, error) {
+func (r *PostgresRepo) PullTransactionChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.TransactionsSync, error) {
 	converter := &mappers.ConverterImpl{}
 	created := []domain.Transaction{}
 
+	executor := r.getDB(ctx)
+	q := db.New(executor)
 	slog.Info("pulling transaction changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
 	// execute query to get transactions since lastPulledAt
-	createdTransactionsResult, err := r.q.ListTransactionsByProfileIdAndCreatedAfter(*r.ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
+	createdTransactionsResult, err := q.ListTransactionsByProfileIdAndCreatedAfter(ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		CreatedAt: lastPulledAt,
 		Limit:     100,
@@ -186,7 +195,7 @@ func (r *PostgresRepo) PullTransactionChanges(profileId string, lastPulledAt tim
 
 	updated := []domain.Transaction{}
 	// execute query to get updated transactions since lastPulledAt
-	updatedTransactionsResult, err := r.q.ListTransactionsByProfileIdAndUpdatedAfter(*r.ctx, db.ListTransactionsByProfileIdAndUpdatedAfterParams{
+	updatedTransactionsResult, err := q.ListTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListTransactionsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -205,7 +214,7 @@ func (r *PostgresRepo) PullTransactionChanges(profileId string, lastPulledAt tim
 
 	deleted := []uuid.UUID{}
 	// execute query to get deleted transactions since lastPulledAt
-	deletedTransactionsResult, err := r.q.ListDeletedTransactionsByProfileIdAndUpdatedAfter(*r.ctx, db.ListDeletedTransactionsByProfileIdAndUpdatedAfterParams{
+	deletedTransactionsResult, err := q.ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedTransactionsByProfileIdAndUpdatedAfterParams{
 		ProfileID: uuid.MustParse(profileId),
 		UpdatedAt: lastPulledAt,
 		Limit:     100,
@@ -226,15 +235,9 @@ func (r *PostgresRepo) PullTransactionChanges(profileId string, lastPulledAt tim
 	}, nil
 }
 
-func (r *PostgresRepo) PushCommandChanges(profileId string, commandsSync *domain.CommandsSync) error {
-	tx, err := r.pool.Begin(*r.ctx)
-	if err != nil {
-		return connect.NewError(connect.CodeInternal, errors.New("failed to begin transaction"))
-	}
-	defer tx.Rollback(*r.ctx)
-
-	qtx := r.q.WithTx(tx)
-
+func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string, commandsSync *domain.CommandsSync) error {
+	executor := r.getDB(ctx)
+	q := db.New(executor)
 	for _, command := range commandsSync.Created {
 		params := db.CreateCommandParams{
 			ID:            command.ID,
@@ -242,7 +245,7 @@ func (r *PostgresRepo) PushCommandChanges(profileId string, commandsSync *domain
 			CommandStatus: command.CommandStatus,
 			CreatedAt:     command.CreatedAt,
 		}
-		_, err := qtx.CreateCommand(*r.ctx, params)
+		_, err := q.CreateCommand(ctx, params)
 		if err != nil {
 			slog.Error("failed to store command", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store command"))
@@ -254,7 +257,7 @@ func (r *PostgresRepo) PushCommandChanges(profileId string, commandsSync *domain
 			ID:            command.ID,
 			CommandStatus: command.CommandStatus,
 		}
-		_, err := qtx.UpdateCommand(*r.ctx, params)
+		_, err := q.UpdateCommand(ctx, params)
 		if err != nil {
 			slog.Error("failed to store command", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store command"))
@@ -262,29 +265,18 @@ func (r *PostgresRepo) PushCommandChanges(profileId string, commandsSync *domain
 	}
 
 	for _, command := range commandsSync.Deleted {
-		err := qtx.DeleteCommand(*r.ctx, command)
+		err := q.DeleteCommand(ctx, command)
 		if err != nil {
 			slog.Error("failed to delete command", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to delete command"))
 		}
 	}
-	res := tx.Commit(*r.ctx)
-	if res != nil {
-		slog.Error("failed to commit transaction", "error", res)
-		return connect.NewError(connect.CodeInternal, errors.New("failed to commit transaction"))
-	}
 	return nil
 }
 
-func (r *PostgresRepo) PushIntentChanges(profileId string, intentsSync *domain.IntentsSync) error {
-	tx, err := r.pool.Begin(*r.ctx)
-	if err != nil {
-		return connect.NewError(connect.CodeInternal, errors.New("failed to begin transaction"))
-	}
-	defer tx.Rollback(*r.ctx)
-
-	qtx := r.q.WithTx(tx)
-
+func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, intentsSync *domain.IntentsSync) error {
+	executor := r.getDB(ctx)
+	q := db.New(executor)
 	for _, intent := range intentsSync.Created {
 		params := db.CreateIntentParams{
 			ID:             intent.ID,
@@ -296,7 +288,7 @@ func (r *PostgresRepo) PushIntentChanges(profileId string, intentsSync *domain.I
 			RequiresReview: &intent.RequiresReview,
 			CreatedAt:      intent.CreatedAt,
 		}
-		_, err := qtx.CreateIntent(*r.ctx, params)
+		_, err := q.CreateIntent(ctx, params)
 		if err != nil {
 			slog.Error("failed to store intent", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
@@ -308,7 +300,7 @@ func (r *PostgresRepo) PushIntentChanges(profileId string, intentsSync *domain.I
 			ID:           intent.ID,
 			IntentStatus: intent.IntentStatus,
 		}
-		_, err := qtx.UpdateIntent(*r.ctx, params)
+		_, err := q.UpdateIntent(ctx, params)
 		if err != nil {
 			slog.Error("failed to store intent", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
@@ -316,28 +308,18 @@ func (r *PostgresRepo) PushIntentChanges(profileId string, intentsSync *domain.I
 	}
 
 	for _, intent := range intentsSync.Deleted {
-		err := qtx.DeleteIntent(*r.ctx, intent)
+		err := q.DeleteIntent(ctx, intent)
 		if err != nil {
 			slog.Error("failed to delete intent", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to delete intent"))
 		}
 	}
-	res := tx.Commit(*r.ctx)
-	if res != nil {
-		slog.Error("failed to commit transaction", "error", res)
-		return connect.NewError(connect.CodeInternal, errors.New("failed to commit transaction"))
-	}
 	return nil
 }
 
-func (r *PostgresRepo) PushTransactionChanges(profileId string, transactionsSync *domain.TransactionsSync) error {
-	tx, err := r.pool.Begin(*r.ctx)
-	if err != nil {
-		return connect.NewError(connect.CodeInternal, errors.New("failed to begin transaction"))
-	}
-	defer tx.Rollback(*r.ctx)
-
-	qtx := r.q.WithTx(tx)
+func (r *PostgresRepo) PushTransactionChanges(ctx context.Context, profileId string, transactionsSync *domain.TransactionsSync) error {
+	executor := r.getDB(ctx)
+	q := db.New(executor)
 
 	for _, intent := range transactionsSync.Created {
 		params := db.CreateTransactionParams{
@@ -349,7 +331,7 @@ func (r *PostgresRepo) PushTransactionChanges(profileId string, transactionsSync
 			Description: &intent.Description,
 			CreatedAt:   intent.CreatedAt,
 		}
-		_, err := qtx.CreateTransaction(*r.ctx, params)
+		_, err := q.CreateTransaction(ctx, params)
 		if err != nil {
 			slog.Error("failed to store transaction", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
@@ -364,7 +346,7 @@ func (r *PostgresRepo) PushTransactionChanges(profileId string, transactionsSync
 			Category:    &transaction.Category,
 			Description: &transaction.Description,
 		}
-		_, err := qtx.UpdateTransaction(*r.ctx, params)
+		_, err := q.UpdateTransaction(ctx, params)
 		if err != nil {
 			slog.Error("failed to store transaction", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
@@ -372,16 +354,18 @@ func (r *PostgresRepo) PushTransactionChanges(profileId string, transactionsSync
 	}
 
 	for _, intent := range transactionsSync.Deleted {
-		err := qtx.DeleteTransaction(*r.ctx, intent)
+		err := q.DeleteTransaction(ctx, intent)
 		if err != nil {
 			slog.Error("failed to delete transaction", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to delete transaction"))
 		}
 	}
-	res := tx.Commit(*r.ctx)
-	if res != nil {
-		slog.Error("failed to commit transaction", "error", res)
-		return connect.NewError(connect.CodeInternal, errors.New("failed to commit transaction"))
-	}
 	return nil
+}
+
+func (r *PostgresRepo) getDB(ctx context.Context) db.DBTX {
+	if tx, ok := extractTx(ctx); ok {
+		return tx
+	}
+	return r.pool
 }
