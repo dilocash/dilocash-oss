@@ -35,6 +35,16 @@ func (c *ConverterImpl) CommandFromTransportToDomain(source *v1.Command) *domain
 	}
 	return pDomainCommand
 }
+func (c *ConverterImpl) CommandRowFromDBToDB(source postgres.GetCommandsSyncRow) postgres.Command {
+	var postgresCommand postgres.Command
+	postgresCommand.ID = mappers.CopyUUID(source.ID)
+	postgresCommand.CommandStatus = source.CommandStatus
+	postgresCommand.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	postgresCommand.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	postgresCommand.Deleted = source.Deleted
+	postgresCommand.ProfileID = mappers.CopyUUID(source.ProfileID)
+	return postgresCommand
+}
 func (c *ConverterImpl) IntentFromDBToDomain(source postgres.Intent) *domain.Intent {
 	var domainIntent domain.Intent
 	domainIntent.ID = mappers.CopyUUID(source.ID)
@@ -71,6 +81,32 @@ func (c *ConverterImpl) IntentFromTransportToDomain(source *v1.Intent) *domain.I
 		pDomainIntent = &domainIntent
 	}
 	return pDomainIntent
+}
+func (c *ConverterImpl) IntentRowFromDBToDB(source postgres.GetIntentsSyncRow) postgres.Intent {
+	var postgresIntent postgres.Intent
+	postgresIntent.ID = mappers.CopyUUID(source.ID)
+	if source.TextMessage != nil {
+		xstring := *source.TextMessage
+		postgresIntent.TextMessage = &xstring
+	}
+	if source.AudioMessage != nil {
+		xstring2 := *source.AudioMessage
+		postgresIntent.AudioMessage = &xstring2
+	}
+	if source.ImageMessage != nil {
+		xstring3 := *source.ImageMessage
+		postgresIntent.ImageMessage = &xstring3
+	}
+	postgresIntent.IntentStatus = source.IntentStatus
+	if source.RequiresReview != nil {
+		xbool := *source.RequiresReview
+		postgresIntent.RequiresReview = &xbool
+	}
+	postgresIntent.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	postgresIntent.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	postgresIntent.Deleted = source.Deleted
+	postgresIntent.CommandID = mappers.CopyUUID(source.CommandID)
+	return postgresIntent
 }
 func (c *ConverterImpl) ProfileFromDBToDomain(source postgres.Profile) *domain.Profile {
 	var domainProfile domain.Profile
@@ -294,4 +330,23 @@ func (c *ConverterImpl) TransactionFromTransportToDomain(source *v1.Transaction)
 		pDomainTransaction = &domainTransaction
 	}
 	return pDomainTransaction
+}
+func (c *ConverterImpl) TransactionRowFromDBToDB(source postgres.GetTransactionsSyncRow) postgres.Transaction {
+	var postgresTransaction postgres.Transaction
+	postgresTransaction.ID = mappers.CopyUUID(source.ID)
+	postgresTransaction.Amount = mappers.CopyDecimal(source.Amount)
+	postgresTransaction.Currency = source.Currency
+	if source.Category != nil {
+		xstring := *source.Category
+		postgresTransaction.Category = &xstring
+	}
+	if source.Description != nil {
+		xstring2 := *source.Description
+		postgresTransaction.Description = &xstring2
+	}
+	postgresTransaction.CreatedAt = mappers.CopyTime(source.CreatedAt)
+	postgresTransaction.UpdatedAt = mappers.CopyTime(source.UpdatedAt)
+	postgresTransaction.Deleted = source.Deleted
+	postgresTransaction.CommandID = mappers.CopyUUID(source.CommandID)
+	return postgresTransaction
 }

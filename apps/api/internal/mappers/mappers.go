@@ -26,11 +26,14 @@ import (
 // goverter:extend github.com/dilocash/dilocash-oss/apps/api/internal/mappers:BoolToPgBool
 type Converter interface {
 	// Database -> Domain
-	// goverter:useZeroValueOnPointerInconsistency
-	TransactionFromDBToDomain(db database.Transaction) *domain.Transaction
+	CommandRowFromDBToDB(db database.GetCommandsSyncRow) database.Command
 	CommandFromDBToDomain(db database.Command) *domain.Command
+	IntentRowFromDBToDB(db database.GetIntentsSyncRow) database.Intent
 	// goverter:useZeroValueOnPointerInconsistency
 	IntentFromDBToDomain(db database.Intent) *domain.Intent
+	TransactionRowFromDBToDB(db database.GetTransactionsSyncRow) database.Transaction
+	// goverter:useZeroValueOnPointerInconsistency
+	TransactionFromDBToDomain(db database.Transaction) *domain.Transaction
 	// goverter:useZeroValueOnPointerInconsistency
 	ProfileFromDBToDomain(db database.Profile) *domain.Profile
 

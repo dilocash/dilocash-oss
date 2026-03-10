@@ -18,25 +18,13 @@ type Querier interface {
 	DeleteCommand(ctx context.Context, id uuid.UUID) error
 	DeleteIntent(ctx context.Context, id uuid.UUID) error
 	DeleteTransaction(ctx context.Context, id uuid.UUID) error
+	GetCommandsSync(ctx context.Context, arg GetCommandsSyncParams) ([]GetCommandsSyncRow, error)
+	GetIntentsSync(ctx context.Context, arg GetIntentsSyncParams) ([]GetIntentsSyncRow, error)
 	// Copyright (c) 2026 dilocash
 	// Use of this source code is governed by an MIT-style
 	// license that can be found in the LICENSE file.
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
-	// initial sync
-	ListCommandsByProfileId(ctx context.Context, arg ListCommandsByProfileIdParams) ([]Command, error)
-	ListCommandsByProfileIdAndCreatedAfter(ctx context.Context, arg ListCommandsByProfileIdAndCreatedAfterParams) ([]Command, error)
-	ListCommandsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListCommandsByProfileIdAndUpdatedAfterParams) ([]Command, error)
-	ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedCommandsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error)
-	ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedIntentsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error)
-	ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedTransactionsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error)
-	// initial sync
-	ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]Intent, error)
-	ListIntentsByProfileIdAndCreatedAfter(ctx context.Context, arg ListIntentsByProfileIdAndCreatedAfterParams) ([]Intent, error)
-	ListIntentsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListIntentsByProfileIdAndUpdatedAfterParams) ([]Intent, error)
-	// initial sync
-	ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]Transaction, error)
-	ListTransactionsByProfileIdAndCreatedAfter(ctx context.Context, arg ListTransactionsByProfileIdAndCreatedAfterParams) ([]Transaction, error)
-	ListTransactionsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListTransactionsByProfileIdAndUpdatedAfterParams) ([]Transaction, error)
+	GetTransactionsSync(ctx context.Context, arg GetTransactionsSyncParams) ([]GetTransactionsSyncRow, error)
 	UpdateCommand(ctx context.Context, arg UpdateCommandParams) (Command, error)
 	UpdateIntent(ctx context.Context, arg UpdateIntentParams) (Intent, error)
 	UpdateTransaction(ctx context.Context, arg UpdateTransactionParams) (Transaction, error)

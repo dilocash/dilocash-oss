@@ -124,43 +124,32 @@ func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, l
 		executor := r.getDB(ctx)
 		q := db.New(executor)
 
-		slog.Info("querying created commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		created, err := q.ListCommandsByProfileIdAndCreatedAfter(ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
+		created := []db.Command{}
+		updated := []db.Command{}
+		deleted := []uuid.UUID{}
+
+		slog.Info("querying sync commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		rows, err := q.GetCommandsSync(ctx, db.GetCommandsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
 		if err != nil {
-			slog.Error("failed to query created commands", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created commands"))
+			slog.Error("failed to query sync commands", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query sync commands"))
+		}
+		for _, row := range rows {
+			switch row.SyncType {
+			case "deleted":
+				deleted = append(deleted, row.ID)
+			case "created":
+				created = append(created, r.converter.CommandRowFromDBToDB(row))
+			case "updated":
+				updated = append(updated, r.converter.CommandRowFromDBToDB(row))
+			}
 		}
 
-		// execute query to get updated commands since lastPulledAt
-		slog.Info("querying updated commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		updated, err := q.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query updated commands", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated commands"))
-		}
-
-		// execute query to get deleted commands since lastPulledAt
-		slog.Info("querying deleted commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		deleted, err := q.ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query deleted commands", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted commands"))
-		}
 		return created, updated, deleted, nil
 	})
 }
@@ -201,42 +190,29 @@ func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, la
 	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Intent, []db.Intent, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
-		slog.Info("querying intent changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		// execute query to get intents since lastPulledAt
-		created, err := q.ListIntentsByProfileIdAndCreatedAfter(ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
+		created := []db.Intent{}
+		updated := []db.Intent{}
+		deleted := []uuid.UUID{}
+		slog.Info("querying sync intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		rows, err := q.GetIntentsSync(ctx, db.GetIntentsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
 		if err != nil {
-			slog.Error("failed to query created intents", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created intents"))
+			slog.Error("failed to query sync intents", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query sync intents"))
 		}
-
-		// execute query to get updated intents since lastPulledAt
-		slog.Info("querying updated intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		updated, err := q.ListIntentsByProfileIdAndUpdatedAfter(ctx, db.ListIntentsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query updated intents", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated intents"))
-		}
-		// execute query to get deleted intents since lastPulledAt
-		slog.Info("querying deleted intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		deleted, err := q.ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedIntentsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query deleted intents", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted intents"))
+		for _, row := range rows {
+			switch row.SyncType {
+			case "deleted":
+				deleted = append(deleted, row.ID)
+			case "created":
+				created = append(created, r.converter.IntentRowFromDBToDB(row))
+			case "updated":
+				updated = append(updated, r.converter.IntentRowFromDBToDB(row))
+			}
 		}
 		return created, updated, deleted, nil
 	})
@@ -247,42 +223,29 @@ func (r *TransactionRepository) PullChanges(ctx context.Context, profileId strin
 	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Transaction, []db.Transaction, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
-		slog.Info("querying transaction changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		// execute query to get transactions since lastPulledAt
-		created, err := q.ListTransactionsByProfileIdAndCreatedAfter(ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
+		created := []db.Transaction{}
+		updated := []db.Transaction{}
+		deleted := []uuid.UUID{}
+		slog.Info("querying sync transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		rows, err := q.GetTransactionsSync(ctx, db.GetTransactionsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
 		if err != nil {
-			slog.Error("failed to query created transactions", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created transactions"))
+			slog.Error("failed to query sync transactions", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query sync transactions"))
 		}
-		// execute query to get updated transactions since lastPulledAt
-		slog.Info("querying updated transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		updated, err := q.ListTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListTransactionsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query updated transactions", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated transactions"))
-		}
-
-		// execute query to get deleted transactions since lastPulledAt
-		slog.Info("querying deleted transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
-		deleted, err := q.ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedTransactionsByProfileIdAndUpdatedAfterParams{
-			ProfileID: uuid.MustParse(profileId),
-			UpdatedAt: lastPulledAt,
-			Limit:     100,
-			Offset:    0,
-		})
-		if err != nil {
-			slog.Error("failed to query deleted transactions", "error", err)
-			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted transactions"))
+		for _, row := range rows {
+			switch row.SyncType {
+			case "deleted":
+				deleted = append(deleted, row.ID)
+			case "created":
+				created = append(created, r.converter.TransactionRowFromDBToDB(row))
+			case "updated":
+				updated = append(updated, r.converter.TransactionRowFromDBToDB(row))
+			}
 		}
 
 		return created, updated, deleted, nil

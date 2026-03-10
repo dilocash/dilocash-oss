@@ -173,6 +173,138 @@ func (q *Queries) DeleteTransaction(ctx context.Context, id uuid.UUID) error {
 	return err
 }
 
+const getCommandsSync = `-- name: GetCommandsSync :many
+SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id, 
+    CASE 
+        WHEN deleted = true THEN 'deleted'
+        WHEN created_at > $2 AND (updated_at = c.created_at OR c.updated_at IS NULL) THEN 'created'
+        ELSE 'updated'
+    END as sync_type
+FROM commands c
+WHERE c.profile_id = $1 AND c.updated_at > $2
+LIMIT $3 OFFSET $4
+`
+
+type GetCommandsSyncParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
+}
+
+type GetCommandsSyncRow struct {
+	ID            uuid.UUID `json:"id"`
+	CommandStatus int32     `json:"command_status"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	Deleted       bool      `json:"deleted"`
+	ProfileID     uuid.UUID `json:"profile_id"`
+	SyncType      string    `json:"sync_type"`
+}
+
+func (q *Queries) GetCommandsSync(ctx context.Context, arg GetCommandsSyncParams) ([]GetCommandsSyncRow, error) {
+	rows, err := q.db.Query(ctx, getCommandsSync,
+		arg.ProfileID,
+		arg.CreatedAt,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetCommandsSyncRow
+	for rows.Next() {
+		var i GetCommandsSyncRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CommandStatus,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Deleted,
+			&i.ProfileID,
+			&i.SyncType,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getIntentsSync = `-- name: GetIntentsSync :many
+SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id, 
+    CASE 
+        WHEN deleted = true THEN 'deleted'
+        WHEN i.created_at > $2 AND (i.updated_at = i.created_at OR i.updated_at IS NULL) THEN 'created'
+        ELSE 'updated'
+    END as sync_type
+FROM intents i
+WHERE i.command_id IN (select id from commands where profile_id = $1) AND i.updated_at > $2
+LIMIT $3 OFFSET $4
+`
+
+type GetIntentsSyncParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	CreatedAt time.Time `json:"created_at"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
+}
+
+type GetIntentsSyncRow struct {
+	ID             uuid.UUID `json:"id"`
+	TextMessage    *string   `json:"text_message"`
+	AudioMessage   *string   `json:"audio_message"`
+	ImageMessage   *string   `json:"image_message"`
+	IntentStatus   int32     `json:"intent_status"`
+	RequiresReview *bool     `json:"requires_review"`
+	CreatedAt      time.Time `json:"created_at"`
+	UpdatedAt      time.Time `json:"updated_at"`
+	Deleted        bool      `json:"deleted"`
+	CommandID      uuid.UUID `json:"command_id"`
+	SyncType       string    `json:"sync_type"`
+}
+
+func (q *Queries) GetIntentsSync(ctx context.Context, arg GetIntentsSyncParams) ([]GetIntentsSyncRow, error) {
+	rows, err := q.db.Query(ctx, getIntentsSync,
+		arg.ProfileID,
+		arg.CreatedAt,
+		arg.Limit,
+		arg.Offset,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []GetIntentsSyncRow
+	for rows.Next() {
+		var i GetIntentsSyncRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.TextMessage,
+			&i.AudioMessage,
+			&i.ImageMessage,
+			&i.IntentStatus,
+			&i.RequiresReview,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.Deleted,
+			&i.CommandID,
+			&i.SyncType,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getProfile = `-- name: GetProfile :one
 
 SELECT id, display_name, email, accepted_terms_version, accepted_terms_at, allow_data_analysis, created_at FROM profiles
@@ -197,331 +329,40 @@ func (q *Queries) GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 	return i, err
 }
 
-const listCommandsByProfileId = `-- name: ListCommandsByProfileId :many
-SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id FROM commands c
-WHERE c.profile_id = $1 AND c.deleted = false
-ORDER BY c.created_at DESC
-LIMIT $2 OFFSET $3
-`
-
-type ListCommandsByProfileIdParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-// initial sync
-func (q *Queries) ListCommandsByProfileId(ctx context.Context, arg ListCommandsByProfileIdParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Command
-	for rows.Next() {
-		var i Command
-		if err := rows.Scan(
-			&i.ID,
-			&i.CommandStatus,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.ProfileID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listCommandsByProfileIdAndCreatedAfter = `-- name: ListCommandsByProfileIdAndCreatedAfter :many
-SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id
-FROM commands c
-WHERE c.profile_id = $1
-  AND c.deleted = false
-  AND c.created_at > $2 and c.updated_at <= $2 -- only new records
-ORDER BY c.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListCommandsByProfileIdAndCreatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	CreatedAt time.Time `json:"created_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListCommandsByProfileIdAndCreatedAfter(ctx context.Context, arg ListCommandsByProfileIdAndCreatedAfterParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByProfileIdAndCreatedAfter,
-		arg.ProfileID,
-		arg.CreatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Command
-	for rows.Next() {
-		var i Command
-		if err := rows.Scan(
-			&i.ID,
-			&i.CommandStatus,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.ProfileID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listCommandsByProfileIdAndUpdatedAfter = `-- name: ListCommandsByProfileIdAndUpdatedAfter :many
-SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id
-FROM commands c
-WHERE c.profile_id = $1
-  AND c.updated_at > c.created_at AND c.updated_at > $2 AND c.deleted = false
-ORDER BY c.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListCommandsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListCommandsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListCommandsByProfileIdAndUpdatedAfterParams) ([]Command, error) {
-	rows, err := q.db.Query(ctx, listCommandsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Command
-	for rows.Next() {
-		var i Command
-		if err := rows.Scan(
-			&i.ID,
-			&i.CommandStatus,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.ProfileID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listDeletedCommandsByProfileIdAndUpdatedAfter = `-- name: ListDeletedCommandsByProfileIdAndUpdatedAfter :many
-SELECT c.id as command_id
-FROM commands c
-WHERE c.profile_id = $1
-  AND c.updated_at > c.created_at AND c.updated_at > $2 AND c.deleted = true
-ORDER BY c.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListDeletedCommandsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedCommandsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listDeletedCommandsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []uuid.UUID
-	for rows.Next() {
-		var command_id uuid.UUID
-		if err := rows.Scan(&command_id); err != nil {
-			return nil, err
-		}
-		items = append(items, command_id)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listDeletedIntentsByProfileIdAndUpdatedAfter = `-- name: ListDeletedIntentsByProfileIdAndUpdatedAfter :many
-SELECT i.id as intent_id
-FROM intents i
-WHERE i.command_id IN (select id from commands where profile_id = $1)
-  AND i.updated_at > i.created_at AND i.updated_at > $2 AND i.deleted = true
-ORDER BY i.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListDeletedIntentsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedIntentsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listDeletedIntentsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []uuid.UUID
-	for rows.Next() {
-		var intent_id uuid.UUID
-		if err := rows.Scan(&intent_id); err != nil {
-			return nil, err
-		}
-		items = append(items, intent_id)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listDeletedTransactionsByProfileIdAndUpdatedAfter = `-- name: ListDeletedTransactionsByProfileIdAndUpdatedAfter :many
-SELECT t.id as transaction_id
+const getTransactionsSync = `-- name: GetTransactionsSync :many
+SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id, 
+    CASE 
+        WHEN deleted = true THEN 'deleted'
+        WHEN t.created_at > $2 AND (t.updated_at = t.created_at OR t.updated_at IS NULL) THEN 'created'
+        ELSE 'updated'
+    END as sync_type
 FROM transactions t
-WHERE t.command_id IN (select id from commands where profile_id = $1)
-  AND t.updated_at > t.created_at AND t.updated_at > $2 AND t.deleted = true
-ORDER BY t.created_at DESC
+WHERE t.command_id IN (select id from commands where profile_id = $1) AND t.updated_at > $2
 LIMIT $3 OFFSET $4
 `
 
-type ListDeletedTransactionsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListDeletedTransactionsByProfileIdAndUpdatedAfterParams) ([]uuid.UUID, error) {
-	rows, err := q.db.Query(ctx, listDeletedTransactionsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []uuid.UUID
-	for rows.Next() {
-		var transaction_id uuid.UUID
-		if err := rows.Scan(&transaction_id); err != nil {
-			return nil, err
-		}
-		items = append(items, transaction_id)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listIntentsByProfileId = `-- name: ListIntentsByProfileId :many
-SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id FROM intents i, commands c
-WHERE c.id = i.command_id AND c.profile_id = $1 AND i.deleted = false
-ORDER BY c.created_at DESC
-LIMIT $2 OFFSET $3
-`
-
-type ListIntentsByProfileIdParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-// initial sync
-func (q *Queries) ListIntentsByProfileId(ctx context.Context, arg ListIntentsByProfileIdParams) ([]Intent, error) {
-	rows, err := q.db.Query(ctx, listIntentsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Intent
-	for rows.Next() {
-		var i Intent
-		if err := rows.Scan(
-			&i.ID,
-			&i.TextMessage,
-			&i.AudioMessage,
-			&i.ImageMessage,
-			&i.IntentStatus,
-			&i.RequiresReview,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.CommandID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listIntentsByProfileIdAndCreatedAfter = `-- name: ListIntentsByProfileIdAndCreatedAfter :many
-SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id
-FROM intents i
-WHERE i.command_id IN (select id from commands where profile_id = $1)
-  AND i.deleted = false
-  AND i.created_at > $2 and i.updated_at <= $2 -- only new records
-ORDER BY i.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListIntentsByProfileIdAndCreatedAfterParams struct {
+type GetTransactionsSyncParams struct {
 	ProfileID uuid.UUID `json:"profile_id"`
 	CreatedAt time.Time `json:"created_at"`
 	Limit     int32     `json:"limit"`
 	Offset    int32     `json:"offset"`
 }
 
-func (q *Queries) ListIntentsByProfileIdAndCreatedAfter(ctx context.Context, arg ListIntentsByProfileIdAndCreatedAfterParams) ([]Intent, error) {
-	rows, err := q.db.Query(ctx, listIntentsByProfileIdAndCreatedAfter,
+type GetTransactionsSyncRow struct {
+	ID          uuid.UUID       `json:"id"`
+	Amount      decimal.Decimal `json:"amount"`
+	Currency    string          `json:"currency"`
+	Category    *string         `json:"category"`
+	Description *string         `json:"description"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
+	Deleted     bool            `json:"deleted"`
+	CommandID   uuid.UUID       `json:"command_id"`
+	SyncType    string          `json:"sync_type"`
+}
+
+func (q *Queries) GetTransactionsSync(ctx context.Context, arg GetTransactionsSyncParams) ([]GetTransactionsSyncRow, error) {
+	rows, err := q.db.Query(ctx, getTransactionsSync,
 		arg.ProfileID,
 		arg.CreatedAt,
 		arg.Limit,
@@ -531,106 +372,9 @@ func (q *Queries) ListIntentsByProfileIdAndCreatedAfter(ctx context.Context, arg
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Intent
+	var items []GetTransactionsSyncRow
 	for rows.Next() {
-		var i Intent
-		if err := rows.Scan(
-			&i.ID,
-			&i.TextMessage,
-			&i.AudioMessage,
-			&i.ImageMessage,
-			&i.IntentStatus,
-			&i.RequiresReview,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.CommandID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listIntentsByProfileIdAndUpdatedAfter = `-- name: ListIntentsByProfileIdAndUpdatedAfter :many
-SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id
-FROM intents i
-WHERE i.command_id IN (select id from commands where profile_id = $1)
-  AND i.updated_at > i.created_at AND i.updated_at > $2 AND i.deleted = false
-ORDER BY i.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListIntentsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListIntentsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListIntentsByProfileIdAndUpdatedAfterParams) ([]Intent, error) {
-	rows, err := q.db.Query(ctx, listIntentsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Intent
-	for rows.Next() {
-		var i Intent
-		if err := rows.Scan(
-			&i.ID,
-			&i.TextMessage,
-			&i.AudioMessage,
-			&i.ImageMessage,
-			&i.IntentStatus,
-			&i.RequiresReview,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.CommandID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listTransactionsByProfileId = `-- name: ListTransactionsByProfileId :many
-SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id FROM transactions t, commands c
-WHERE c.id = t.command_id AND c.profile_id = $1 AND t.deleted = false
-ORDER BY c.created_at DESC
-LIMIT $2 OFFSET $3
-`
-
-type ListTransactionsByProfileIdParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-// initial sync
-func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTransactionsByProfileIdParams) ([]Transaction, error) {
-	rows, err := q.db.Query(ctx, listTransactionsByProfileId, arg.ProfileID, arg.Limit, arg.Offset)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Transaction
-	for rows.Next() {
-		var i Transaction
+		var i GetTransactionsSyncRow
 		if err := rows.Scan(
 			&i.ID,
 			&i.Amount,
@@ -641,109 +385,7 @@ func (q *Queries) ListTransactionsByProfileId(ctx context.Context, arg ListTrans
 			&i.UpdatedAt,
 			&i.Deleted,
 			&i.CommandID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listTransactionsByProfileIdAndCreatedAfter = `-- name: ListTransactionsByProfileIdAndCreatedAfter :many
-SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id
-FROM transactions t
-WHERE t.command_id IN (select id from commands where profile_id = $1)
-  AND t.deleted = false
-  AND t.created_at > $2 and t.updated_at <= $2 -- only new records
-ORDER BY t.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListTransactionsByProfileIdAndCreatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	CreatedAt time.Time `json:"created_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListTransactionsByProfileIdAndCreatedAfter(ctx context.Context, arg ListTransactionsByProfileIdAndCreatedAfterParams) ([]Transaction, error) {
-	rows, err := q.db.Query(ctx, listTransactionsByProfileIdAndCreatedAfter,
-		arg.ProfileID,
-		arg.CreatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Transaction
-	for rows.Next() {
-		var i Transaction
-		if err := rows.Scan(
-			&i.ID,
-			&i.Amount,
-			&i.Currency,
-			&i.Category,
-			&i.Description,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.CommandID,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
-const listTransactionsByProfileIdAndUpdatedAfter = `-- name: ListTransactionsByProfileIdAndUpdatedAfter :many
-SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id
-FROM transactions t
-WHERE t.command_id IN (select id from commands where profile_id = $1)
-  AND t.updated_at > t.created_at AND t.updated_at > $2 AND t.deleted = false
-ORDER BY t.created_at DESC
-LIMIT $3 OFFSET $4
-`
-
-type ListTransactionsByProfileIdAndUpdatedAfterParams struct {
-	ProfileID uuid.UUID `json:"profile_id"`
-	UpdatedAt time.Time `json:"updated_at"`
-	Limit     int32     `json:"limit"`
-	Offset    int32     `json:"offset"`
-}
-
-func (q *Queries) ListTransactionsByProfileIdAndUpdatedAfter(ctx context.Context, arg ListTransactionsByProfileIdAndUpdatedAfterParams) ([]Transaction, error) {
-	rows, err := q.db.Query(ctx, listTransactionsByProfileIdAndUpdatedAfter,
-		arg.ProfileID,
-		arg.UpdatedAt,
-		arg.Limit,
-		arg.Offset,
-	)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Transaction
-	for rows.Next() {
-		var i Transaction
-		if err := rows.Scan(
-			&i.ID,
-			&i.Amount,
-			&i.Currency,
-			&i.Category,
-			&i.Description,
-			&i.CreatedAt,
-			&i.UpdatedAt,
-			&i.Deleted,
-			&i.CommandID,
+			&i.SyncType,
 		); err != nil {
 			return nil, err
 		}
