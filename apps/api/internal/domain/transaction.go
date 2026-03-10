@@ -8,20 +8,29 @@ import (
 	"context"
 	"time"
 
+	"github.com/go-playground/validator/v10"
 	"github.com/google/uuid"
+	dv "github.com/sblackstone/shopspring-decimal-validators"
 	"github.com/shopspring/decimal"
 )
 
+var validate *validator.Validate
+
+func init() {
+	validate = validator.New(validator.WithRequiredStructEnabled())
+	dv.RegisterDecimalValidators(validate) // Register custom validators
+}
+
 type Transaction struct {
 	ID          uuid.UUID
-	Amount      decimal.Decimal
+	Amount      decimal.Decimal `validate:"dgt=0"`
 	Currency    string
 	Category    string
 	Description string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	CreatedAt   time.Time `validate:"required"`
+	UpdatedAt   time.Time `validate:"required"`
 	Deleted     bool
-	CommandID   uuid.UUID
+	CommandID   uuid.UUID `validate:"required"`
 }
 
 type TransactionRepository interface {

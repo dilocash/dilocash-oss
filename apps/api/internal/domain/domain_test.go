@@ -41,13 +41,5 @@ func TestDomainStructs(t *testing.T) {
 		assert.Equal(t, "test", intent.TextMessage)
 	})
 
-	t.Run("Transaction", func(t *testing.T) {
-		id := uuid.New()
-		tx := &Transaction{
-			ID:       id,
-			Currency: "USD",
-		}
-		assert.Equal(t, id, tx.ID)
-		assert.Equal(t, "USD", tx.Currency)
-	})
+	TestTransactionDomainStructs(t)
 }
