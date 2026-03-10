@@ -58,6 +58,8 @@ type Converter interface {
 
 	// Transport -> Domain
 	// goverter:useZeroValueOnPointerInconsistency
+	// goverter:map Id ID
+	// goverter:ignore ProfileID
 	CommandFromTransportToDomain(t *transport.Command) domain.Command
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency

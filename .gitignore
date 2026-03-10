@@ -62,3 +62,10 @@ apps/mobile/ios/
 
 # Serwist
 apps/web/public/sw*
+
+# Go
+go.work
+go.work.sum
+debug.test
+*.prof
+__debug_bin*
