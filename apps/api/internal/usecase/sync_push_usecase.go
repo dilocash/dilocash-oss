@@ -33,15 +33,15 @@ func (u *SyncPushUsecase) Execute(ctx context.Context, profileId string, lastPul
 
 	// El transactor inyecta la TX en el ctx y se lo pasa al repo
 	err := u.transactor.WithinTransaction(ctx, func(txCtx context.Context) error {
-		err := u.commandRepo.PushChanges(ctx, profileId, lastPulledAt, &syncChanges.Commands)
+		err := u.commandRepo.PushChanges(txCtx, profileId, lastPulledAt, &syncChanges.Commands)
 		if err != nil {
 			return err
 		}
-		err = u.intentRepo.PushChanges(ctx, profileId, lastPulledAt, &syncChanges.Intents)
+		err = u.intentRepo.PushChanges(txCtx, profileId, lastPulledAt, &syncChanges.Intents)
 		if err != nil {
 			return err
 		}
-		err = u.transactionRepo.PushChanges(ctx, profileId, lastPulledAt, &syncChanges.Transactions)
+		err = u.transactionRepo.PushChanges(txCtx, profileId, lastPulledAt, &syncChanges.Transactions)
 		if err != nil {
 			return err
 		}
