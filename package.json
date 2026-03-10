@@ -20,6 +20,12 @@
   "pnpm": {
     "overrides": {
       "nativewind": "4.2.0"
-    }
+    },
+    "onlyBuiltDependencies": [
+      "@bufbuild/buf",
+      "@bufbuild/protoc-gen-es",
+      "esbuild",
+      "protobufjs"
+    ]
   }
 }

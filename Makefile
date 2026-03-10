@@ -8,7 +8,7 @@ DOCS_DIR := ./docs/diagrams
 LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "packages/ui-components/components/ui/**"  -ignore "apps/mobile/node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts" -ignore "apps/mobile/expo-env.d.ts" -ignore "pnpm-lock.yaml"
 
 # Tools
-BUF := buf
+BUF := pnpm exec buf
 SQLC := sqlc
 GOVERTER := goverter
 # MMDC := mmdc # Mermaid CLI (requires: npm install -g @mermaid-js/mermaid-cli)
