@@ -81,10 +81,15 @@ func main() {
 	var handler slog.Handler
 	if os.Getenv("APP_ENV") == "development" {
 		logLevel.Set(slog.LevelDebug)
-		handler = slog.NewTextHandler(os.Stdout, nil)
+		handler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     logLevel,
+		})
 	} else {
 		logLevel.Set(slog.LevelInfo) // Set the default level
-		handler = slog.NewJSONHandler(os.Stdout, nil)
+		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: logLevel,
+		})
 	}
 	// Set the default logger
 	slog.SetDefault(slog.New(handler))
