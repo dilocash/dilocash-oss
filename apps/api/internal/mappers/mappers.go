@@ -44,11 +44,17 @@ type Converter interface {
 
 	// Domain -> Database params
 	// goverter:useZeroValueOnPointerInconsistency
-	ToDBCreateTransactionParams(d *domain.Transaction) database.CreateTransactionParams
-	// goverter:useZeroValueOnPointerInconsistency
 	ToDBCreateCommandParams(d *domain.Command) database.CreateCommandParams
 	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateCommandParams(d *domain.Command) database.UpdateCommandParams
+	// goverter:useZeroValueOnPointerInconsistency
 	ToDBCreateIntentParams(d *domain.Intent) database.CreateIntentParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateIntentParams(d *domain.Intent) database.UpdateIntentParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBCreateTransactionParams(d *domain.Transaction) database.CreateTransactionParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateTransactionParams(d *domain.Transaction) database.UpdateTransactionParams
 
 	// Domain -> Transport
 	// goverter:ignore state sizeCache unknownFields

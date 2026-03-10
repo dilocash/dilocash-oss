@@ -181,6 +181,43 @@ func (c *ConverterImpl) ToDBTransaction(source *domain.Transaction) postgres.Tra
 	}
 	return postgresTransaction
 }
+func (c *ConverterImpl) ToDBUpdateCommandParams(source *domain.Command) postgres.UpdateCommandParams {
+	var postgresUpdateCommandParams postgres.UpdateCommandParams
+	if source != nil {
+		postgresUpdateCommandParams.ID = mappers.CopyUUID((*source).ID)
+		postgresUpdateCommandParams.CommandStatus = (*source).CommandStatus
+	}
+	return postgresUpdateCommandParams
+}
+func (c *ConverterImpl) ToDBUpdateIntentParams(source *domain.Intent) postgres.UpdateIntentParams {
+	var postgresUpdateIntentParams postgres.UpdateIntentParams
+	if source != nil {
+		postgresUpdateIntentParams.ID = mappers.CopyUUID((*source).ID)
+		pString := (*source).TextMessage
+		postgresUpdateIntentParams.TextMessage = &pString
+		pString2 := (*source).AudioMessage
+		postgresUpdateIntentParams.AudioMessage = &pString2
+		pString3 := (*source).ImageMessage
+		postgresUpdateIntentParams.ImageMessage = &pString3
+		postgresUpdateIntentParams.IntentStatus = (*source).IntentStatus
+		pBool := (*source).RequiresReview
+		postgresUpdateIntentParams.RequiresReview = &pBool
+	}
+	return postgresUpdateIntentParams
+}
+func (c *ConverterImpl) ToDBUpdateTransactionParams(source *domain.Transaction) postgres.UpdateTransactionParams {
+	var postgresUpdateTransactionParams postgres.UpdateTransactionParams
+	if source != nil {
+		postgresUpdateTransactionParams.ID = mappers.CopyUUID((*source).ID)
+		postgresUpdateTransactionParams.Amount = mappers.CopyDecimal((*source).Amount)
+		postgresUpdateTransactionParams.Currency = (*source).Currency
+		pString := (*source).Category
+		postgresUpdateTransactionParams.Category = &pString
+		pString2 := (*source).Description
+		postgresUpdateTransactionParams.Description = &pString2
+	}
+	return postgresUpdateTransactionParams
+}
 func (c *ConverterImpl) ToTransportCommand(source *domain.Command) *v1.Command {
 	var pV1Command *v1.Command
 	if source != nil {

@@ -16,7 +16,6 @@ import (
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
-	"github.com/shopspring/decimal"
 )
 
 // could be used in the future for repos which access database but are not syncable
@@ -27,10 +26,11 @@ type PostgresRepo struct {
 
 // BaseSyncRepo handles the common logic for pgx/sqlc
 type BaseSyncRepo[DBEntity any, DomainEntity any] struct {
-	q        *db.Queries
-	pool     *pgxpool.Pool
-	toDomain func(DBEntity) DomainEntity
-	toDB     func(DomainEntity) DBEntity
+	q         *db.Queries
+	pool      *pgxpool.Pool
+	toDomain  func(DBEntity) DomainEntity
+	toDB      func(DomainEntity) DBEntity
+	converter *mappers.ConverterImpl
 }
 
 type CommandRepository struct {
@@ -55,10 +55,11 @@ func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
 func NewCommandRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *CommandRepository {
 	return &CommandRepository{
 		BaseSyncRepo: &BaseSyncRepo[db.Command, *domain.Command]{
-			pool:     pool,
-			q:        db.New(pool),
-			toDomain: conv.CommandFromDBToDomain,
-			toDB:     conv.ToDBCommand,
+			pool:      pool,
+			q:         db.New(pool),
+			toDomain:  conv.CommandFromDBToDomain,
+			toDB:      conv.ToDBCommand,
+			converter: conv,
 		},
 	}
 }
@@ -66,10 +67,11 @@ func NewCommandRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *Comm
 func NewIntentRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *IntentRepository {
 	return &IntentRepository{
 		BaseSyncRepo: &BaseSyncRepo[db.Intent, *domain.Intent]{
-			pool:     pool,
-			q:        db.New(pool),
-			toDomain: conv.IntentFromDBToDomain,
-			toDB:     conv.ToDBIntent,
+			pool:      pool,
+			q:         db.New(pool),
+			toDomain:  conv.IntentFromDBToDomain,
+			toDB:      conv.ToDBIntent,
+			converter: conv,
 		},
 	}
 }
@@ -77,10 +79,11 @@ func NewIntentRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *Inten
 func NewTransactionRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *TransactionRepository {
 	return &TransactionRepository{
 		BaseSyncRepo: &BaseSyncRepo[db.Transaction, *domain.Transaction]{
-			pool:     pool,
-			q:        db.New(pool),
-			toDomain: conv.TransactionFromDBToDomain,
-			toDB:     conv.ToDBTransaction,
+			pool:      pool,
+			q:         db.New(pool),
+			toDomain:  conv.TransactionFromDBToDomain,
+			toDB:      conv.ToDBTransaction,
+			converter: conv,
 		},
 	}
 }
@@ -166,12 +169,7 @@ func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, l
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, command := range commandsSync.Created {
-		params := db.CreateCommandParams{
-			ID:            command.ID,
-			ProfileID:     uuid.MustParse(profileId),
-			CommandStatus: command.CommandStatus,
-			CreatedAt:     command.CreatedAt,
-		}
+		params := r.converter.ToDBCreateCommandParams(command)
 		_, err := q.CreateCommand(ctx, params)
 		if err != nil {
 			slog.Error("failed to store command", "error", err)
@@ -180,10 +178,7 @@ func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, l
 	}
 
 	for _, command := range commandsSync.Updated {
-		params := db.UpdateCommandParams{
-			ID:            command.ID,
-			CommandStatus: command.CommandStatus,
-		}
+		params := r.converter.ToDBUpdateCommandParams(command)
 		_, err := q.UpdateCommand(ctx, params)
 		if err != nil {
 			slog.Error("failed to store command", "error", err)
@@ -298,16 +293,7 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, intent := range intentsSync.Created {
-		params := db.CreateIntentParams{
-			ID:             intent.ID,
-			CommandID:      intent.CommandID,
-			TextMessage:    &intent.TextMessage,
-			AudioMessage:   &intent.AudioMessage,
-			ImageMessage:   &intent.ImageMessage,
-			IntentStatus:   intent.IntentStatus,
-			RequiresReview: &intent.RequiresReview,
-			CreatedAt:      intent.CreatedAt,
-		}
+		params := r.converter.ToDBCreateIntentParams(intent)
 		_, err := q.CreateIntent(ctx, params)
 		if err != nil {
 			slog.Error("failed to store intent", "error", err)
@@ -316,10 +302,7 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 	}
 
 	for _, intent := range intentsSync.Updated {
-		params := db.UpdateIntentParams{
-			ID:           intent.ID,
-			IntentStatus: intent.IntentStatus,
-		}
+		params := r.converter.ToDBUpdateIntentParams(intent)
 		_, err := q.UpdateIntent(ctx, params)
 		if err != nil {
 			slog.Error("failed to store intent", "error", err)
@@ -342,15 +325,7 @@ func (r *TransactionRepository) PushChanges(ctx context.Context, profileId strin
 	q := db.New(executor)
 
 	for _, transaction := range transactionsSync.Created {
-		params := db.CreateTransactionParams{
-			ID:          transaction.ID,
-			CommandID:   transaction.CommandID,
-			Amount:      decimal.RequireFromString(transaction.Amount.String()),
-			Currency:    transaction.Currency,
-			Category:    &transaction.Category,
-			Description: &transaction.Description,
-			CreatedAt:   transaction.CreatedAt,
-		}
+		params := r.converter.ToDBCreateTransactionParams(transaction)
 		_, err := q.CreateTransaction(ctx, params)
 		if err != nil {
 			slog.Error("failed to store transaction", "error", err)
@@ -359,13 +334,7 @@ func (r *TransactionRepository) PushChanges(ctx context.Context, profileId strin
 	}
 
 	for _, transaction := range transactionsSync.Updated {
-		params := db.UpdateTransactionParams{
-			ID:          transaction.ID,
-			Amount:      decimal.RequireFromString(transaction.Amount.String()),
-			Currency:    transaction.Currency,
-			Category:    &transaction.Category,
-			Description: &transaction.Description,
-		}
+		params := r.converter.ToDBUpdateTransactionParams(transaction)
 		_, err := q.UpdateTransaction(ctx, params)
 		if err != nil {
 			slog.Error("failed to store transaction", "error", err)
