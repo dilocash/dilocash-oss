@@ -25,6 +25,7 @@ func (c *ConverterImpl) CommandFromDBToDomain(source postgres.Command) domain.Co
 func (c *ConverterImpl) CommandFromTransportToDomain(source *v1.Command) domain.Command {
 	var domainCommand domain.Command
 	if source != nil {
+		domainCommand.ID = mappers.StringToUUID((*source).Id)
 		domainCommand.CommandStatus = int32((*source).CommandStatus)
 		domainCommand.CreatedAt = mappers.TimestampToTime((*source).CreatedAt)
 		domainCommand.UpdatedAt = mappers.TimestampToTime((*source).UpdatedAt)

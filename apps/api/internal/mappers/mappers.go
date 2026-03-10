@@ -5,7 +5,7 @@
 package mappers
 
 import (
-	"github.com/dilocash/dilocash-oss/apps/api/internal/domain"
+	domain "github.com/dilocash/dilocash-oss/apps/api/internal/domain"
 	database "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	transport "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
 )
@@ -57,8 +57,9 @@ type Converter interface {
 	ToTransportIntent(d domain.Intent) *transport.Intent
 
 	// Transport -> Domain
-	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
+	// goverter:map Id ID
+	// goverter:ignore ProfileID
 	CommandFromTransportToDomain(t *transport.Command) domain.Command
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency

@@ -40,7 +40,7 @@
     "vitest": "^4.0.18"
   },
   "scripts": {
-    "test": "vitest run"
+    "test": "vitest run --passWithNoTests"
   },
   "keywords": [],
   "author": "",

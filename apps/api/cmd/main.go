@@ -23,8 +23,10 @@ import (
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/health"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/repository"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/middleware"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/services/sync"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/usecase"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
@@ -46,14 +48,14 @@ func withCORS(h http.Handler) http.Handler {
 }
 
 // registerAllServices registers all gRPC services from v1
-func registerAllServices(ctx context.Context, mux *http.ServeMux, grpcServer *grpc.Server, pool *pgxpool.Pool) {
+func registerAllServices(ctx context.Context, mux *http.ServeMux, syncPullUsecase *usecase.SyncPullUsecase, syncPushUsecase *usecase.SyncPushUsecase) {
 
 	log.Println("Configure auth server")
 	supabaseAuth := configureAuthServer(ctx)
 
 	log.Println("Registering gRPC services...")
 	// sync server
-	syncServer := sync.NewSyncServer(pool)
+	syncServer := sync.NewSyncServer(syncPullUsecase, syncPushUsecase)
 	path, handler := v1connect.NewSyncServiceHandler(
 		syncServer,
 		connect.WithInterceptors(
@@ -74,6 +76,15 @@ func main() {
 
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	pool := initDB()
+
+	commandRepository := repository.NewPostgresRepo(pool)
+	intentRepository := repository.NewPostgresRepo(pool)
+	transactionRepository := repository.NewPostgresRepo(pool)
+	transactor := repository.NewPostgresTransactor(pool)
+
+	syncPullUsecase := usecase.NewSyncPullUsecase(commandRepository, intentRepository, transactionRepository, transactor)
+	syncPushUsecase := usecase.NewSyncPushUsecase(commandRepository, intentRepository, transactionRepository, transactor)
+
 	defer pool.Close()
 
 	// 4. Setup gRPC Server
@@ -107,7 +118,7 @@ func main() {
 		mux := http.NewServeMux()
 
 		// Register all services
-		registerAllServices(ctx, mux, grpcServer, pool)
+		registerAllServices(ctx, mux, syncPullUsecase, syncPushUsecase)
 
 		p := new(http.Protocols)
 		p.SetHTTP1(true)

@@ -9,11 +9,11 @@ import fs from 'fs'
 import es from '../../i18n/locales/es.json'
 
 test('check auth i18n usage', () => {
-    checkI18NForComponents('./components/auth')
+    checkI18NForComponents('./features/auth')
 })
 
 test('check main i18n usage', () => {
-    checkI18NForComponents('./components/main')
+    checkI18NForComponents('./features/main')
 })
 
 function checkI18NForComponents(folder) {

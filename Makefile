@@ -8,7 +8,7 @@ DOCS_DIR := ./docs/diagrams
 LICENSE_IGNORE := -ignore "apps/api/migrations/**" -ignore "node_modules/**" -ignore "packages/ui-components/components/ui/**"  -ignore "apps/mobile/node_modules/**" -ignore "apps/web/node_modules/**" -ignore "apps/web/.next/**" -ignore "apps/web/next-env.d.ts" -ignore "apps/mobile/expo-env.d.ts" -ignore "pnpm-lock.yaml"
 
 # Tools
-BUF := buf
+BUF := pnpm exec buf
 SQLC := sqlc
 GOVERTER := goverter
 # MMDC := mmdc # Mermaid CLI (requires: npm install -g @mermaid-js/mermaid-cli)
@@ -114,10 +114,7 @@ lint: ## Run linters for Go and Protobuf
 
 test: ## Run Go tests
 	@echo "🚀 Running tests..."
-	cd apps/api && go test -v -race ./...
-	cd packages/ui-features && pnpm test
-	cd packages/ui-components && pnpm test
-	cd packages/i18n && pnpm test
+	turbo test
 
 # --- Database Migrations ---
 
