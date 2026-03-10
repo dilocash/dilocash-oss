@@ -106,9 +106,9 @@ func (s *SyncServer) PushChanges(
 	converter := &mappers.ConverterImpl{}
 	slog.Info("pushing changes", "profileId", profileId, "changes", req.GetChanges(), "lastPulledAt", lastPulledAt.AsTime())
 
-	commands := domain.CommandsSync{
-		Created: []domain.Command{},
-		Updated: []domain.Command{},
+	commands := domain.SyncPayload[*domain.Command]{
+		Created: []*domain.Command{},
+		Updated: []*domain.Command{},
 		Deleted: []uuid.UUID{},
 	}
 	for _, command := range req.GetChanges().GetCommands().GetCreated() {
@@ -121,9 +121,9 @@ func (s *SyncServer) PushChanges(
 		commands.Deleted = append(commands.Deleted, uuid.MustParse(command))
 	}
 
-	intents := domain.IntentsSync{
-		Created: []domain.Intent{},
-		Updated: []domain.Intent{},
+	intents := domain.SyncPayload[*domain.Intent]{
+		Created: []*domain.Intent{},
+		Updated: []*domain.Intent{},
 		Deleted: []uuid.UUID{},
 	}
 	for _, i := range req.GetChanges().GetIntents().GetCreated() {
@@ -136,9 +136,9 @@ func (s *SyncServer) PushChanges(
 		intents.Deleted = append(intents.Deleted, uuid.MustParse(i))
 	}
 
-	transactions := domain.TransactionsSync{
-		Created: []domain.Transaction{},
-		Updated: []domain.Transaction{},
+	transactions := domain.SyncPayload[*domain.Transaction]{
+		Created: []*domain.Transaction{},
+		Updated: []*domain.Transaction{},
 		Deleted: []uuid.UUID{},
 	}
 	for _, t := range req.GetChanges().GetTransactions().GetCreated() {

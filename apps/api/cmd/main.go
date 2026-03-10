@@ -21,6 +21,7 @@ import (
 	connectcors "connectrpc.com/cors"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
+	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/health"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/repository"
@@ -77,9 +78,9 @@ func main() {
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	pool := initDB()
 
-	commandRepository := repository.NewPostgresRepo(pool)
-	intentRepository := repository.NewPostgresRepo(pool)
-	transactionRepository := repository.NewPostgresRepo(pool)
+	commandRepository := repository.NewCommandRepository(pool, &mappers.ConverterImpl{})
+	intentRepository := repository.NewIntentRepository(pool, &mappers.ConverterImpl{})
+	transactionRepository := repository.NewTransactionRepository(pool, &mappers.ConverterImpl{})
 	transactor := repository.NewPostgresTransactor(pool)
 
 	syncPullUsecase := usecase.NewSyncPullUsecase(commandRepository, intentRepository, transactionRepository, transactor)

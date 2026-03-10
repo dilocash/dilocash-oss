@@ -28,15 +28,15 @@ func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.
 
 func (u *SyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
 	slog.Info("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	commandsSync, err := u.commandRepo.PullCommandChanges(ctx, profileId, lastPulledAt)
+	commandsSync, err := u.commandRepo.PullChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}
-	intentsSync, err := u.intentRepo.PullIntentChanges(ctx, profileId, lastPulledAt)
+	intentsSync, err := u.intentRepo.PullChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}
-	transactionsSync, err := u.transactionRepo.PullTransactionChanges(ctx, profileId, lastPulledAt)
+	transactionsSync, err := u.transactionRepo.PullChanges(ctx, profileId, lastPulledAt)
 	if err != nil {
 		return nil, err
 	}

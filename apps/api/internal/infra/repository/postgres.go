@@ -19,9 +19,30 @@ import (
 	"github.com/shopspring/decimal"
 )
 
+// could be used in the future for repos which access database but are not syncable
 type PostgresRepo struct {
 	q    *db.Queries
 	pool *pgxpool.Pool
+}
+
+// BaseSyncRepo handles the common logic for pgx/sqlc
+type BaseSyncRepo[DBEntity any, DomainEntity any] struct {
+	q        *db.Queries
+	pool     *pgxpool.Pool
+	toDomain func(DBEntity) DomainEntity
+	toDB     func(DomainEntity) DBEntity
+}
+
+type CommandRepository struct {
+	*BaseSyncRepo[db.Command, *domain.Command]
+}
+
+type IntentRepository struct {
+	*BaseSyncRepo[db.Intent, *domain.Intent]
+}
+
+type TransactionRepository struct {
+	*BaseSyncRepo[db.Transaction, *domain.Transaction]
 }
 
 func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
@@ -31,211 +52,117 @@ func NewPostgresRepo(pool *pgxpool.Pool) *PostgresRepo {
 	}
 }
 
-func (r *PostgresRepo) PullCommandChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.CommandsSync, error) {
-	converter := &mappers.ConverterImpl{}
-	created := []domain.Command{}
+func NewCommandRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *CommandRepository {
+	return &CommandRepository{
+		BaseSyncRepo: &BaseSyncRepo[db.Command, *domain.Command]{
+			pool:     pool,
+			q:        db.New(pool),
+			toDomain: conv.CommandFromDBToDomain,
+			toDB:     conv.ToDBCommand,
+		},
+	}
+}
 
-	executor := r.getDB(ctx)
-	q := db.New(executor)
+func NewIntentRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *IntentRepository {
+	return &IntentRepository{
+		BaseSyncRepo: &BaseSyncRepo[db.Intent, *domain.Intent]{
+			pool:     pool,
+			q:        db.New(pool),
+			toDomain: conv.IntentFromDBToDomain,
+			toDB:     conv.ToDBIntent,
+		},
+	}
+}
 
-	slog.Info("pulling command changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	// execute query to get created commands since lastPulledAt
-	createdCommandsResult, err := q.ListCommandsByProfileIdAndCreatedAfter(ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		CreatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
+func NewTransactionRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *TransactionRepository {
+	return &TransactionRepository{
+		BaseSyncRepo: &BaseSyncRepo[db.Transaction, *domain.Transaction]{
+			pool:     pool,
+			q:        db.New(pool),
+			toDomain: conv.TransactionFromDBToDomain,
+			toDB:     conv.ToDBTransaction,
+		},
+	}
+}
+
+/*
+Generic PullChanges which queries created, updated and deleted records for a Dom entity
+*/
+func (r *BaseSyncRepo[DB, Dom]) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time, fetch func(ctx context.Context, updatedAfter time.Time) ([]DB, []DB, []uuid.UUID, error)) (*domain.SyncPayload[Dom], error) {
+	// execute queries to get created, updated and deleted entities since lastPulledAt
+	createdRows, updatedRows, deletedRows, err := fetch(ctx, lastPulledAt)
 	if err != nil {
-		slog.Error("failed to pull created commands", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created commands"))
+		return nil, err
+	}
+	// convert db entities to domain entities
+	created := make([]Dom, len(createdRows))
+	for i, row := range createdRows {
+		created[i] = r.toDomain(row)
 	}
 
-	for _, dbCommandResult := range createdCommandsResult {
-		dbCommand := dbCommandResult
-		domainCommand := converter.CommandFromDBToDomain(dbCommand)
-		created = append(created, domainCommand)
+	// convert db entities to domain entities
+	updated := make([]Dom, len(updatedRows))
+	for i, row := range updatedRows {
+		updated[i] = r.toDomain(row)
 	}
 
-	updated := []domain.Command{}
-	// execute query to get updated commands since lastPulledAt
-	updatedCommandsResult, err := q.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull updated commands", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated commands"))
-	}
-
-	for _, dbCommandResult := range updatedCommandsResult {
-		dbCommand := dbCommandResult
-		domainCommand := converter.CommandFromDBToDomain(dbCommand)
-		updated = append(updated, domainCommand)
-	}
-
-	deleted := []uuid.UUID{}
-
-	// execute query to get deleted commands since lastPulledAt
-	deletedCommandsResult, err := q.ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull deleted commands", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted commands"))
-	}
-
-	for _, dbCommandResult := range deletedCommandsResult {
-		deleted = append(deleted, dbCommandResult)
-	}
-
-	return &domain.CommandsSync{
+	// deleted entities are already uuid, no convertion needed
+	//return created, updated and deletedRows
+	return &domain.SyncPayload[Dom]{
 		Created: created,
 		Updated: updated,
-		Deleted: deleted,
+		Deleted: deletedRows,
 	}, nil
 }
 
-func (r *PostgresRepo) PullIntentChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.IntentsSync, error) {
-	converter := &mappers.ConverterImpl{}
-	created := []domain.Intent{}
+func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Command], error) {
+	// we call generic method with specific sqlc generated queries
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Command, []db.Command, []uuid.UUID, error) {
+		executor := r.getDB(ctx)
+		q := db.New(executor)
 
-	executor := r.getDB(ctx)
-	q := db.New(executor)
-	slog.Info("pulling intent changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	// execute query to get intents since lastPulledAt
-	createdIntentsResult, err := q.ListIntentsByProfileIdAndCreatedAfter(ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		CreatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
+		slog.Info("querying created commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		created, err := q.ListCommandsByProfileIdAndCreatedAfter(ctx, db.ListCommandsByProfileIdAndCreatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			CreatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query created commands", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created commands"))
+		}
+
+		// execute query to get updated commands since lastPulledAt
+		slog.Info("querying updated commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		updated, err := q.ListCommandsByProfileIdAndUpdatedAfter(ctx, db.ListCommandsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query updated commands", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated commands"))
+		}
+
+		// execute query to get deleted commands since lastPulledAt
+		slog.Info("querying deleted commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		deleted, err := q.ListDeletedCommandsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedCommandsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query deleted commands", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted commands"))
+		}
+		return created, updated, deleted, nil
 	})
-	if err != nil {
-		slog.Error("failed to pull created intents", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created intents"))
-	}
-
-	for _, dbIntentResult := range createdIntentsResult {
-		dbIntent := dbIntentResult
-		domainIntent := converter.IntentFromDBToDomain(dbIntent)
-		created = append(created, domainIntent)
-	}
-
-	updated := []domain.Intent{}
-	// execute query to get updated intents since lastPulledAt
-	updatedIntentsResult, err := q.ListIntentsByProfileIdAndUpdatedAfter(ctx, db.ListIntentsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull updated intents", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated intents"))
-	}
-
-	for _, dbIntentResult := range updatedIntentsResult {
-		dbIntent := dbIntentResult
-		domainIntent := converter.IntentFromDBToDomain(dbIntent)
-		updated = append(updated, domainIntent)
-	}
-
-	deleted := []uuid.UUID{}
-	// execute query to get deleted intents since lastPulledAt
-	deletedIntentsResult, err := q.ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedIntentsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull deleted intents", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted intents"))
-	}
-
-	for _, dbIntentResult := range deletedIntentsResult {
-		deleted = append(deleted, dbIntentResult)
-	}
-	return &domain.IntentsSync{
-		Created: created,
-		Updated: updated,
-		Deleted: deleted,
-	}, nil
 }
 
-func (r *PostgresRepo) PullTransactionChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.TransactionsSync, error) {
-	converter := &mappers.ConverterImpl{}
-	created := []domain.Transaction{}
-
-	executor := r.getDB(ctx)
-	q := db.New(executor)
-	slog.Info("pulling transaction changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	// execute query to get transactions since lastPulledAt
-	createdTransactionsResult, err := q.ListTransactionsByProfileIdAndCreatedAfter(ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		CreatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull created transactions", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull created transactions"))
-	}
-
-	for _, dbTransactionResult := range createdTransactionsResult {
-		dbTransaction := dbTransactionResult
-		domainTransaction := converter.TransactionFromDBToDomain(dbTransaction)
-		created = append(created, domainTransaction)
-	}
-
-	updated := []domain.Transaction{}
-	// execute query to get updated transactions since lastPulledAt
-	updatedTransactionsResult, err := q.ListTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListTransactionsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull updated transactions", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull updated transactions"))
-	}
-
-	for _, dbTransactionResult := range updatedTransactionsResult {
-		dbTransaction := dbTransactionResult
-		domainTransaction := converter.TransactionFromDBToDomain(dbTransaction)
-		updated = append(updated, domainTransaction)
-	}
-
-	deleted := []uuid.UUID{}
-	// execute query to get deleted transactions since lastPulledAt
-	deletedTransactionsResult, err := q.ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedTransactionsByProfileIdAndUpdatedAfterParams{
-		ProfileID: uuid.MustParse(profileId),
-		UpdatedAt: lastPulledAt,
-		Limit:     100,
-		Offset:    0,
-	})
-	if err != nil {
-		slog.Error("failed to pull deleted transactions", "error", err)
-		return nil, connect.NewError(connect.CodeInternal, errors.New("failed to pull deleted transactions"))
-	}
-
-	for _, dbTransactionResult := range deletedTransactionsResult {
-		deleted = append(deleted, dbTransactionResult)
-	}
-	return &domain.TransactionsSync{
-		Created: created,
-		Updated: updated,
-		Deleted: deleted,
-	}, nil
-}
-
-func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string, lastPulledAt time.Time, commandsSync *domain.CommandsSync) error {
+func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, commandsSync *domain.SyncPayload[*domain.Command]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, command := range commandsSync.Created {
@@ -274,7 +201,100 @@ func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string,
 	return nil
 }
 
-func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, lastPulledAt time.Time, intentsSync *domain.IntentsSync) error {
+func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Intent], error) {
+	// we call generic method with specific sqlc generated queries
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Intent, []db.Intent, []uuid.UUID, error) {
+		executor := r.getDB(ctx)
+		q := db.New(executor)
+		slog.Info("querying intent changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		// execute query to get intents since lastPulledAt
+		created, err := q.ListIntentsByProfileIdAndCreatedAfter(ctx, db.ListIntentsByProfileIdAndCreatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			CreatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query created intents", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created intents"))
+		}
+
+		// execute query to get updated intents since lastPulledAt
+		slog.Info("querying updated intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		updated, err := q.ListIntentsByProfileIdAndUpdatedAfter(ctx, db.ListIntentsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query updated intents", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated intents"))
+		}
+		// execute query to get deleted intents since lastPulledAt
+		slog.Info("querying deleted intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		deleted, err := q.ListDeletedIntentsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedIntentsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query deleted intents", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted intents"))
+		}
+		return created, updated, deleted, nil
+	})
+}
+
+func (r *TransactionRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Transaction], error) {
+	// we call generic method with specific sqlc generated queries
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Transaction, []db.Transaction, []uuid.UUID, error) {
+		executor := r.getDB(ctx)
+		q := db.New(executor)
+		slog.Info("querying transaction changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		// execute query to get transactions since lastPulledAt
+		created, err := q.ListTransactionsByProfileIdAndCreatedAfter(ctx, db.ListTransactionsByProfileIdAndCreatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			CreatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query created transactions", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query created transactions"))
+		}
+		// execute query to get updated transactions since lastPulledAt
+		slog.Info("querying updated transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		updated, err := q.ListTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListTransactionsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query updated transactions", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query updated transactions"))
+		}
+
+		// execute query to get deleted transactions since lastPulledAt
+		slog.Info("querying deleted transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		deleted, err := q.ListDeletedTransactionsByProfileIdAndUpdatedAfter(ctx, db.ListDeletedTransactionsByProfileIdAndUpdatedAfterParams{
+			ProfileID: uuid.MustParse(profileId),
+			UpdatedAt: lastPulledAt,
+			Limit:     100,
+			Offset:    0,
+		})
+		if err != nil {
+			slog.Error("failed to query deleted transactions", "error", err)
+			return nil, nil, nil, connect.NewError(connect.CodeInternal, errors.New("failed to query deleted transactions"))
+		}
+
+		return created, updated, deleted, nil
+	})
+}
+
+func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, intentsSync *domain.SyncPayload[*domain.Intent]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, intent := range intentsSync.Created {
@@ -317,19 +337,19 @@ func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, 
 	return nil
 }
 
-func (r *PostgresRepo) PushTransactionChanges(ctx context.Context, profileId string, lastPulledAt time.Time, transactionsSync *domain.TransactionsSync) error {
+func (r *TransactionRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, transactionsSync *domain.SyncPayload[*domain.Transaction]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 
-	for _, intent := range transactionsSync.Created {
+	for _, transaction := range transactionsSync.Created {
 		params := db.CreateTransactionParams{
-			ID:          intent.ID,
-			CommandID:   intent.CommandID,
-			Amount:      decimal.RequireFromString(intent.Amount.String()),
-			Currency:    intent.Currency,
-			Category:    &intent.Category,
-			Description: &intent.Description,
-			CreatedAt:   intent.CreatedAt,
+			ID:          transaction.ID,
+			CommandID:   transaction.CommandID,
+			Amount:      decimal.RequireFromString(transaction.Amount.String()),
+			Currency:    transaction.Currency,
+			Category:    &transaction.Category,
+			Description: &transaction.Description,
+			CreatedAt:   transaction.CreatedAt,
 		}
 		_, err := q.CreateTransaction(ctx, params)
 		if err != nil {
@@ -363,7 +383,7 @@ func (r *PostgresRepo) PushTransactionChanges(ctx context.Context, profileId str
 	return nil
 }
 
-func (r *PostgresRepo) getDB(ctx context.Context) db.DBTX {
+func (r *BaseSyncRepo[DBEntity, DomainEntity]) getDB(ctx context.Context) db.DBTX {
 	if tx, ok := extractTx(ctx); ok {
 		return tx
 	}

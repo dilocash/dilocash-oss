@@ -24,13 +24,7 @@ type Intent struct {
 	CommandID      uuid.UUID
 }
 
-type IntentsSync struct {
-	Created []Intent
-	Updated []Intent
-	Deleted []uuid.UUID
-}
-
 type IntentRepository interface {
-	PullIntentChanges(context context.Context, profileId string, lastPulledAt time.Time) (*IntentsSync, error)
-	PushIntentChanges(context context.Context, profileId string, lastPulledAt time.Time, intentsSync *IntentsSync) error
+	PullChanges(context context.Context, profileId string, lastPulledAt time.Time) (*SyncPayload[*Intent], error)
+	PushChanges(context context.Context, profileId string, lastPulledAt time.Time, intentsSync *SyncPayload[*Intent]) error
 }

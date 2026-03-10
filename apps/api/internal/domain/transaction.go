@@ -24,13 +24,7 @@ type Transaction struct {
 	CommandID   uuid.UUID
 }
 
-type TransactionsSync struct {
-	Created []Transaction
-	Updated []Transaction
-	Deleted []uuid.UUID
-}
-
 type TransactionRepository interface {
-	PullTransactionChanges(context context.Context, profileId string, lastPulledAt time.Time) (*TransactionsSync, error)
-	PushTransactionChanges(context context.Context, profileId string, lastPulledAt time.Time, transactionsSync *TransactionsSync) error
+	PullChanges(context context.Context, profileId string, lastPulledAt time.Time) (*SyncPayload[*Transaction], error)
+	PushChanges(context context.Context, profileId string, lastPulledAt time.Time, transactionsSync *SyncPayload[*Transaction]) error
 }
