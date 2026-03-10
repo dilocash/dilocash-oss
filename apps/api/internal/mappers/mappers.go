@@ -57,7 +57,6 @@ type Converter interface {
 	ToTransportIntent(d domain.Intent) *transport.Intent
 
 	// Transport -> Domain
-	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
 	CommandFromTransportToDomain(t *transport.Command) domain.Command
 	// goverter:ignoreMissing

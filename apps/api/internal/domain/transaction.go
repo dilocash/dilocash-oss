@@ -32,5 +32,5 @@ type TransactionsSync struct {
 
 type TransactionRepository interface {
 	PullTransactionChanges(context context.Context, profileId string, lastPulledAt time.Time) (*TransactionsSync, error)
-	PushTransactionChanges(context context.Context, profileId string, transactionsSync *TransactionsSync) error
+	PushTransactionChanges(context context.Context, profileId string, lastPulledAt time.Time, transactionsSync *TransactionsSync) error
 }

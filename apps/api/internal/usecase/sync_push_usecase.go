@@ -28,36 +28,29 @@ func NewSyncPushUsecase(commandRepo domain.CommandRepository, intentRepo domain.
 	}
 }
 
-func (u *SyncPushUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
+func (u *SyncPushUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time, syncChanges *domain.SyncChanges) error {
 	slog.Info("pushing changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-
-	var syncChanges *domain.SyncChanges
 
 	// El transactor inyecta la TX en el ctx y se lo pasa al repo
 	err := u.transactor.WithinTransaction(ctx, func(txCtx context.Context) error {
-		commandsSync, err := u.commandRepo.PullCommandChanges(ctx, profileId, lastPulledAt)
+		err := u.commandRepo.PushCommandChanges(ctx, profileId, lastPulledAt, &syncChanges.Commands)
 		if err != nil {
 			return err
 		}
-		intentsSync, err := u.intentRepo.PullIntentChanges(ctx, profileId, lastPulledAt)
+		err = u.intentRepo.PushIntentChanges(ctx, profileId, lastPulledAt, &syncChanges.Intents)
 		if err != nil {
 			return err
 		}
-		transactionsSync, err := u.transactionRepo.PullTransactionChanges(ctx, profileId, lastPulledAt)
+		err = u.transactionRepo.PushTransactionChanges(ctx, profileId, lastPulledAt, &syncChanges.Transactions)
 		if err != nil {
 			return err
-		}
-		syncChanges = &domain.SyncChanges{
-			Commands:     *commandsSync,
-			Intents:      *intentsSync,
-			Transactions: *transactionsSync,
 		}
 		return nil
 	})
 
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return syncChanges, nil
+	return nil
 }

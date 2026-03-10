@@ -10,9 +10,11 @@ import (
 	"log/slog"
 
 	"connectrpc.com/connect"
+	"github.com/dilocash/dilocash-oss/apps/api/internal/domain"
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	v1 "github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/usecase"
+	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
@@ -101,10 +103,65 @@ func (s *SyncServer) PushChanges(
 ) (*v1.PushChangesResponse, error) {
 	profileId := ctx.Value("user_id").(string)
 	lastPulledAt := req.GetLastPulledAt()
+	converter := &mappers.ConverterImpl{}
 	slog.Info("pushing changes", "profileId", profileId, "changes", req.GetChanges(), "lastPulledAt", lastPulledAt.AsTime())
 
-	s.syncPushUsecase.Execute(ctx, profileId, lastPulledAt.AsTime())
+	commands := domain.CommandsSync{
+		Created: []domain.Command{},
+		Updated: []domain.Command{},
+		Deleted: []uuid.UUID{},
+	}
+	for _, command := range req.GetChanges().GetCommands().GetCreated() {
+		commands.Created = append(commands.Created, converter.CommandFromTransportToDomain(command))
+	}
+	for _, command := range req.GetChanges().GetCommands().GetUpdated() {
+		commands.Updated = append(commands.Updated, converter.CommandFromTransportToDomain(command))
+	}
+	for _, command := range req.GetChanges().GetCommands().GetDeleted() {
+		commands.Deleted = append(commands.Deleted, uuid.MustParse(command))
+	}
 
+	intents := domain.IntentsSync{
+		Created: []domain.Intent{},
+		Updated: []domain.Intent{},
+		Deleted: []uuid.UUID{},
+	}
+	for _, i := range req.GetChanges().GetIntents().GetCreated() {
+		intents.Created = append(intents.Created, converter.IntentFromTransportToDomain(i))
+	}
+	for _, i := range req.GetChanges().GetIntents().GetUpdated() {
+		intents.Updated = append(intents.Updated, converter.IntentFromTransportToDomain(i))
+	}
+	for _, i := range req.GetChanges().GetIntents().GetDeleted() {
+		intents.Deleted = append(intents.Deleted, uuid.MustParse(i))
+	}
+
+	transactions := domain.TransactionsSync{
+		Created: []domain.Transaction{},
+		Updated: []domain.Transaction{},
+		Deleted: []uuid.UUID{},
+	}
+	for _, t := range req.GetChanges().GetTransactions().GetCreated() {
+		transactions.Created = append(transactions.Created, converter.TransactionFromTransportToDomain(t))
+	}
+	for _, t := range req.GetChanges().GetTransactions().GetUpdated() {
+		transactions.Updated = append(transactions.Updated, converter.TransactionFromTransportToDomain(t))
+	}
+	for _, t := range req.GetChanges().GetTransactions().GetDeleted() {
+		transactions.Deleted = append(transactions.Deleted, uuid.MustParse(t))
+	}
+
+	syncChanges := domain.SyncChanges{
+		Commands:     commands,
+		Intents:      intents,
+		Transactions: transactions,
+	}
+
+	err := s.syncPushUsecase.Execute(ctx, profileId, lastPulledAt.AsTime(), &syncChanges)
+
+	if err != nil {
+		return nil, err
+	}
 	slog.Info("changes pushed successfully", "profileId", profileId)
 
 	return &v1.PushChangesResponse{

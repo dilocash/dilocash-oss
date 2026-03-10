@@ -32,5 +32,5 @@ type IntentsSync struct {
 
 type IntentRepository interface {
 	PullIntentChanges(context context.Context, profileId string, lastPulledAt time.Time) (*IntentsSync, error)
-	PushIntentChanges(context context.Context, profileId string, intentsSync *IntentsSync) error
+	PushIntentChanges(context context.Context, profileId string, lastPulledAt time.Time, intentsSync *IntentsSync) error
 }

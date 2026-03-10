@@ -235,7 +235,7 @@ func (r *PostgresRepo) PullTransactionChanges(ctx context.Context, profileId str
 	}, nil
 }
 
-func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string, commandsSync *domain.CommandsSync) error {
+func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string, lastPulledAt time.Time, commandsSync *domain.CommandsSync) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, command := range commandsSync.Created {
@@ -274,7 +274,7 @@ func (r *PostgresRepo) PushCommandChanges(ctx context.Context, profileId string,
 	return nil
 }
 
-func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, intentsSync *domain.IntentsSync) error {
+func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, lastPulledAt time.Time, intentsSync *domain.IntentsSync) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, intent := range intentsSync.Created {
@@ -317,7 +317,7 @@ func (r *PostgresRepo) PushIntentChanges(ctx context.Context, profileId string, 
 	return nil
 }
 
-func (r *PostgresRepo) PushTransactionChanges(ctx context.Context, profileId string, transactionsSync *domain.TransactionsSync) error {
+func (r *PostgresRepo) PushTransactionChanges(ctx context.Context, profileId string, lastPulledAt time.Time, transactionsSync *domain.TransactionsSync) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 

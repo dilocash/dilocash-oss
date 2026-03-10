@@ -28,5 +28,5 @@ type CommandsSync struct {
 
 type CommandRepository interface {
 	PullCommandChanges(context context.Context, profileId string, lastPulledAt time.Time) (*CommandsSync, error)
-	PushCommandChanges(context context.Context, profileId string, commandsSync *CommandsSync) error
+	PushCommandChanges(context context.Context, profileId string, lastPulledAt time.Time, commandsSync *CommandsSync) error
 }
