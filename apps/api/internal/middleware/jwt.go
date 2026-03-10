@@ -70,7 +70,8 @@ func (s *SupabaseAuth) Validate(tokenString string) (*jwt.Token, error) {
 	)
 
 	if err != nil {
-		slog.Warn("Token validation failed", "token", err)
+		slog.Warn("Token validation failed", "token", tokenString)
+		return nil, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
