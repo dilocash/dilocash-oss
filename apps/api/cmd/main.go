@@ -129,7 +129,7 @@ func main() {
 	defer cancelHealth()
 	// Setup HTTP/2 Clear Text (h2c) server to handle both gRPC and HTTP calls
 	go func() {
-		log.Printf("🚀 Dilocash-OSS API starting on port %s", port)
+		slog.Info("🚀 Dilocash-OSS API starting on port "+port, "port", port)
 
 		// Create a custom HTTP server that supports both HTTP and gRPC over the same port
 		mux := http.NewServeMux()

@@ -6,7 +6,7 @@ package health
 
 import (
 	"context"
-	"log"
+	"log/slog"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -47,7 +47,7 @@ func (m *Manager) Monitor(ctx context.Context, interval time.Duration) {
 			return
 		case <-ticker.C:
 			if err := m.pool.Ping(ctx); err != nil {
-				log.Printf("⚠️  Database health check failed: %v", err)
+				slog.Info("⚠️  Database health check failed:", "err", err)
 				m.server.SetServingStatus("", grpc_health_v1.HealthCheckResponse_NOT_SERVING)
 			} else {
 				m.server.SetServingStatus("", grpc_health_v1.HealthCheckResponse_SERVING)
