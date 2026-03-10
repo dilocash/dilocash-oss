@@ -7,6 +7,7 @@ package main
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net"
 	"os"
 	"os/signal"
@@ -51,10 +52,10 @@ func withCORS(h http.Handler) http.Handler {
 // registerAllServices registers all gRPC services from v1
 func registerAllServices(ctx context.Context, mux *http.ServeMux, syncPullUsecase *usecase.SyncPullUsecase, syncPushUsecase *usecase.SyncPushUsecase) {
 
-	log.Println("Configure auth server")
+	slog.Info("Configure auth server")
 	supabaseAuth := configureAuthServer(ctx)
 
-	log.Println("Registering gRPC services...")
+	slog.Info("Registering gRPC services...")
 	// sync server
 	syncServer := sync.NewSyncServer(syncPullUsecase, syncPushUsecase)
 	path, handler := v1connect.NewSyncServiceHandler(
@@ -69,11 +70,26 @@ func registerAllServices(ctx context.Context, mux *http.ServeMux, syncPullUsecas
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	// 1. Load Environment Variables
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, relying on system env")
+		slog.Warn("No .env file found, relying on system env")
 	}
+
+	logLevel := new(slog.LevelVar)
+
+	// Example of dynamic level setting (simplified)
+	var handler slog.Handler
+	if os.Getenv("APP_ENV") == "development" {
+		logLevel.Set(slog.LevelDebug)
+		handler = slog.NewTextHandler(os.Stdout, nil)
+	} else {
+		logLevel.Set(slog.LevelInfo) // Set the default level
+		handler = slog.NewJSONHandler(os.Stdout, nil)
+	}
+	// Set the default logger
+	slog.SetDefault(slog.New(handler))
+
+	defer cancel()
 
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	pool := initDB()
@@ -154,7 +170,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("Shutting down server...")
+	slog.Info("Shutting down server...")
 	cancelHealth() // Stop the health monitor
 
 	// Create a context that will timeout after 30 seconds
@@ -166,7 +182,7 @@ func main() {
 	// Note: We need to access h2cServer from the goroutine scope
 	// For now, we'll just gracefully stop the gRPC server
 	grpcServer.GracefulStop()
-	log.Println("Server stopped.")
+	slog.Info("Server stopped.")
 }
 
 func initDB() *pgxpool.Pool {
