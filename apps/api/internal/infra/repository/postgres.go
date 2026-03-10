@@ -123,12 +123,10 @@ func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, l
 	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Command, []db.Command, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
-
 		created := []db.Command{}
 		updated := []db.Command{}
 		deleted := []uuid.UUID{}
-
-		slog.Info("querying sync commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		slog.Debug("querying sync commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
 		rows, err := q.GetCommandsSync(ctx, db.GetCommandsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,
@@ -193,7 +191,7 @@ func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, la
 		created := []db.Intent{}
 		updated := []db.Intent{}
 		deleted := []uuid.UUID{}
-		slog.Info("querying sync intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		slog.Debug("querying sync intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
 		rows, err := q.GetIntentsSync(ctx, db.GetIntentsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,
@@ -226,7 +224,7 @@ func (r *TransactionRepository) PullChanges(ctx context.Context, profileId strin
 		created := []db.Transaction{}
 		updated := []db.Transaction{}
 		deleted := []uuid.UUID{}
-		slog.Info("querying sync transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		slog.Debug("querying sync transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
 		rows, err := q.GetTransactionsSync(ctx, db.GetTransactionsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: lastPulledAt,

@@ -75,7 +75,7 @@ func (s *SupabaseAuth) Validate(tokenString string) (*jwt.Token, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		slog.Info("Authenticated", "sub", claims["sub"])
+		slog.Debug("Authenticated", "sub", claims["sub"])
 	}
 	return token, nil
 }

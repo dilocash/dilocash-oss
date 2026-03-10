@@ -28,7 +28,7 @@ func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.
 }
 
 func (u *SyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
-	slog.Info("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
+	slog.Debug("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
 	g, ctx := errgroup.WithContext(ctx)
 	var syncChanges *domain.SyncChanges = &domain.SyncChanges{
 		Commands:     domain.SyncPayload[*domain.Command]{},

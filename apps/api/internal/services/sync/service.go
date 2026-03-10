@@ -112,7 +112,7 @@ func (s *SyncServer) PushChanges(
 	profileId := ctx.Value("user_id").(string)
 	lastPulledAt := req.GetLastPulledAt()
 	converter := &mappers.ConverterImpl{}
-	slog.Info("pushing changes", "profileId", profileId, "changes", req.GetChanges(), "lastPulledAt", lastPulledAt.AsTime())
+	slog.Debug("pushing changes", "profileId", profileId, "changes", req.GetChanges(), "lastPulledAt", lastPulledAt.AsTime())
 
 	commands := domain.SyncPayload[*domain.Command]{
 		Created: []*domain.Command{},
@@ -170,7 +170,7 @@ func (s *SyncServer) PushChanges(
 	if err != nil {
 		return nil, err
 	}
-	slog.Info("changes pushed successfully", "profileId", profileId)
+	slog.Debug("changes pushed successfully", "profileId", profileId)
 
 	return &v1.PushChangesResponse{
 		Ok:          true,
