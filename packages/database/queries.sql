@@ -14,14 +14,6 @@ INSERT INTO commands (
 )
 RETURNING *;
 
--- name: CreateTransaction :one
-INSERT INTO transactions (
-    id, command_id, amount, currency, category, description, created_at
-) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
-)
-RETURNING *;
-
 -- name: CreateIntent :one
 INSERT INTO intents (
     id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at

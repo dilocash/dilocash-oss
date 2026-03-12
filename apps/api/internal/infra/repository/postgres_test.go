@@ -12,9 +12,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dilocash/dilocash-oss/apps/api/internal/domain"
+	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	"github.com/friendliai/atlas-go-sdk/atlasexec"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/stretchr/testify/assert"
 	"github.com/testcontainers/testcontainers-go"
@@ -98,60 +101,171 @@ func TestMain(m *testing.M) {
 }
 
 func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
-	ctx := context.Background()
-
-	// add test users
-	testUsers, err := seedDatabaseUsers(ctx, pool)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	var userClean = testUsers[0]
-	var userWithData = testUsers[1]
-
-	// instance the repository
 	commandsRepo := NewCommandRepository(pool, &mappers.ConverterImpl{})
 
-	// run the test
 	t.Run("pull commands changes for first user", func(t *testing.T) {
-		userID := userClean.ID
-		changes, err := commandsRepo.PullChanges(ctx, userID.String(), time.Now())
-		if err != nil {
-			t.Errorf("expected no error, got %v", err)
-		}
-		slog.Info("commands received", "changes", changes)
-		assert.Len(t, changes.Created, 0)
-		assert.Len(t, changes.Deleted, 0)
-		assert.Len(t, changes.Updated, 0)
+		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+			// add test users inside transaction
+			testUsers, err := seedDatabaseUsers(ctx, tx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			userClean := testUsers[0]
+
+			userID := userClean.ID
+			changes, err := commandsRepo.PullChanges(ctx, userID.String(), time.Now())
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+			slog.Info("commands received", "changes", changes)
+			assert.Len(t, changes.Created, 0)
+			assert.Len(t, changes.Updated, 0)
+			assert.Len(t, changes.Deleted, 0)
+		})
 	})
 
 	t.Run("pull commands changes for user with only 1 command created", func(t *testing.T) {
+		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+			// add test users inside transaction
+			testUsers, err := seedDatabaseUsers(ctx, tx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			userWithData := testUsers[1]
 
-		nilTime := time.Time{} // nil/0 time
+			nilTime := time.Time{} // nil/0 time
 
-		layout := "2006-01-02T15:04:05.999Z"
-		timeStr := "2000-01-01T00:00:00.111Z"
-		createdAt, err := time.Parse(layout, timeStr)
-		if err != nil {
-			t.Errorf("expected no error, got %v", err)
-		}
+			layout := "2006-01-02T15:04:05.999Z"
+			timeStr := "2000-01-01T00:00:00.111Z"
+			createdAt, err := time.Parse(layout, timeStr)
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
 
-		err = seedCreatedDatabaseCommands(ctx, pool, uuid.New(), userWithData.ID, 1, createdAt)
-		if err != nil {
-			slog.Error("error seeding created commands", "err", err)
-			t.Errorf("expected no error, got %v", err)
-		}
-		changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
-		if err != nil {
-			slog.Error("error pulling changes", "err", err)
-			t.Errorf("expected no error, got %v", err)
-		}
-		_ = changes
+			var command = &domain.Command{
+				ID:            uuid.New(),
+				ProfileID:     userWithData.ID,
+				CommandStatus: 1,
+				CreatedAt:     createdAt,
+			}
+			err = seedCreatedDatabaseCommand(ctx, tx, command)
+			if err != nil {
+				slog.Error("error seeding created commands", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
+			changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
+			if err != nil {
+				slog.Error("error pulling changes", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
 
-		assert.Len(t, changes.Created, 1)
-		assert.Len(t, changes.Deleted, 0)
-		assert.Len(t, changes.Updated, 0)
+			assert.Len(t, changes.Created, 1)
+			assert.Len(t, changes.Updated, 0)
+			assert.Len(t, changes.Deleted, 0)
+		})
 	})
+
+	t.Run("pull commands changes for user with 1 command created, 1 updated and 1 deleted", func(t *testing.T) {
+		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+			// add test users inside transaction
+			testUsers, err := seedDatabaseUsers(ctx, tx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			userWithData := testUsers[1]
+
+			nilTime := time.Time{} // nil/0 time
+
+			layout := "2006-01-02T15:04:05.999Z"
+			timeStr := "2000-01-01T00:00:00.111Z"
+			createdAt, err := time.Parse(layout, timeStr)
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+			var commandId1, commandId2, commandId3 = uuid.New(), uuid.New(), uuid.New()
+
+			var command1 = &domain.Command{
+				ID:            commandId1,
+				ProfileID:     userWithData.ID,
+				CommandStatus: 1,
+				CreatedAt:     createdAt,
+				Deleted:       false,
+			}
+			err = seedCreatedDatabaseCommand(ctx, tx, command1)
+			if err != nil {
+				slog.Error("error seeding created commands", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
+			command2 := &domain.Command{
+				ID:            commandId2,
+				ProfileID:     userWithData.ID,
+				CommandStatus: 1,
+				CreatedAt:     createdAt,
+				UpdatedAt:     createdAt,
+				Deleted:       false,
+			}
+			err = seedUpdatedDatabaseCommand(ctx, tx, command2)
+			if err != nil {
+				slog.Error("error seeding updated commands", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
+			command3 := &domain.Command{
+				ID:            commandId3,
+				ProfileID:     userWithData.ID,
+				CommandStatus: 1,
+				CreatedAt:     createdAt,
+				UpdatedAt:     createdAt,
+				Deleted:       true,
+			}
+			err = seedUpdatedDatabaseCommand(ctx, tx, command3)
+			if err != nil {
+				slog.Error("error seeding updated commands", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
+			commandsRepo.PushChanges(ctx, userWithData.ID.String(), time.Now(), &domain.SyncPayload[*domain.Command]{
+				Created: []*domain.Command{},
+				Updated: []*domain.Command{command2},
+				Deleted: []uuid.UUID{commandId3},
+			})
+			changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
+			if err != nil {
+				slog.Error("error pulling changes", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
+
+			assert.Len(t, changes.Created, 1)
+			assert.Len(t, changes.Updated, 1)
+			assert.Len(t, changes.Deleted, 1)
+		})
+	})
+}
+
+// testWithRollback wraps a test in a transaction and rolls it back
+func testWithRollback(t *testing.T, testFunc func(ctx context.Context, tx pgx.Tx)) {
+	t.Helper()
+	ctx := context.Background()
+
+	// Begin a transaction for this specific test
+	tx, err := pool.Begin(ctx)
+	if err != nil {
+		t.Fatalf("failed to begin transaction: %v", err)
+	}
+
+	// Use injectTx from tx_context.go instead of manual context manipulation
+	ctx = injectTx(ctx, tx)
+
+	// Roll back the transaction at the end of the test
+	// This ensures a clean state for the next test
+	t.Cleanup(func() {
+		if err := tx.Rollback(ctx); err != nil {
+			// Rollback might fail if the transaction was already committed or closed, 
+			// but in tests we generally expect it to succeed unless we committed on purpose.
+			slog.Debug("rollback finallized", "err", err)
+		}
+	})
+
+	// Run the actual test logic with the transaction
+	testFunc(ctx, tx)
 }
 
 func setupMigrations(ctx context.Context, connStr string) error {
@@ -181,7 +295,7 @@ type TestUser struct {
 	Email string
 }
 
-func seedDatabaseUsers(ctx context.Context, pool *pgxpool.Pool) ([]TestUser, error) {
+func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 	users := []TestUser{
 		{ID: uuid.New(), Email: "empty@mail.com"},
 		{ID: uuid.New(), Email: "2026-jan-daily-data@mail.com"},
@@ -189,7 +303,7 @@ func seedDatabaseUsers(ctx context.Context, pool *pgxpool.Pool) ([]TestUser, err
 
 	for _, u := range users {
 		seedSQL := `INSERT INTO auth.users (id, email, aud, role) VALUES ($1, $2, 'authenticated', 'authenticated');`
-		_, err := pool.Exec(ctx, seedSQL, u.ID, u.Email)
+		_, err := db.Exec(ctx, seedSQL, u.ID, u.Email)
 		if err != nil {
 			return nil, err
 		}
@@ -197,14 +311,59 @@ func seedDatabaseUsers(ctx context.Context, pool *pgxpool.Pool) ([]TestUser, err
 	return users, nil
 }
 
-func seedCreatedDatabaseCommands(ctx context.Context, pool *pgxpool.Pool, id uuid.UUID, profileID uuid.UUID, commandStatus int, createdAt time.Time) error {
-	slog.Info("seed created command", "id", id, "profileID", profileID, "commandStatus", commandStatus, "createdAt", createdAt)
+func seedCreatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
+	slog.Info("seed created command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt)
 
 	seedSQL := `
 		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
 		VALUES ($1, $2, $3, $4, $5, $6);
 	`
-	_, err := pool.Exec(ctx, seedSQL, id, profileID.String(), commandStatus, createdAt, createdAt, false)
+	_, err := db.Exec(ctx, seedSQL, command.ID.String(), command.ProfileID.String(), command.CommandStatus, command.CreatedAt, command.CreatedAt, false)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedUpdatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
+	slog.Info("seed updated command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt, "updatedAt", command.UpdatedAt)
+
+	seedSQL := `
+		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
+		VALUES ($1, $2, $3, $4, $5, $6);
+	`
+	_, err := db.Exec(ctx, seedSQL, command.ID.String(), command.ProfileID.String(), command.CommandStatus, command.CreatedAt, command.UpdatedAt, false)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedCreatedDatabaseIntent(ctx context.Context, db db.DBTX, intent *domain.Intent) error {
+	slog.Info("seed created intent", "id", intent.ID, "commandID", intent.CommandID, "intentStatus", intent.IntentStatus, "createdAt", intent.CreatedAt)
+
+	seedSQL := `
+		INSERT INTO intents (id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
+	`
+	_, err := db.Exec(ctx, seedSQL, intent.ID.String(), intent.CommandID.String(), intent.TextMessage, intent.AudioMessage, intent.ImageMessage, intent.IntentStatus, intent.RequiresReview, intent.CreatedAt, intent.CreatedAt, intent.Deleted)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedCreatedDatabaseTransaction(ctx context.Context, db db.DBTX, transaction *domain.Transaction) error {
+	slog.Info("seed created transaction", "id", transaction.ID, "commandID", transaction.CommandID, "amount", transaction.Amount, "currency", transaction.Currency, "category", transaction.Category, "description", transaction.Description, "createdAt", transaction.CreatedAt)
+
+	seedSQL := `
+		INSERT INTO transactions (id, command_id, amount, currency, category, description, created_at, updated_at, deleted) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+	`
+	_, err := db.Exec(ctx, seedSQL, transaction.ID.String(), transaction.CommandID.String(), transaction.Amount, transaction.Currency, transaction.Category, transaction.Description, transaction.CreatedAt, transaction.CreatedAt, transaction.Deleted)
 	if err != nil {
 		return err
 	}
