@@ -23,7 +23,7 @@ type MockSyncPullUsecase struct {
 	mock.Mock
 }
 
-func (m *MockSyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
+func (m *MockSyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncChanges, error) {
 	args := m.Called(ctx, profileId, lastPulledAt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -36,7 +36,7 @@ type MockSyncPushUsecase struct {
 	mock.Mock
 }
 
-func (m *MockSyncPushUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time, syncChanges *domain.SyncChanges) error {
+func (m *MockSyncPushUsecase) Execute(ctx context.Context, profileId string, lastPulledAt *time.Time, syncChanges *domain.SyncChanges) error {
 	args := m.Called(ctx, profileId, lastPulledAt, syncChanges)
 	return args.Error(0)
 }
