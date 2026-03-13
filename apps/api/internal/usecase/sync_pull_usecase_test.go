@@ -42,12 +42,12 @@ func TestSyncPullUsecase_Execute(t *testing.T) {
 			Deleted: []uuid.UUID{},
 		}
 
-		mockCommandRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(commands, nil)
-		mockIntentRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(intents, nil)
-		mockTransactionRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(transactions, nil)
+		mockCommandRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(commands, nil)
+		mockIntentRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(intents, nil)
+		mockTransactionRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(transactions, nil)
 
 		u := NewSyncPullUsecase(mockCommandRepo, mockIntentRepo, mockTransactionRepo, nil)
-		result, err := u.Execute(ctx, profileId, lastPulledAt)
+		result, err := u.Execute(ctx, profileId, &lastPulledAt)
 
 		assert.NoError(t, err)
 		assert.NotNil(t, result)
@@ -65,12 +65,12 @@ func TestSyncPullUsecase_Execute(t *testing.T) {
 		mockIntentRepo := new(MockIntentRepository)
 		mockTransactionRepo := new(MockTransactionRepository)
 
-		mockCommandRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(nil, errors.New("repo error"))
-		mockIntentRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(&domain.SyncPayload[*domain.Intent]{}, nil)
-		mockTransactionRepo.On("PullChanges", mock.Anything, profileId, lastPulledAt).Return(&domain.SyncPayload[*domain.Transaction]{}, nil)
+		mockCommandRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(nil, errors.New("repo error"))
+		mockIntentRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(&domain.SyncPayload[*domain.Intent]{}, nil)
+		mockTransactionRepo.On("PullChanges", mock.Anything, profileId, &lastPulledAt).Return(&domain.SyncPayload[*domain.Transaction]{}, nil)
 
 		u := NewSyncPullUsecase(mockCommandRepo, mockIntentRepo, mockTransactionRepo, nil)
-		result, err := u.Execute(ctx, profileId, lastPulledAt)
+		result, err := u.Execute(ctx, profileId, &lastPulledAt)
 
 		assert.Error(t, err)
 		assert.Nil(t, result)

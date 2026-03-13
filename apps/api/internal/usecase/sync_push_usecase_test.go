@@ -38,7 +38,7 @@ func TestSyncPushUsecase_Execute(t *testing.T) {
 		mockTransactionRepo.On("PushChanges", mock.Anything, profileId, lastPulledAt, &syncChanges.Transactions).Return(nil)
 
 		u := NewSyncPushUsecase(mockCommandRepo, mockIntentRepo, mockTransactionRepo, mockTransactor)
-		err := u.Execute(ctx, profileId, lastPulledAt, syncChanges)
+		err := u.Execute(ctx, profileId, &lastPulledAt, syncChanges)
 
 		assert.NoError(t, err)
 
@@ -56,8 +56,9 @@ func TestSyncPushUsecase_Execute(t *testing.T) {
 
 		mockTransactor.On("WithinTransaction", ctx, mock.AnythingOfType("func(context.Context) error")).Return(errors.New("tx error"))
 
+		lastPulledAt := time.Now()
 		u := NewSyncPushUsecase(mockCommandRepo, mockIntentRepo, mockTransactionRepo, mockTransactor)
-		err := u.Execute(ctx, "id", time.Now(), &domain.SyncChanges{})
+		err := u.Execute(ctx, "id", &lastPulledAt, &domain.SyncChanges{})
 
 		assert.Error(t, err)
 		assert.Equal(t, "tx error", err.Error())
@@ -75,7 +76,7 @@ func TestSyncPushUsecase_Execute(t *testing.T) {
 		mockCommandRepo.On("PushChanges", mock.Anything, profileId, lastPulledAt, &syncChanges.Commands).Return(errors.New("repo error"))
 
 		u := NewSyncPushUsecase(mockCommandRepo, mockIntentRepo, mockTransactionRepo, mockTransactor)
-		err := u.Execute(ctx, profileId, lastPulledAt, syncChanges)
+		err := u.Execute(ctx, profileId, &lastPulledAt, syncChanges)
 
 		assert.Error(t, err)
 		assert.Equal(t, "repo error", err.Error())

@@ -20,8 +20,8 @@ type Syncable interface {
 }
 
 type SyncRepository[T Syncable] interface {
-	PullChanges(context context.Context, profileId string, lastPulledAt time.Time) (T, error)
-	PushChanges(context context.Context, profileId string, lastPulledAt time.Time, changes *T) error
+	PullChanges(context context.Context, profileId string, lastPulledAt *time.Time) (T, error)
+	PushChanges(context context.Context, profileId string, lastPulledAt *time.Time, changes *T) error
 }
 
 type SyncPayload[T any] struct {

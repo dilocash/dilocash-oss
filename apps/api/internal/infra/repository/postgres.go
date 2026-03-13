@@ -155,7 +155,7 @@ func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, l
 	})
 }
 
-func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, commandsSync *domain.SyncPayload[*domain.Command]) error {
+func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, commandsSync *domain.SyncPayload[*domain.Command]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, command := range commandsSync.Created {
@@ -253,7 +253,7 @@ func (r *TransactionRepository) PullChanges(ctx context.Context, profileId strin
 	})
 }
 
-func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, intentsSync *domain.SyncPayload[*domain.Intent]) error {
+func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, intentsSync *domain.SyncPayload[*domain.Intent]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 	for _, intent := range intentsSync.Created {
@@ -284,7 +284,7 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 	return nil
 }
 
-func (r *TransactionRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, transactionsSync *domain.SyncPayload[*domain.Transaction]) error {
+func (r *TransactionRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, transactionsSync *domain.SyncPayload[*domain.Transaction]) error {
 	executor := r.getDB(ctx)
 	q := db.New(executor)
 

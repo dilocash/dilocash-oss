@@ -17,7 +17,7 @@ type MockCommandRepository struct {
 	mock.Mock
 }
 
-func (m *MockCommandRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Command], error) {
+func (m *MockCommandRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Command], error) {
 	args := m.Called(ctx, profileId, lastPulledAt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -25,7 +25,7 @@ func (m *MockCommandRepository) PullChanges(ctx context.Context, profileId strin
 	return args.Get(0).(*domain.SyncPayload[*domain.Command]), args.Error(1)
 }
 
-func (m *MockCommandRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, commandsSync *domain.SyncPayload[*domain.Command]) error {
+func (m *MockCommandRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, commandsSync *domain.SyncPayload[*domain.Command]) error {
 	args := m.Called(ctx, profileId, lastPulledAt, commandsSync)
 	return args.Error(0)
 }
@@ -35,7 +35,7 @@ type MockIntentRepository struct {
 	mock.Mock
 }
 
-func (m *MockIntentRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Intent], error) {
+func (m *MockIntentRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Intent], error) {
 	args := m.Called(ctx, profileId, lastPulledAt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -43,7 +43,7 @@ func (m *MockIntentRepository) PullChanges(ctx context.Context, profileId string
 	return args.Get(0).(*domain.SyncPayload[*domain.Intent]), args.Error(1)
 }
 
-func (m *MockIntentRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, intentsSync *domain.SyncPayload[*domain.Intent]) error {
+func (m *MockIntentRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, intentsSync *domain.SyncPayload[*domain.Intent]) error {
 	args := m.Called(ctx, profileId, lastPulledAt, intentsSync)
 	return args.Error(0)
 }
@@ -53,7 +53,7 @@ type MockTransactionRepository struct {
 	mock.Mock
 }
 
-func (m *MockTransactionRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Transaction], error) {
+func (m *MockTransactionRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Transaction], error) {
 	args := m.Called(ctx, profileId, lastPulledAt)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
@@ -61,7 +61,7 @@ func (m *MockTransactionRepository) PullChanges(ctx context.Context, profileId s
 	return args.Get(0).(*domain.SyncPayload[*domain.Transaction]), args.Error(1)
 }
 
-func (m *MockTransactionRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt time.Time, transactionsSync *domain.SyncPayload[*domain.Transaction]) error {
+func (m *MockTransactionRepository) PushChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, transactionsSync *domain.SyncPayload[*domain.Transaction]) error {
 	args := m.Called(ctx, profileId, lastPulledAt, transactionsSync)
 	return args.Error(0)
 }

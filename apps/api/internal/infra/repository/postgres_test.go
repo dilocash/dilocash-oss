@@ -241,7 +241,8 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 				slog.Error("error seeding updated commands", "err", err)
 				t.Errorf("expected no error, got %v", err)
 			}
-			commandsRepo.PushChanges(ctx, userWithoutData.ID.String(), time.Now(), &domain.SyncPayload[*domain.Command]{
+			now := time.Now()
+			commandsRepo.PushChanges(ctx, userWithoutData.ID.String(), &now, &domain.SyncPayload[*domain.Command]{
 				Created: []*domain.Command{},
 				Updated: []*domain.Command{command2},
 				Deleted: []uuid.UUID{commandId3},

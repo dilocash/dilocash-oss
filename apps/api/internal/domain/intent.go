@@ -25,6 +25,6 @@ type Intent struct {
 }
 
 type IntentRepository interface {
-	PullChanges(context context.Context, profileId string, lastPulledAt time.Time) (*SyncPayload[*Intent], error)
-	PushChanges(context context.Context, profileId string, lastPulledAt time.Time, intentsSync *SyncPayload[*Intent]) error
+	PullChanges(context context.Context, profileId string, lastPulledAt *time.Time) (*SyncPayload[*Intent], error)
+	PushChanges(context context.Context, profileId string, lastPulledAt *time.Time, intentsSync *SyncPayload[*Intent]) error
 }

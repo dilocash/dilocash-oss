@@ -21,6 +21,6 @@ type Command struct {
 }
 
 type CommandRepository interface {
-	PullChanges(context context.Context, profileId string, lastPulledAt time.Time) (*SyncPayload[*Command], error)
-	PushChanges(context context.Context, profileId string, lastPulledAt time.Time, commandsSync *SyncPayload[*Command]) error
+	PullChanges(context context.Context, profileId string, lastPulledAt *time.Time) (*SyncPayload[*Command], error)
+	PushChanges(context context.Context, profileId string, lastPulledAt *time.Time, commandsSync *SyncPayload[*Command]) error
 }
