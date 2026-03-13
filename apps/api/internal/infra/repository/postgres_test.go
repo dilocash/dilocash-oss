@@ -9,13 +9,12 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
+	"slices"
 	"testing"
 	"time"
 
 	"github.com/dilocash/dilocash-oss/apps/api/internal/domain"
-	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
-	"github.com/friendliai/atlas-go-sdk/atlasexec"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -103,8 +102,8 @@ func TestMain(m *testing.M) {
 func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 	commandsRepo := NewCommandRepository(pool, &mappers.ConverterImpl{})
 
-	t.Run("pull commands changes for first user", func(t *testing.T) {
-		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+	t.Run("pull commands changes for empty user", func(t *testing.T) {
+		testWithRollback(t, pool, func(ctx context.Context, tx pgx.Tx) {
 			// add test users inside transaction
 			testUsers, err := seedDatabaseUsers(ctx, tx)
 			if err != nil {
@@ -113,7 +112,29 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 			userClean := testUsers[0]
 
 			userID := userClean.ID
-			changes, err := commandsRepo.PullChanges(ctx, userID.String(), time.Now())
+			now := time.Now()
+			changes, err := commandsRepo.PullChanges(ctx, userID.String(), &now)
+			if err != nil {
+				t.Errorf("expected no error, got %v", err)
+			}
+			slog.Info("commands received", "changes", changes)
+			assert.Len(t, changes.Created, 0)
+			assert.Len(t, changes.Updated, 0)
+			assert.Len(t, changes.Deleted, 0)
+		})
+	})
+
+	t.Run("pull commands changes for empty user for the first time", func(t *testing.T) {
+		testWithRollback(t, pool, func(ctx context.Context, tx pgx.Tx) {
+			// add test users inside transaction
+			testUsers, err := seedDatabaseUsers(ctx, tx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			userClean := testUsers[0]
+
+			userID := userClean.ID
+			changes, err := commandsRepo.PullChanges(ctx, userID.String(), nil)
 			if err != nil {
 				t.Errorf("expected no error, got %v", err)
 			}
@@ -125,26 +146,25 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 	})
 
 	t.Run("pull commands changes for user with only 1 command created", func(t *testing.T) {
-		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+		testWithRollback(t, pool, func(ctx context.Context, tx pgx.Tx) {
 			// add test users inside transaction
 			testUsers, err := seedDatabaseUsers(ctx, tx)
 			if err != nil {
 				t.Fatal(err)
 			}
-			userWithData := testUsers[1]
+			userWithoutData := testUsers[0]
 
-			nilTime := time.Time{} // nil/0 time
+			nilTime := (*time.Time)(nil) // nil/0 time
 
-			layout := "2006-01-02T15:04:05.999Z"
 			timeStr := "2000-01-01T00:00:00.111Z"
-			createdAt, err := time.Parse(layout, timeStr)
+			createdAt, err := time.Parse(DateFormatLayout, timeStr)
 			if err != nil {
 				t.Errorf("expected no error, got %v", err)
 			}
 
 			var command = &domain.Command{
 				ID:            uuid.New(),
-				ProfileID:     userWithData.ID,
+				ProfileID:     userWithoutData.ID,
 				CommandStatus: 1,
 				CreatedAt:     createdAt,
 			}
@@ -153,7 +173,7 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 				slog.Error("error seeding created commands", "err", err)
 				t.Errorf("expected no error, got %v", err)
 			}
-			changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
+			changes, err := commandsRepo.PullChanges(ctx, userWithoutData.ID.String(), nilTime)
 			if err != nil {
 				slog.Error("error pulling changes", "err", err)
 				t.Errorf("expected no error, got %v", err)
@@ -166,19 +186,18 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 	})
 
 	t.Run("pull commands changes for user with 1 command created, 1 updated and 1 deleted", func(t *testing.T) {
-		testWithRollback(t, func(ctx context.Context, tx pgx.Tx) {
+		testWithRollback(t, pool, func(ctx context.Context, tx pgx.Tx) {
 			// add test users inside transaction
 			testUsers, err := seedDatabaseUsers(ctx, tx)
 			if err != nil {
 				t.Fatal(err)
 			}
-			userWithData := testUsers[1]
+			userWithoutData := testUsers[0]
 
-			nilTime := time.Time{} // nil/0 time
+			nilTime := (*time.Time)(nil) // nil/0 time
 
-			layout := "2006-01-02T15:04:05.999Z"
 			timeStr := "2000-01-01T00:00:00.111Z"
-			createdAt, err := time.Parse(layout, timeStr)
+			createdAt, err := time.Parse(DateFormatLayout, timeStr)
 			if err != nil {
 				t.Errorf("expected no error, got %v", err)
 			}
@@ -186,7 +205,7 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 
 			var command1 = &domain.Command{
 				ID:            commandId1,
-				ProfileID:     userWithData.ID,
+				ProfileID:     userWithoutData.ID,
 				CommandStatus: 1,
 				CreatedAt:     createdAt,
 				Deleted:       false,
@@ -198,7 +217,7 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 			}
 			command2 := &domain.Command{
 				ID:            commandId2,
-				ProfileID:     userWithData.ID,
+				ProfileID:     userWithoutData.ID,
 				CommandStatus: 1,
 				CreatedAt:     createdAt,
 				UpdatedAt:     createdAt,
@@ -211,7 +230,7 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 			}
 			command3 := &domain.Command{
 				ID:            commandId3,
-				ProfileID:     userWithData.ID,
+				ProfileID:     userWithoutData.ID,
 				CommandStatus: 1,
 				CreatedAt:     createdAt,
 				UpdatedAt:     createdAt,
@@ -222,12 +241,12 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 				slog.Error("error seeding updated commands", "err", err)
 				t.Errorf("expected no error, got %v", err)
 			}
-			commandsRepo.PushChanges(ctx, userWithData.ID.String(), time.Now(), &domain.SyncPayload[*domain.Command]{
+			commandsRepo.PushChanges(ctx, userWithoutData.ID.String(), time.Now(), &domain.SyncPayload[*domain.Command]{
 				Created: []*domain.Command{},
 				Updated: []*domain.Command{command2},
 				Deleted: []uuid.UUID{commandId3},
 			})
-			changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
+			changes, err := commandsRepo.PullChanges(ctx, userWithoutData.ID.String(), nilTime)
 			if err != nil {
 				slog.Error("error pulling changes", "err", err)
 				t.Errorf("expected no error, got %v", err)
@@ -238,143 +257,35 @@ func TestPostgresRepo_Commands_PullChanges(t *testing.T) {
 			assert.Len(t, changes.Deleted, 1)
 		})
 	})
-}
 
-// testWithRollback wraps a test in a transaction and rolls it back
-func testWithRollback(t *testing.T, testFunc func(ctx context.Context, tx pgx.Tx)) {
-	t.Helper()
-	ctx := context.Background()
+	// watermelondb spec: created/updated/deleted record IDs MUST NOT be duplicated
+	t.Run("pull commands changes for user with no repeated ids", func(t *testing.T) {
+		testWithRollback(t, pool, func(ctx context.Context, tx pgx.Tx) {
+			// add test users inside transaction
+			testUsers, err := seedDatabaseUsers(ctx, tx)
+			if err != nil {
+				t.Fatal(err)
+			}
+			userWithData := testUsers[1]
 
-	// Begin a transaction for this specific test
-	tx, err := pool.Begin(ctx)
-	if err != nil {
-		t.Fatalf("failed to begin transaction: %v", err)
-	}
+			nilTime := (*time.Time)(nil) // nil/0 time
+			changes, err := commandsRepo.PullChanges(ctx, userWithData.ID.String(), nilTime)
+			if err != nil {
+				slog.Error("error pulling changes", "err", err)
+				t.Errorf("expected no error, got %v", err)
+			}
 
-	// Use injectTx from tx_context.go instead of manual context manipulation
-	ctx = injectTx(ctx, tx)
+			assert.Len(t, changes.Created, 31)
+			assert.Len(t, changes.Updated, 31)
+			assert.Len(t, changes.Deleted, 0)
 
-	// Roll back the transaction at the end of the test
-	// This ensures a clean state for the next test
-	t.Cleanup(func() {
-		if err := tx.Rollback(ctx); err != nil {
-			// Rollback might fail if the transaction was already committed or closed, 
-			// but in tests we generally expect it to succeed unless we committed on purpose.
-			slog.Debug("rollback finallized", "err", err)
-		}
+			var returnedIds = make([]uuid.UUID, len(changes.Created))
+			for i, command := range changes.Created {
+				returnedIds[i] = command.ID
+			}
+			for _, command := range changes.Updated {
+				assert.False(t, slices.Contains(returnedIds, command.ID), "updated command id %v already exists in created commands", command.ID)
+			}
+		})
 	})
-
-	// Run the actual test logic with the transaction
-	testFunc(ctx, tx)
-}
-
-func setupMigrations(ctx context.Context, connStr string) error {
-	slog.Info("start migrations", "connStr", connStr)
-	// use atlas sdk to apply migrations
-	client, err := atlasexec.NewClient(".", "atlas")
-	if err != nil {
-		slog.Error("Error creating atlas client", slog.Any("err", err))
-		return err
-	}
-
-	// apply migrations that are in internal/infrastructure/db/migrations
-	_, err = client.MigrateApply(ctx, &atlasexec.MigrateApplyParams{
-		URL:        connStr, // container url
-		DirURL:     "file://../../../migrations",
-		AllowDirty: true,
-	})
-	if err != nil {
-		slog.Error("Error applying migrations", slog.Any("err", err))
-		return err
-	}
-	return nil
-}
-
-type TestUser struct {
-	ID    uuid.UUID
-	Email string
-}
-
-func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
-	users := []TestUser{
-		{ID: uuid.New(), Email: "empty@mail.com"},
-		{ID: uuid.New(), Email: "2026-jan-daily-data@mail.com"},
-	}
-
-	for _, u := range users {
-		seedSQL := `INSERT INTO auth.users (id, email, aud, role) VALUES ($1, $2, 'authenticated', 'authenticated');`
-		_, err := db.Exec(ctx, seedSQL, u.ID, u.Email)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return users, nil
-}
-
-func seedCreatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
-	slog.Info("seed created command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt)
-
-	seedSQL := `
-		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
-		VALUES ($1, $2, $3, $4, $5, $6);
-	`
-	_, err := db.Exec(ctx, seedSQL, command.ID.String(), command.ProfileID.String(), command.CommandStatus, command.CreatedAt, command.CreatedAt, false)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func seedUpdatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
-	slog.Info("seed updated command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt, "updatedAt", command.UpdatedAt)
-
-	seedSQL := `
-		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
-		VALUES ($1, $2, $3, $4, $5, $6);
-	`
-	_, err := db.Exec(ctx, seedSQL, command.ID.String(), command.ProfileID.String(), command.CommandStatus, command.CreatedAt, command.UpdatedAt, false)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func seedCreatedDatabaseIntent(ctx context.Context, db db.DBTX, intent *domain.Intent) error {
-	slog.Info("seed created intent", "id", intent.ID, "commandID", intent.CommandID, "intentStatus", intent.IntentStatus, "createdAt", intent.CreatedAt)
-
-	seedSQL := `
-		INSERT INTO intents (id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
-	`
-	_, err := db.Exec(ctx, seedSQL, intent.ID.String(), intent.CommandID.String(), intent.TextMessage, intent.AudioMessage, intent.ImageMessage, intent.IntentStatus, intent.RequiresReview, intent.CreatedAt, intent.CreatedAt, intent.Deleted)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func seedCreatedDatabaseTransaction(ctx context.Context, db db.DBTX, transaction *domain.Transaction) error {
-	slog.Info("seed created transaction", "id", transaction.ID, "commandID", transaction.CommandID, "amount", transaction.Amount, "currency", transaction.Currency, "category", transaction.Category, "description", transaction.Description, "createdAt", transaction.CreatedAt)
-
-	seedSQL := `
-		INSERT INTO transactions (id, command_id, amount, currency, category, description, created_at, updated_at, deleted) 
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
-	`
-	_, err := db.Exec(ctx, seedSQL, transaction.ID.String(), transaction.CommandID.String(), transaction.Amount, transaction.Currency, transaction.Category, transaction.Description, transaction.CreatedAt, transaction.CreatedAt, transaction.Deleted)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func setupSupabaseSchema(ctx context.Context, pool *pgxpool.Pool) error {
-	authSchema, _ := os.ReadFile("../testing/supabase_auth_schema.sql")
-	if _, err := pool.Exec(ctx, string(authSchema)); err != nil {
-		return err
-	}
-	return nil
 }

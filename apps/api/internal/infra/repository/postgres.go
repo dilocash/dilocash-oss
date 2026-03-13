@@ -91,7 +91,7 @@ func NewTransactionRepository(pool *pgxpool.Pool, conv *mappers.ConverterImpl) *
 /*
 Generic PullChanges which queries created, updated and deleted records for a Dom entity
 */
-func (r *BaseSyncRepo[DB, Dom]) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time, fetch func(ctx context.Context, updatedAfter time.Time) ([]DB, []DB, []uuid.UUID, error)) (*domain.SyncPayload[Dom], error) {
+func (r *BaseSyncRepo[DB, Dom]) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time, fetch func(ctx context.Context, updatedAfter *time.Time) ([]DB, []DB, []uuid.UUID, error)) (*domain.SyncPayload[Dom], error) {
 	// execute queries to get created, updated and deleted entities since lastPulledAt
 	createdRows, updatedRows, deletedRows, err := fetch(ctx, lastPulledAt)
 	if err != nil {
@@ -118,18 +118,21 @@ func (r *BaseSyncRepo[DB, Dom]) PullChanges(ctx context.Context, profileId strin
 	}, nil
 }
 
-func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Command], error) {
+func (r *CommandRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Command], error) {
 	// we call generic method with specific sqlc generated queries
-	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Command, []db.Command, []uuid.UUID, error) {
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter *time.Time) ([]db.Command, []db.Command, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
 		created := []db.Command{}
 		updated := []db.Command{}
 		deleted := []uuid.UUID{}
 		slog.Debug("querying sync commands", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		if lastPulledAt == nil {
+			lastPulledAt = &time.Time{}
+		}
 		rows, err := q.GetCommandsSync(ctx, db.GetCommandsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
-			CreatedAt: lastPulledAt,
+			CreatedAt: *lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
@@ -183,9 +186,9 @@ func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, l
 	return nil
 }
 
-func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Intent], error) {
+func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Intent], error) {
 	// we call generic method with specific sqlc generated queries
-	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Intent, []db.Intent, []uuid.UUID, error) {
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter *time.Time) ([]db.Intent, []db.Intent, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
 		created := []db.Intent{}
@@ -194,7 +197,7 @@ func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, la
 		slog.Debug("querying sync intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
 		rows, err := q.GetIntentsSync(ctx, db.GetIntentsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
-			CreatedAt: lastPulledAt,
+			CreatedAt: *lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
@@ -216,9 +219,9 @@ func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, la
 	})
 }
 
-func (r *TransactionRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncPayload[*domain.Transaction], error) {
+func (r *TransactionRepository) PullChanges(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncPayload[*domain.Transaction], error) {
 	// we call generic method with specific sqlc generated queries
-	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter time.Time) ([]db.Transaction, []db.Transaction, []uuid.UUID, error) {
+	return r.BaseSyncRepo.PullChanges(ctx, profileId, lastPulledAt, func(ctx context.Context, updatedAfter *time.Time) ([]db.Transaction, []db.Transaction, []uuid.UUID, error) {
 		executor := r.getDB(ctx)
 		q := db.New(executor)
 		created := []db.Transaction{}
@@ -227,7 +230,7 @@ func (r *TransactionRepository) PullChanges(ctx context.Context, profileId strin
 		slog.Debug("querying sync transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
 		rows, err := q.GetTransactionsSync(ctx, db.GetTransactionsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
-			CreatedAt: lastPulledAt,
+			CreatedAt: *lastPulledAt,
 			Limit:     100,
 			Offset:    0,
 		})
