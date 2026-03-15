@@ -22,6 +22,14 @@ INSERT INTO intents (
 )
 RETURNING *;
 
+-- name: CreateTransaction :one
+INSERT INTO transactions (
+    id, command_id, amount, currency, category, description, created_at
+) VALUES (
+    $1, $2, $3, $4, $5, $6, $7
+)
+RETURNING *;
+
 -- name: UpdateCommand :one
 UPDATE commands
 SET command_status = $2, updated_at = NOW()
