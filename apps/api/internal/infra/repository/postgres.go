@@ -297,8 +297,8 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 	}
 
 	for _, intent := range intentsSync.Updated {
-		// check command exists before update (deleted or not)
-		existingCommand, err := q.GetIntentById(ctx, db.GetIntentByIdParams{
+		// check intent exists before update (deleted or not)
+		existingIntent, err := q.GetIntentById(ctx, db.GetIntentByIdParams{
 			ProfileID: uuid.MustParse(profileId),
 			ID:        intent.ID,
 		})
@@ -318,7 +318,7 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 			}
 		}
 
-		if existingCommand.Deleted {
+		if existingIntent.Deleted {
 			return connect.NewError(connect.CodeInternal, errors.New("intent to update was deleted, rejecting sync"))
 		}
 		params := r.converter.ToDBUpdateIntentParams(intent)
@@ -353,8 +353,32 @@ func (r *TransactionRepository) PushChanges(ctx context.Context, profileId strin
 	}
 
 	for _, transaction := range transactionsSync.Updated {
+		// check transaction exists before update (deleted or not)
+		existingTransaction, err := q.GetTransactionById(ctx, db.GetTransactionByIdParams{
+			ProfileID: uuid.MustParse(profileId),
+			ID:        transaction.ID,
+		})
+		if err != nil {
+			if err == pgx.ErrNoRows { // command to update does not exist, create it instead
+				params := r.converter.ToDBCreateTransactionParams(transaction)
+				_, err := q.CreateTransaction(ctx, params)
+				if err != nil {
+					slog.Error("failed to store transaction", "error", err)
+					return connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))
+				}
+				continue
+			} else {
+				slog.Error("failed to get transaction", "error", err)
+				return connect.NewError(connect.CodeInternal, errors.New("failed to get transaction"))
+
+			}
+		}
+
+		if existingTransaction.Deleted {
+			return connect.NewError(connect.CodeInternal, errors.New("transaction to update was deleted, rejecting sync"))
+		}
 		params := r.converter.ToDBUpdateTransactionParams(transaction)
-		_, err := q.UpdateTransaction(ctx, params)
+		_, err = q.UpdateTransaction(ctx, params)
 		if err != nil {
 			slog.Error("failed to store transaction", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store transaction"))

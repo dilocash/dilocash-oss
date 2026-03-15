@@ -14,6 +14,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/shopspring/decimal"
 	"github.com/testcontainers/testcontainers-go"
 	postgrestestcontainer "github.com/testcontainers/testcontainers-go/modules/postgres"
 	"github.com/testcontainers/testcontainers-go/wait"
@@ -76,6 +77,23 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 			return nil, err
 		}
 		users[1].CreatedIntents = append(users[1].CreatedIntents, createdIntent)
+		createdTransaction := domain.Transaction{
+			ID:          uuid.New(),
+			CommandID:   created.ID,
+			Amount:      decimal.NewFromFloat(100.0),
+			Currency:    "USD",
+			Category:    "Category",
+			Description: "Description",
+			CreatedAt:   created.CreatedAt,
+			UpdatedAt:   created.CreatedAt,
+			Deleted:     false,
+		}
+		err = seedCreatedDatabaseTransaction(ctx, db, &createdTransaction)
+		if err != nil {
+			return nil, err
+		}
+		users[1].CreatedTransactions = append(users[1].CreatedTransactions, createdTransaction)
+
 		updatedAt := createdAt.Add(time.Hour)
 		updated := domain.Command{
 			ID:            uuid.New(),
@@ -97,6 +115,21 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 			Deleted:      false,
 		}
 		err = seedUpdatedDatabaseIntent(ctx, db, &intent)
+		if err != nil {
+			return nil, err
+		}
+		transaction := domain.Transaction{
+			ID:          uuid.New(),
+			CommandID:   updated.ID,
+			Amount:      decimal.NewFromFloat(100.0),
+			Currency:    "USD",
+			Category:    "Category",
+			Description: "Description",
+			CreatedAt:   updated.CreatedAt,
+			UpdatedAt:   updated.UpdatedAt,
+			Deleted:     false,
+		}
+		err = seedUpdatedDatabaseTransaction(ctx, db, &transaction)
 		if err != nil {
 			return nil, err
 		}
@@ -170,6 +203,21 @@ func seedUpdatedDatabaseIntent(ctx context.Context, db db.DBTX, intent *domain.I
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 	`
 	_, err := db.Exec(ctx, seedSQL, intent.ID.String(), intent.CommandID.String(), intent.TextMessage, intent.AudioMessage, intent.ImageMessage, intent.IntentStatus, intent.RequiresReview, intent.CreatedAt, intent.UpdatedAt, intent.Deleted)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedUpdatedDatabaseTransaction(ctx context.Context, db db.DBTX, transaction *domain.Transaction) error {
+	slog.Debug("seed updated transaction", "id", transaction.ID, "commandID", transaction.CommandID, "amount", transaction.Amount, "currency", transaction.Currency, "category", transaction.Category, "description", transaction.Description, "createdAt", transaction.CreatedAt, "updatedAt", transaction.UpdatedAt)
+
+	seedSQL := `
+		INSERT INTO transactions (id, command_id, amount, currency, category, description, created_at, updated_at, deleted) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+	`
+	_, err := db.Exec(ctx, seedSQL, transaction.ID.String(), transaction.CommandID.String(), transaction.Amount, transaction.Currency, transaction.Category, transaction.Description, transaction.CreatedAt, transaction.UpdatedAt, transaction.Deleted)
 	if err != nil {
 		return err
 	}
