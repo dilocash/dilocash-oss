@@ -26,45 +26,62 @@ import (
 // goverter:extend github.com/dilocash/dilocash-oss/apps/api/internal/mappers:BoolToPgBool
 type Converter interface {
 	// Database -> Domain
+	CommandRowFromDBToDB(db database.GetCommandsSyncRow) database.Command
+	CommandFromDBToDomain(db database.Command) *domain.Command
+	IntentRowFromDBToDB(db database.GetIntentsSyncRow) database.Intent
 	// goverter:useZeroValueOnPointerInconsistency
-	TransactionFromDBToDomain(db database.Transaction) domain.Transaction
-	CommandFromDBToDomain(db database.Command) domain.Command
+	IntentFromDBToDomain(db database.Intent) *domain.Intent
+	TransactionRowFromDBToDB(db database.GetTransactionsSyncRow) database.Transaction
 	// goverter:useZeroValueOnPointerInconsistency
-	IntentFromDBToDomain(db database.Intent) domain.Intent
+	TransactionFromDBToDomain(db database.Transaction) *domain.Transaction
 	// goverter:useZeroValueOnPointerInconsistency
-	ProfileFromDBToDomain(db database.Profile) domain.Profile
+	ProfileFromDBToDomain(db database.Profile) *domain.Profile
 
 	// Domain -> Database
-	ToDBTransaction(d domain.Transaction) database.Transaction
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBTransaction(d *domain.Transaction) database.Transaction
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBCommand(d *domain.Command) database.Command
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBIntent(d *domain.Intent) database.Intent
 
 	// Domain -> Database params
-	ToDBCreateTransactionParams(d domain.Transaction) database.CreateTransactionParams
-	ToDBCreateCommandParams(d domain.Command) database.CreateCommandParams
-	ToDBCreateIntentParams(d domain.Intent) database.CreateIntentParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBCreateCommandParams(d *domain.Command) database.CreateCommandParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateCommandParams(d *domain.Command) database.UpdateCommandParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBCreateIntentParams(d *domain.Intent) database.CreateIntentParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateIntentParams(d *domain.Intent) database.UpdateIntentParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBCreateTransactionParams(d *domain.Transaction) database.CreateTransactionParams
+	// goverter:useZeroValueOnPointerInconsistency
+	ToDBUpdateTransactionParams(d *domain.Transaction) database.UpdateTransactionParams
 
 	// Domain -> Transport
 	// goverter:ignore state sizeCache unknownFields
 	// goverter:map ID Id
 	// goverter:map CommandID CommandId
-	ToTransportTransaction(d domain.Transaction) *transport.Transaction
+	ToTransportTransaction(d *domain.Transaction) *transport.Transaction
 	// goverter:map ID Id
 	// goverter:ignore state sizeCache unknownFields
 	// goverter:enum no
-	ToTransportCommand(d domain.Command) *transport.Command
+	ToTransportCommand(d *domain.Command) *transport.Command
 	// goverter:map ID Id
 	// goverter:map CommandID CommandId
 	// goverter:ignore state sizeCache unknownFields
-	ToTransportIntent(d domain.Intent) *transport.Intent
+	ToTransportIntent(d *domain.Intent) *transport.Intent
 
 	// Transport -> Domain
 	// goverter:useZeroValueOnPointerInconsistency
 	// goverter:map Id ID
 	// goverter:ignore ProfileID
-	CommandFromTransportToDomain(t *transport.Command) domain.Command
+	CommandFromTransportToDomain(t *transport.Command) *domain.Command
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
-	IntentFromTransportToDomain(t *transport.Intent) domain.Intent
+	IntentFromTransportToDomain(t *transport.Intent) *domain.Intent
 	// goverter:ignoreMissing
 	// goverter:useZeroValueOnPointerInconsistency
-	TransactionFromTransportToDomain(t *transport.Transaction) domain.Transaction
+	TransactionFromTransportToDomain(t *transport.Transaction) *domain.Transaction
 }

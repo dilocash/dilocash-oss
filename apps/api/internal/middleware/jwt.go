@@ -7,7 +7,7 @@ package middleware
 import (
 	"context"
 	"errors"
-	"log"
+	"log/slog"
 
 	"connectrpc.com/connect"
 	"github.com/MicahParks/keyfunc/v3"
@@ -28,7 +28,7 @@ func NewSupabaseAuth(ctx context.Context, supabaseServer string) (*SupabaseAuth,
 	if err != nil {
 		return nil, err
 	}
-	log.Printf("Auth Issuer %s", supabaseServer+"/auth/v1")
+	slog.Info("Auth Issuer", "issuer", supabaseServer+"/auth/v1")
 	return &SupabaseAuth{
 		keyfunc: k.Keyfunc,
 		issuer:  supabaseServer + "/auth/v1",
@@ -70,11 +70,12 @@ func (s *SupabaseAuth) Validate(tokenString string) (*jwt.Token, error) {
 	)
 
 	if err != nil {
-		log.Printf("Token validation failed: %v", err)
+		slog.Warn("Token validation failed", "token", tokenString)
+		return nil, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		log.Printf("Authenticated user ID: %v\n", claims["sub"])
+		slog.Debug("Authenticated", "sub", claims["sub"])
 	}
 	return token, nil
 }

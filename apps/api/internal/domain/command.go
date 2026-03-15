@@ -20,13 +20,7 @@ type Command struct {
 	Deleted       bool
 }
 
-type CommandsSync struct {
-	Created []Command
-	Updated []Command
-	Deleted []uuid.UUID
-}
-
 type CommandRepository interface {
-	PullCommandChanges(context context.Context, profileId string, lastPulledAt time.Time) (*CommandsSync, error)
-	PushCommandChanges(context context.Context, profileId string, lastPulledAt time.Time, commandsSync *CommandsSync) error
+	PullChanges(context context.Context, profileId string, lastPulledAt *time.Time) (*SyncPayload[*Command], error)
+	PushChanges(context context.Context, profileId string, lastPulledAt *time.Time, commandsSync *SyncPayload[*Command]) error
 }

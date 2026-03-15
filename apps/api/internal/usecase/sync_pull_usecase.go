@@ -10,6 +10,7 @@ import (
 	"time"
 
 	domain "github.com/dilocash/dilocash-oss/apps/api/internal/domain"
+	"golang.org/x/sync/errgroup"
 )
 
 type SyncPullUsecase struct {
@@ -26,23 +27,40 @@ func NewSyncPullUsecase(commandRepo domain.CommandRepository, intentRepo domain.
 	}
 }
 
-func (u *SyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt time.Time) (*domain.SyncChanges, error) {
-	slog.Info("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
-	commandsSync, err := u.commandRepo.PullCommandChanges(ctx, profileId, lastPulledAt)
-	if err != nil {
+func (u *SyncPullUsecase) Execute(ctx context.Context, profileId string, lastPulledAt *time.Time) (*domain.SyncChanges, error) {
+	slog.Debug("pulling changes", "profileId", profileId, "lastPulledAt", lastPulledAt)
+	g, ctx := errgroup.WithContext(ctx)
+	var syncChanges *domain.SyncChanges = &domain.SyncChanges{
+		Commands:     domain.SyncPayload[*domain.Command]{},
+		Intents:      domain.SyncPayload[*domain.Intent]{},
+		Transactions: domain.SyncPayload[*domain.Transaction]{},
+	}
+	g.Go(func() error {
+		commandsSync, err := u.commandRepo.PullChanges(ctx, profileId, lastPulledAt)
+		if err != nil {
+			return err
+		}
+		syncChanges.Commands = *commandsSync
+		return nil
+	})
+	g.Go(func() error {
+		intentsSync, err := u.intentRepo.PullChanges(ctx, profileId, lastPulledAt)
+		if err != nil {
+			return err
+		}
+		syncChanges.Intents = *intentsSync
+		return nil
+	})
+	g.Go(func() error {
+		transactionsSync, err := u.transactionRepo.PullChanges(ctx, profileId, lastPulledAt)
+		if err != nil {
+			return err
+		}
+		syncChanges.Transactions = *transactionsSync
+		return nil
+	})
+	if err := g.Wait(); err != nil {
 		return nil, err
 	}
-	intentsSync, err := u.intentRepo.PullIntentChanges(ctx, profileId, lastPulledAt)
-	if err != nil {
-		return nil, err
-	}
-	transactionsSync, err := u.transactionRepo.PullTransactionChanges(ctx, profileId, lastPulledAt)
-	if err != nil {
-		return nil, err
-	}
-	return &domain.SyncChanges{
-		Commands:     *commandsSync,
-		Intents:      *intentsSync,
-		Transactions: *transactionsSync,
-	}, nil
+	return syncChanges, nil
 }

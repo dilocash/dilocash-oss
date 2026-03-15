@@ -7,6 +7,7 @@ package main
 import (
 	"context"
 	"log"
+	"log/slog"
 	"net"
 	"os"
 	"os/signal"
@@ -21,6 +22,7 @@ import (
 	connectcors "connectrpc.com/cors"
 	"connectrpc.com/validate"
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
+	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/generated/transport/dilocash/v1/v1connect"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/health"
 	"github.com/dilocash/dilocash-oss/apps/api/internal/infra/repository"
@@ -50,10 +52,10 @@ func withCORS(h http.Handler) http.Handler {
 // registerAllServices registers all gRPC services from v1
 func registerAllServices(ctx context.Context, mux *http.ServeMux, syncPullUsecase *usecase.SyncPullUsecase, syncPushUsecase *usecase.SyncPushUsecase) {
 
-	log.Println("Configure auth server")
+	slog.Info("Configure auth server")
 	supabaseAuth := configureAuthServer(ctx)
 
-	log.Println("Registering gRPC services...")
+	slog.Info("Registering gRPC services...")
 	// sync server
 	syncServer := sync.NewSyncServer(syncPullUsecase, syncPushUsecase)
 	path, handler := v1connect.NewSyncServiceHandler(
@@ -68,18 +70,38 @@ func registerAllServices(ctx context.Context, mux *http.ServeMux, syncPullUsecas
 
 func main() {
 	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	// 1. Load Environment Variables
 	if err := godotenv.Load(); err != nil {
-		log.Println("No .env file found, relying on system env")
+		slog.Warn("No .env file found, relying on system env")
 	}
+
+	logLevel := new(slog.LevelVar)
+
+	// Example of dynamic level setting (simplified)
+	var handler slog.Handler
+	if os.Getenv("APP_ENV") == "development" {
+		logLevel.Set(slog.LevelDebug)
+		handler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     logLevel,
+		})
+	} else {
+		logLevel.Set(slog.LevelInfo) // Set the default level
+		handler = slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			Level: logLevel,
+		})
+	}
+	// Set the default logger
+	slog.SetDefault(slog.New(handler))
+
+	defer cancel()
 
 	// 2. Initialize Database Connection (pgxpool for sqlc compatibility)
 	pool := initDB()
 
-	commandRepository := repository.NewPostgresRepo(pool)
-	intentRepository := repository.NewPostgresRepo(pool)
-	transactionRepository := repository.NewPostgresRepo(pool)
+	commandRepository := repository.NewCommandRepository(pool, &mappers.ConverterImpl{})
+	intentRepository := repository.NewIntentRepository(pool, &mappers.ConverterImpl{})
+	transactionRepository := repository.NewTransactionRepository(pool, &mappers.ConverterImpl{})
 	transactor := repository.NewPostgresTransactor(pool)
 
 	syncPullUsecase := usecase.NewSyncPullUsecase(commandRepository, intentRepository, transactionRepository, transactor)
@@ -112,7 +134,7 @@ func main() {
 	defer cancelHealth()
 	// Setup HTTP/2 Clear Text (h2c) server to handle both gRPC and HTTP calls
 	go func() {
-		log.Printf("🚀 Dilocash-OSS API starting on port %s", port)
+		slog.Info("🚀 Dilocash-OSS API starting on port "+port, "port", port)
 
 		// Create a custom HTTP server that supports both HTTP and gRPC over the same port
 		mux := http.NewServeMux()
@@ -153,7 +175,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("Shutting down server...")
+	slog.Info("Shutting down server...")
 	cancelHealth() // Stop the health monitor
 
 	// Create a context that will timeout after 30 seconds
@@ -165,7 +187,7 @@ func main() {
 	// Note: We need to access h2cServer from the goroutine scope
 	// For now, we'll just gracefully stop the gRPC server
 	grpcServer.GracefulStop()
-	log.Println("Server stopped.")
+	slog.Info("Server stopped.")
 }
 
 func initDB() *pgxpool.Pool {

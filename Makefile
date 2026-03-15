@@ -69,11 +69,11 @@ dev-api: install ## Start API via Turborepo
 
 supabase-up:
 	@echo "🔐 Starting Supabase..."
-	cd supabase && npx supabase start
+	cd supabase && pnpm dlx supabase start
 
 supabase-down:
 	@echo "🔐 Stopping Supabase..."
-	cd supabase && npx supabase stop
+	cd supabase && pnpm dlx supabase stop
 
 build: ## Build all applications via Turborepo
 	@echo "🏗️  Building all applications..."
