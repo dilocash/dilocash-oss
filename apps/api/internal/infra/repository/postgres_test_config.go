@@ -22,8 +22,11 @@ import (
 const DateFormatLayout string = "2006-01-02T15:04:05.999Z" // date formatting layout
 
 type TestUser struct {
-	ID    uuid.UUID
-	Email string
+	ID                  uuid.UUID
+	Email               string
+	CreatedCommands     []domain.Command
+	CreatedIntents      []domain.Intent
+	CreatedTransactions []domain.Transaction
 }
 
 func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
@@ -44,7 +47,6 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 	for i := 1; i <= 31; i++ {
 		dates = append(dates, fmt.Sprintf("2026-01-%02dT00:00:00.000Z", i))
 	}
-	userWithData := users[1]
 	for _, dateStr := range dates {
 		createdAt, err := time.Parse(DateFormatLayout, dateStr)
 		if err != nil {
@@ -52,7 +54,7 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 		}
 		created := domain.Command{
 			ID:            uuid.New(),
-			ProfileID:     userWithData.ID,
+			ProfileID:     users[1].ID,
 			CommandStatus: 1,
 			CreatedAt:     createdAt,
 		}
@@ -60,15 +62,41 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 		if err != nil {
 			return nil, err
 		}
+		users[1].CreatedCommands = append(users[1].CreatedCommands, created)
+		createdIntent := domain.Intent{
+			ID:           uuid.New(),
+			CommandID:    created.ID,
+			IntentStatus: 1,
+			CreatedAt:    created.CreatedAt,
+			UpdatedAt:    created.CreatedAt,
+			Deleted:      false,
+		}
+		err = seedCreatedDatabaseIntent(ctx, db, &createdIntent)
+		if err != nil {
+			return nil, err
+		}
+		users[1].CreatedIntents = append(users[1].CreatedIntents, createdIntent)
 		updatedAt := createdAt.Add(time.Hour)
 		updated := domain.Command{
 			ID:            uuid.New(),
-			ProfileID:     userWithData.ID,
+			ProfileID:     users[1].ID,
 			CommandStatus: 1,
 			CreatedAt:     createdAt,
 			UpdatedAt:     updatedAt,
 		}
 		err = seedUpdatedDatabaseCommand(ctx, db, &updated)
+		if err != nil {
+			return nil, err
+		}
+		intent := domain.Intent{
+			ID:           uuid.New(),
+			CommandID:    updated.ID,
+			IntentStatus: 1,
+			CreatedAt:    updated.CreatedAt,
+			UpdatedAt:    updated.UpdatedAt,
+			Deleted:      false,
+		}
+		err = seedUpdatedDatabaseIntent(ctx, db, &intent)
 		if err != nil {
 			return nil, err
 		}
@@ -129,6 +157,19 @@ func seedCreatedDatabaseTransaction(ctx context.Context, db db.DBTX, transaction
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
 	`
 	_, err := db.Exec(ctx, seedSQL, transaction.ID.String(), transaction.CommandID.String(), transaction.Amount, transaction.Currency, transaction.Category, transaction.Description, transaction.CreatedAt, transaction.CreatedAt, transaction.Deleted)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func seedUpdatedDatabaseIntent(ctx context.Context, db db.DBTX, intent *domain.Intent) error {
+	seedSQL := `
+		INSERT INTO intents (id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted) 
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
+	`
+	_, err := db.Exec(ctx, seedSQL, intent.ID.String(), intent.CommandID.String(), intent.TextMessage, intent.AudioMessage, intent.ImageMessage, intent.IntentStatus, intent.RequiresReview, intent.CreatedAt, intent.UpdatedAt, intent.Deleted)
 	if err != nil {
 		return err
 	}

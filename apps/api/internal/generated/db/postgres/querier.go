@@ -21,11 +21,13 @@ type Querier interface {
 	DeleteTransaction(ctx context.Context, id uuid.UUID) error
 	GetCommandById(ctx context.Context, arg GetCommandByIdParams) (Command, error)
 	GetCommandsSync(ctx context.Context, arg GetCommandsSyncParams) ([]GetCommandsSyncRow, error)
+	GetIntentById(ctx context.Context, arg GetIntentByIdParams) (Intent, error)
 	GetIntentsSync(ctx context.Context, arg GetIntentsSyncParams) ([]GetIntentsSyncRow, error)
 	// Copyright (c) 2026 dilocash
 	// Use of this source code is governed by an MIT-style
 	// license that can be found in the LICENSE file.
 	GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
+	GetTransactionById(ctx context.Context, arg GetTransactionByIdParams) (Transaction, error)
 	GetTransactionsSync(ctx context.Context, arg GetTransactionsSyncParams) ([]GetTransactionsSyncRow, error)
 	UpdateCommand(ctx context.Context, arg UpdateCommandParams) (Command, error)
 	UpdateIntent(ctx context.Context, arg UpdateIntentParams) (Intent, error)

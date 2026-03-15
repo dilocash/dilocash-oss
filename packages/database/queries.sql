@@ -17,17 +17,17 @@ RETURNING *;
 
 -- name: CreateIntent :one
 INSERT INTO intents (
-    id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at
+    id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $8
 )
 RETURNING *;
 
 -- name: CreateTransaction :one
 INSERT INTO transactions (
-    id, command_id, amount, currency, category, description, created_at
+    id, command_id, amount, currency, category, description, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $7
 )
 RETURNING *;
 
@@ -98,6 +98,11 @@ FROM intents i
 WHERE i.command_id IN (select id from commands where profile_id = $1) AND i.updated_at > $2
 LIMIT $3 OFFSET $4;
 
+-- name: GetIntentById :one
+SELECT i.* 
+FROM intents i
+WHERE i.command_id IN (select id from commands where profile_id = $1) AND i.id = $2;
+
 -- name: GetTransactionsSync :many
 SELECT t.*, 
     CASE 
@@ -108,3 +113,8 @@ SELECT t.*,
 FROM transactions t
 WHERE t.command_id IN (select id from commands where profile_id = $1) AND t.updated_at > $2
 LIMIT $3 OFFSET $4;
+
+-- name: GetTransactionById :one
+SELECT t.* 
+FROM transactions t
+WHERE t.command_id IN (select id from commands where profile_id = $1) AND t.id = $2;

@@ -51,9 +51,9 @@ func (q *Queries) CreateCommand(ctx context.Context, arg CreateCommandParams) (C
 
 const createIntent = `-- name: CreateIntent :one
 INSERT INTO intents (
-    id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at
+    id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7, $8
+    $1, $2, $3, $4, $5, $6, $7, $8, $8
 )
 RETURNING id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted, command_id
 `
@@ -98,9 +98,9 @@ func (q *Queries) CreateIntent(ctx context.Context, arg CreateIntentParams) (Int
 
 const createTransaction = `-- name: CreateTransaction :one
 INSERT INTO transactions (
-    id, command_id, amount, currency, category, description, created_at
+    id, command_id, amount, currency, category, description, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4, $5, $6, $7
+    $1, $2, $3, $4, $5, $6, $7, $7
 )
 RETURNING id, amount, currency, category, description, created_at, updated_at, deleted, command_id
 `
@@ -261,6 +261,35 @@ func (q *Queries) GetCommandsSync(ctx context.Context, arg GetCommandsSyncParams
 	return items, nil
 }
 
+const getIntentById = `-- name: GetIntentById :one
+SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id 
+FROM intents i
+WHERE i.command_id IN (select id from commands where profile_id = $1) AND i.id = $2
+`
+
+type GetIntentByIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	ID        uuid.UUID `json:"id"`
+}
+
+func (q *Queries) GetIntentById(ctx context.Context, arg GetIntentByIdParams) (Intent, error) {
+	row := q.db.QueryRow(ctx, getIntentById, arg.ProfileID, arg.ID)
+	var i Intent
+	err := row.Scan(
+		&i.ID,
+		&i.TextMessage,
+		&i.AudioMessage,
+		&i.ImageMessage,
+		&i.IntentStatus,
+		&i.RequiresReview,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Deleted,
+		&i.CommandID,
+	)
+	return i, err
+}
+
 const getIntentsSync = `-- name: GetIntentsSync :many
 SELECT i.id, i.text_message, i.audio_message, i.image_message, i.intent_status, i.requires_review, i.created_at, i.updated_at, i.deleted, i.command_id, 
     CASE 
@@ -351,6 +380,34 @@ func (q *Queries) GetProfile(ctx context.Context, id uuid.UUID) (Profile, error)
 		&i.AcceptedTermsAt,
 		&i.AllowDataAnalysis,
 		&i.CreatedAt,
+	)
+	return i, err
+}
+
+const getTransactionById = `-- name: GetTransactionById :one
+SELECT t.id, t.amount, t.currency, t.category, t.description, t.created_at, t.updated_at, t.deleted, t.command_id 
+FROM transactions t
+WHERE t.command_id IN (select id from commands where profile_id = $1) AND t.id = $2
+`
+
+type GetTransactionByIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	ID        uuid.UUID `json:"id"`
+}
+
+func (q *Queries) GetTransactionById(ctx context.Context, arg GetTransactionByIdParams) (Transaction, error) {
+	row := q.db.QueryRow(ctx, getTransactionById, arg.ProfileID, arg.ID)
+	var i Transaction
+	err := row.Scan(
+		&i.ID,
+		&i.Amount,
+		&i.Currency,
+		&i.Category,
+		&i.Description,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Deleted,
+		&i.CommandID,
 	)
 	return i, err
 }

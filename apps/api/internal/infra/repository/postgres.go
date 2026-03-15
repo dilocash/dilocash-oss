@@ -220,6 +220,9 @@ func (r *IntentRepository) PullChanges(ctx context.Context, profileId string, la
 		updated := []db.Intent{}
 		deleted := []uuid.UUID{}
 		slog.Debug("querying sync intents", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		if lastPulledAt == nil {
+			lastPulledAt = &time.Time{}
+		}
 		rows, err := q.GetIntentsSync(ctx, db.GetIntentsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: *lastPulledAt,
@@ -253,6 +256,9 @@ func (r *TransactionRepository) PullChanges(ctx context.Context, profileId strin
 		updated := []db.Transaction{}
 		deleted := []uuid.UUID{}
 		slog.Debug("querying sync transactions", "profileId", profileId, "lastPulledAt", lastPulledAt)
+		if lastPulledAt == nil {
+			lastPulledAt = &time.Time{}
+		}
 		rows, err := q.GetTransactionsSync(ctx, db.GetTransactionsSyncParams{
 			ProfileID: uuid.MustParse(profileId),
 			CreatedAt: *lastPulledAt,
@@ -291,8 +297,32 @@ func (r *IntentRepository) PushChanges(ctx context.Context, profileId string, la
 	}
 
 	for _, intent := range intentsSync.Updated {
+		// check command exists before update (deleted or not)
+		existingCommand, err := q.GetIntentById(ctx, db.GetIntentByIdParams{
+			ProfileID: uuid.MustParse(profileId),
+			ID:        intent.ID,
+		})
+		if err != nil {
+			if err == pgx.ErrNoRows { // command to update does not exist, create it instead
+				params := r.converter.ToDBCreateIntentParams(intent)
+				_, err := q.CreateIntent(ctx, params)
+				if err != nil {
+					slog.Error("failed to store intent", "error", err)
+					return connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
+				}
+				continue
+			} else {
+				slog.Error("failed to get intent", "error", err)
+				return connect.NewError(connect.CodeInternal, errors.New("failed to get intent"))
+
+			}
+		}
+
+		if existingCommand.Deleted {
+			return connect.NewError(connect.CodeInternal, errors.New("intent to update was deleted, rejecting sync"))
+		}
 		params := r.converter.ToDBUpdateIntentParams(intent)
-		_, err := q.UpdateIntent(ctx, params)
+		_, err = q.UpdateIntent(ctx, params)
 		if err != nil {
 			slog.Error("failed to store intent", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store intent"))
