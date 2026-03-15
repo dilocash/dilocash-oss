@@ -1,3 +1,7 @@
+-- Copyright (c) 2026 dilocash
+-- Use of this source code is governed by an MIT-style
+-- license that can be found in the LICENSE file.
+
 CREATE SCHEMA IF NOT EXISTS auth;
 create table IF NOT EXISTS auth.users (
   instance_id uuid null,
