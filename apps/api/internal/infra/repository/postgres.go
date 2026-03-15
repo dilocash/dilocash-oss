@@ -15,6 +15,7 @@ import (
 	db "github.com/dilocash/dilocash-oss/apps/api/internal/generated/db/postgres"
 	mappers "github.com/dilocash/dilocash-oss/apps/api/internal/generated/mappers"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -168,8 +169,32 @@ func (r *CommandRepository) PushChanges(ctx context.Context, profileId string, l
 	}
 
 	for _, command := range commandsSync.Updated {
+		// check command exists before update (deleted or not)
+		existingCommand, err := q.GetCommandById(ctx, db.GetCommandByIdParams{
+			ProfileID: uuid.MustParse(profileId),
+			ID:        command.ID,
+		})
+		if err != nil {
+			if err == pgx.ErrNoRows { // command to update does not exist, create it instead
+				params := r.converter.ToDBCreateCommandParams(command)
+				_, err := q.CreateCommand(ctx, params)
+				if err != nil {
+					slog.Error("failed to store command", "error", err)
+					return connect.NewError(connect.CodeInternal, errors.New("failed to store command"))
+				}
+				continue
+			} else {
+				slog.Error("failed to get command", "error", err)
+				return connect.NewError(connect.CodeInternal, errors.New("failed to get command"))
+
+			}
+		}
+
+		if existingCommand.Deleted {
+			return connect.NewError(connect.CodeInternal, errors.New("command to update was deleted, rejecting sync"))
+		}
 		params := r.converter.ToDBUpdateCommandParams(command)
-		_, err := q.UpdateCommand(ctx, params)
+		_, err = q.UpdateCommand(ctx, params)
 		if err != nil {
 			slog.Error("failed to store command", "error", err)
 			return connect.NewError(connect.CodeInternal, errors.New("failed to store command"))

@@ -7,10 +7,11 @@ SELECT * FROM profiles
 WHERE id = $1 LIMIT 1;
 
 -- name: CreateCommand :one
+-- created_at and updated_at keep same value for created entries
 INSERT INTO commands (
-    id, profile_id, command_status, created_at
+    id, profile_id, command_status, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $4
 )
 RETURNING *;
 
@@ -80,6 +81,11 @@ SELECT c.*,
 FROM commands c
 WHERE c.profile_id = $1 AND c.updated_at > $2
 LIMIT $3 OFFSET $4;
+
+-- name: GetCommandById :one
+SELECT c.* 
+FROM commands c
+WHERE c.profile_id = $1 AND c.id = $2;
 
 -- name: GetIntentsSync :many
 SELECT i.*, 

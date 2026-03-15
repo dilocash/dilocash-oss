@@ -15,9 +15,9 @@ import (
 
 const createCommand = `-- name: CreateCommand :one
 INSERT INTO commands (
-    id, profile_id, command_status, created_at
+    id, profile_id, command_status, created_at, updated_at
 ) VALUES (
-    $1, $2, $3, $4
+    $1, $2, $3, $4, $4
 )
 RETURNING id, command_status, created_at, updated_at, deleted, profile_id
 `
@@ -29,6 +29,7 @@ type CreateCommandParams struct {
 	CreatedAt     time.Time `json:"created_at"`
 }
 
+// created_at and updated_at keep same value for created entries
 func (q *Queries) CreateCommand(ctx context.Context, arg CreateCommandParams) (Command, error) {
 	row := q.db.QueryRow(ctx, createCommand,
 		arg.ID,
@@ -171,6 +172,31 @@ WHERE id = $1 AND deleted = false
 func (q *Queries) DeleteTransaction(ctx context.Context, id uuid.UUID) error {
 	_, err := q.db.Exec(ctx, deleteTransaction, id)
 	return err
+}
+
+const getCommandById = `-- name: GetCommandById :one
+SELECT c.id, c.command_status, c.created_at, c.updated_at, c.deleted, c.profile_id 
+FROM commands c
+WHERE c.profile_id = $1 AND c.id = $2
+`
+
+type GetCommandByIdParams struct {
+	ProfileID uuid.UUID `json:"profile_id"`
+	ID        uuid.UUID `json:"id"`
+}
+
+func (q *Queries) GetCommandById(ctx context.Context, arg GetCommandByIdParams) (Command, error) {
+	row := q.db.QueryRow(ctx, getCommandById, arg.ProfileID, arg.ID)
+	var i Command
+	err := row.Scan(
+		&i.ID,
+		&i.CommandStatus,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+		&i.Deleted,
+		&i.ProfileID,
+	)
+	return i, err
 }
 
 const getCommandsSync = `-- name: GetCommandsSync :many

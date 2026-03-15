@@ -14,6 +14,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/testcontainers/testcontainers-go"
+	postgrestestcontainer "github.com/testcontainers/testcontainers-go/modules/postgres"
+	"github.com/testcontainers/testcontainers-go/wait"
 )
 
 const DateFormatLayout string = "2006-01-02T15:04:05.999Z" // date formatting layout
@@ -74,7 +77,7 @@ func seedDatabaseUsers(ctx context.Context, db db.DBTX) ([]TestUser, error) {
 }
 
 func seedCreatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
-	slog.Debug("seed created command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt)
+	// slog.Debug("seed created command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt)
 
 	seedSQL := `
 		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
@@ -89,7 +92,7 @@ func seedCreatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain
 }
 
 func seedUpdatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain.Command) error {
-	slog.Debug("seed updated command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt, "updatedAt", command.UpdatedAt)
+	// slog.Debug("seed updated command", "id", command.ID, "profileID", command.ProfileID, "commandStatus", command.CommandStatus, "createdAt", command.CreatedAt, "updatedAt", command.UpdatedAt)
 
 	seedSQL := `
 		INSERT INTO commands (id, profile_id, command_status, created_at, updated_at, deleted) 
@@ -104,7 +107,7 @@ func seedUpdatedDatabaseCommand(ctx context.Context, db db.DBTX, command *domain
 }
 
 func seedCreatedDatabaseIntent(ctx context.Context, db db.DBTX, intent *domain.Intent) error {
-	slog.Debug("seed created intent", "id", intent.ID, "commandID", intent.CommandID, "intentStatus", intent.IntentStatus, "createdAt", intent.CreatedAt)
+	// slog.Debug("seed created intent", "id", intent.ID, "commandID", intent.CommandID, "intentStatus", intent.IntentStatus, "createdAt", intent.CreatedAt)
 
 	seedSQL := `
 		INSERT INTO intents (id, command_id, text_message, audio_message, image_message, intent_status, requires_review, created_at, updated_at, deleted) 
@@ -189,4 +192,62 @@ func setupMigrations(ctx context.Context, connStr string) error {
 		return err
 	}
 	return nil
+}
+
+func setupTestPoolDB(ctx context.Context) (*pgxpool.Pool, *postgrestestcontainer.PostgresContainer, error) {
+	fmt.Println("Performing setup...")
+
+	logLevel := new(slog.LevelVar)
+
+	// Example of dynamic level setting (simplified)
+	var handler slog.Handler
+	logLevel.Set(slog.LevelDebug)
+	handler = slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{
+		AddSource: true,
+		Level:     logLevel,
+	})
+	// Set the default logger
+	slog.SetDefault(slog.New(handler))
+	// Run the PostgreSQL container
+	container, err := postgrestestcontainer.Run(ctx,
+		"postgres:17.9-alpine", // Specify the Docker image
+		postgrestestcontainer.WithDatabase("testdb"),
+		postgrestestcontainer.WithUsername("user"),
+		postgrestestcontainer.WithPassword("password"),
+		testcontainers.WithWaitStrategy(
+			wait.ForLog("database system is ready to accept connections").WithOccurrence(2), // Wait for the ready signal
+		),
+	)
+	if err != nil {
+		slog.Error("Error creating postgres container", slog.Any("err", err))
+	}
+
+	// Get the connection string
+	connStr, err := container.ConnectionString(ctx, "sslmode=disable")
+	if err != nil {
+		slog.Error("failed to get connection string", slog.Any("err", err))
+	}
+
+	pool, err := pgxpool.New(ctx, connStr)
+	if err != nil {
+		slog.Error("failed to create pool", slog.Any("err", err))
+	}
+	// Ensure the connection is valid
+	if err = pool.Ping(ctx); err != nil {
+		slog.Error("failed to ping database", slog.Any("err", err))
+	}
+
+	// setup supabase schema
+	err = setupSupabaseSchema(ctx, pool)
+	if err != nil {
+		slog.Error("error seting up supabase schema", slog.Any("err", err))
+	}
+
+	// run setupMigrations migrations
+	err = setupMigrations(ctx, connStr)
+	if err != nil {
+		slog.Error("error applying migrations", slog.Any("err", err))
+	}
+
+	return pool, container, nil
 }
